@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { switchControlVisbility,beginSearch,reset } from "../actions/creators.jsx";
+import { beginSearch } from "../actions/creators.jsx";
 
 import { withStyles } from '@material-ui/core/styles';
-
+import SideDrawer from './SideDrawer/SideDrawer.jsx';
+import TopButtons from './ButtonBar/TopButtons.jsx';
 
 
 const styles = theme => ({
@@ -20,13 +21,19 @@ class App extends Component {
 
    }
 
+   handleInput = (e) => {
+
+     this.dataClick();
+   }
+
    render() {
 
      const { term } = this.props;
 
     return (
         <div >
-         hello
+          <TopButtons  isData = {true} modeChanged = { this.handleInput }/>
+          <SideDrawer onOpenClick = {click => this.dataClick = click} />
         </div>
     );
   }
@@ -37,16 +44,15 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    term: state.term,
-
+    SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
   };
 };
 
 const mapDispatchToProps = dispatch => {
 
   return {
-    beginSearch_i :term => {
-      dispatch(reset(term));
+    setSideDrawerLoaderVisible :visible =>{
+      dispatch(setSideDrawerLoaderVisible(visible))
     }
 
   };
