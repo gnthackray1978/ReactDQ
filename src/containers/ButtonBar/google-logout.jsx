@@ -5,15 +5,18 @@ import Icon from './icon'
 import ButtonContent from './button-content'
 import loadScript from './load-script'
 import { connect } from "react-redux";
-import {setProfileObj ,setGoogleApiActive,setQuizData } from "../../actions/creators.jsx";
+import {setProfileObj ,setGoogleApiActive,setQuizData ,setGoogleToken } from "../../actions/creators.jsx";
 
+const styles = theme => ({
+
+});
 
 
 class GoogleLogout extends Component {
   constructor(props) {
     super(props)
     this.signOut = this.signOut.bind(this)
-    this.enableButton = this.enableButton.bind(this)
+
     this.state = {
 
       hovered: false,
@@ -37,7 +40,7 @@ class GoogleLogout extends Component {
   }
 
   render() {
-    const { tag, type, className, disabledStyle, buttonText, children, render, theme, icon } = this.props;
+    const { tag, type, className, disabledStyle, buttonText, children, render, theme, icon, ProfileObj } = this.props;
     const disabled = false;
 
     if (render) {
@@ -89,6 +92,13 @@ class GoogleLogout extends Component {
 
       return initialStyle
     })()
+
+    let label = buttonText;
+
+    if(ProfileObj){
+      label += ' ' + ProfileObj.name;
+    }
+
     const GoogleLogoutButton = React.createElement(
       tag,
       {
@@ -105,7 +115,7 @@ class GoogleLogout extends Component {
       [
         icon && <Icon key={1} active={this.state.active} />,
         <ButtonContent icon={icon} key={2}>
-          {children || buttonText}
+          {label}
         </ButtonContent>
       ]
     )
@@ -114,20 +124,7 @@ class GoogleLogout extends Component {
   }
 }
 
-GoogleLogout.propTypes = {
-  jsSrc: PropTypes.string,
-  buttonText: PropTypes.node,
-  className: PropTypes.string,
-  children: PropTypes.node,
-  disabledStyle: PropTypes.object,
-  tag: PropTypes.string,
-  disabled: PropTypes.bool,
-  onLogoutSuccess: PropTypes.func,
-  type: PropTypes.string,
-  render: PropTypes.func,
-  theme: PropTypes.string,
-  icon: PropTypes.bool
-}
+
 
 
 const mapStateToProps = state => {
@@ -138,7 +135,7 @@ const mapStateToProps = state => {
     LoginHint: state.GoogleApiParams.login_hint,
 
     QuizData : state.quizData,
-    DisplayName : state.displayName,
+
     GoogleApiLoggedIn : state.googleApiLoggedIn,
     ProfileObj : state.profileObj,
     type: state.GoogleApiParams.type,

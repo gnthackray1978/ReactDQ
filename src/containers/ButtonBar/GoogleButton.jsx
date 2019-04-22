@@ -20,10 +20,12 @@ import ControlIcon from '@material-ui/icons/OpenWith';
 import InfoIcon from '@material-ui/icons/FeedBack';
 
 import GoogleLogin from './google-login.jsx'
+import GoogleLogout from './google-logout.jsx'
+
 import {GoogleLib} from "../../scripts/GoogleLib.js";
 
 import { connect } from "react-redux";
-import {setProfileObj ,setGoogleApiActive,setQuizData,setPage,setRowsPerPage } from "../../actions/creators.jsx";
+import {setProfileObj ,setGoogleApiActive,setQuizData,setPage,setRowsPerPage,setGoogleToken } from "../../actions/creators.jsx";
 import loadScript from './load-script.js';
 
 const styles = theme => ({
@@ -53,20 +55,27 @@ class GoogleButton extends Component {
 
   constructor(props) {
      super(props);
-
+     this.handleSigninSuccess = this.handleSigninSuccess.bind(this);
    }
 
    static defaultProps = {
      isData: true
    };
 
+   componentWillReceiveProps(){
+
+   }
 
    componentDidMount() {
+
+     console.log('componentDidMount');
+
 
 
 
 
       loadScript(document, 'script', 'google-login', this.props.jsSrc, () => {
+         console.log('loadScript');
         const params = {
           client_id: this.props.ClientId,
           cookie_policy: this.props.cookiePolicy,
@@ -87,16 +96,35 @@ class GoogleButton extends Component {
         window.gapi.load('auth2', () => {
 
           if (!window.gapi.auth2.getAuthInstance()) {
-            window.gapi.auth2.init(params).then(
-              res => {
-                if (this.props.GoogleApiLoggedIn && res.isSignedIn.get()) {
-                  this.handleSigninSuccess(res.currentUser.get())
-                }
-              },
-              err => {
-                console.log(err);
+
+            let auth2 = gapi.auth2.init({
+                client_id: this.props.ClientId,
+                scope:  this.props.Scope
+            });
+
+            // Listen for sign-in state changes.
+            auth2.isSignedIn.listen((res)=>{
+              console.log(res);
+            });
+
+            // Listen for changes to current user.
+            auth2.currentUser.listen((res)=>{
+              console.log(res);
+
+              if (auth2.isSignedIn.get() == true) {
+                this.handleSigninSuccess(res);
               }
-            )
+
+            });
+
+            console.log('signed in: ' + auth2.isSignedIn.get());
+
+            // Sign in the user if they are currently signed in.
+            if (auth2.isSignedIn.get() == true) {
+              auth2.signIn();
+            }
+
+
           }
 
         })
@@ -113,6 +141,7 @@ class GoogleButton extends Component {
        const basicProfile = res.getBasicProfile()
        const authResponse = res.getAuthResponse()
 
+       this.props.setGoogleApiActive(true);
        this.props.setGoogleToken(basicProfile.getId(),authResponse,authResponse.id_token,authResponse.access_token);
 
        this.props.setProfileObj({
@@ -129,23 +158,23 @@ class GoogleButton extends Component {
 
   render() {
 
+    console.log('google api logged in: '+  this.props.GoogleApiLoggedIn);
+
     const { classes, ClientId, Scope} = this.props;
 
     const responseGoogle = (response) => {
       console.log(response);
     }
 
+    let buttons = <GoogleLogin onSuccess={responseGoogle} onFailure={responseGoogle} />;
+
+    if(this.props.GoogleApiLoggedIn){
+      buttons = <GoogleLogout onLogoutSuccess={responseGoogle}/>;
+    }
 
      return (
        <div>
-          <GoogleLogin
-            clientId= {ClientId}
-            scope = {Scope}
-            buttonText="Login"
-            onSuccess={responseGoogle}
-            onFailure={responseGoogle}
-            cookiePolicy={'single_host_origin'}
-          />
+         {buttons}
       </div>
      )
    }
@@ -162,6 +191,8 @@ class GoogleButton extends Component {
 // googleApiLoggedIn : false
 
 const mapStateToProps = state => {
+  console.log('mapStateToProps');
+
   return {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
     ClientId : state.GoogleApiParams.clientId,

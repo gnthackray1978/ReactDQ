@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Icon from './icon';
 import ButtonContent from './button-content';
 import { connect } from "react-redux";
-import {setProfileObj ,setGoogleApiActive,setQuizData } from "../../actions/creators.jsx";
+import {setProfileObj ,setGoogleApiActive,setQuizData,setGoogleToken } from "../../actions/creators.jsx";
 import loadScript from './load-script';
 
 const styles = theme => ({
@@ -56,7 +56,7 @@ class GoogleLogin extends Component {
 
     this.props.setGoogleToken(basicProfile.getId(),authResponse,authResponse.id_token,authResponse.access_token);
     this.props.setGoogleApiActive(true);
-    
+
     this.props.setProfileObj({
       googleId: basicProfile.getId(),
       imageUrl: basicProfile.getImageUrl(),
@@ -151,34 +151,7 @@ class GoogleLogin extends Component {
   }
 }
 
-GoogleLogin.propTypes = {
-  onSuccess: PropTypes.func.isRequired,
-  onFailure: PropTypes.func.isRequired,
-  clientId: PropTypes.string.isRequired,
-  jsSrc: PropTypes.string,
-  onRequest: PropTypes.func,
-  buttonText: PropTypes.node,
-  className: PropTypes.string,
-  redirectUri: PropTypes.string,
 
-  loginHint: PropTypes.string,
-  hostedDomain: PropTypes.string,
-  children: PropTypes.node,
-  disabledStyle: PropTypes.object,
-
-  prompt: PropTypes.string,
-  tag: PropTypes.string,
-  autoLoad: PropTypes.bool,
-  disabled: PropTypes.bool,
-  discoveryDocs: PropTypes.array,
-
-  responseType: PropTypes.string,
-  type: PropTypes.string,
-
-  render: PropTypes.func,
-  theme: PropTypes.string,
-  icon: PropTypes.bool
-}
 
 
 
