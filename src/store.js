@@ -7,6 +7,7 @@ export default createStore(
   reducer,
   {
     SideDrawerLoaderVisible : true,
+    LogInDetailsVisible : false,
     GoogleApiParams : {
       scriptId : "MQ9uI5jQzqKm4wt01EV3l5pIG0z7T6jhI",
       clientId : '586728196968-cpt57v8ps0n4c1d5hcrmjrmmivoccu7c.apps.googleusercontent.com',
@@ -38,6 +39,7 @@ export default createStore(
     quizData : [],
     profileObj : '',
     googleApiLoggedIn : false
+
   },
   applyMiddleware(thunk)
 );

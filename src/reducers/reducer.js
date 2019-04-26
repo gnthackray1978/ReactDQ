@@ -7,6 +7,13 @@ export default (state = {}, action) => {
       SideDrawerLoaderVisible : action.visible,
     };
 
+
+    case "SET_LOGINLOADVISIBLE":
+      return {
+      ...state,
+      LogInDetailsVisible : action.visible,
+    };
+
     case "SET_PROFILE":
       return {
         ...state,

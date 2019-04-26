@@ -7,6 +7,15 @@ export const setSideDrawerLoaderVisible = visible =>{
     });
   };
 }
+ 
+export const setLoginDetailsVisible = visible =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_LOGINLOADVISIBLE",
+      visible :visible
+    });
+  };
+}
 
 
 export const setProfileObj= profileObj =>{

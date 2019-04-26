@@ -18,11 +18,10 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 import Typography from '@material-ui/core/Typography';
 import ControlIcon from '@material-ui/icons/OpenWith';
 import InfoIcon from '@material-ui/icons/FeedBack';
-import { GoogleLogin } from 'react-google-login';
 
 import { connect } from "react-redux";
 import {setData ,setOrder,setSelected,setPage,setRowsPerPage } from "../../actions/creators.jsx";
-import GoogleButton  from "./GoogleButton.jsx";
+import GoogleConnect  from "./GoogleConnect.jsx";
 
 import './TopButtons.css';
 
@@ -37,12 +36,12 @@ const styles = theme => ({
   flexGrow: 1,
   },
   grow: {
-    marginLeft: 50,
+    marginLeft: 5,
     flexGrow: 1,
   },
   menuButton: {
     marginLeft: -12,
-    marginRight: 20,
+
   },
   tolowerBtn : {
     textTransform: 'none'
@@ -73,18 +72,14 @@ class TopButtons extends Component {
 
 
      return (
-       <AppBar position="static">
+
         <Toolbar>
 
           <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
             <MenuIcon  onClick={()=>{ this.props.modeChanged('data'); }}/>
           </IconButton>
 
-
-
-
-
-          <Button color="inherit"  className={classes.grow}>
+          <Button color="inherit" >
             <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
               Start
             </Typography>
@@ -92,10 +87,19 @@ class TopButtons extends Component {
 
 
 
-          <GoogleButton></GoogleButton>
+
+          <Button color="inherit"  className={classes.grow}>
+            <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
+              C# Quiz
+            </Typography>
+          </Button>
+
+
+
+          <GoogleConnect mode = "login"></GoogleConnect>
 
         </Toolbar>
-      </AppBar>
+
      )
    }
 
