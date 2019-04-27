@@ -86,7 +86,7 @@ class GoogleConnect extends Component {
       if (window.gapi) return;
 
       loadScript(document, 'script', 'google-login', this.props.jsSrc, () => {
-         console.log('loadScript');
+
           const params = {
             client_id: this.props.ClientId,
             cookie_policy: this.props.cookiePolicy,
@@ -97,50 +97,14 @@ class GoogleConnect extends Component {
             ux_mode: this.props.UxMode,
             redirect_uri: undefined,
             scope: this.props.Scope,
-            access_type: this.props.AccessType
-          }
+            access_type: this.props.AccessType,
+              responseType: this.props.responseType
+          };
 
-          if (this.props.responseType === 'code') {
-            params.access_type = 'offline'
-          }
-
-          window.gapi.load('auth2', () => {
-
-            if (!window.gapi.auth2.getAuthInstance()) {
-
-              let auth2 = gapi.auth2.init({
-                  client_id: this.props.ClientId,
-                  scope:  this.props.Scope
-              });
-
-              // Listen for sign-in state changes.
-              auth2.isSignedIn.listen((res)=>{
-                console.log(res);
-              });
-
-              // Listen for changes to current user.
-              auth2.currentUser.listen((res)=>{
-                console.log(res);
-
-                if (auth2.isSignedIn.get() == true) {
-                  this.handleSigninSuccess(res);
-                }
-
-              });
-
-              console.log('signed in: ' + auth2.isSignedIn.get());
-
-              // Sign in the user if they are currently signed in.
-              if (auth2.isSignedIn.get() == true) {
-                auth2.signIn();
-              }
-
-
-            }
-
-          })
+          GoogleLib.AutoConnect(window.gapi, params, (res)=>{
+            this.handleSigninSuccess(res);
+          });
       });
-
 
 
     }
@@ -167,7 +131,7 @@ class GoogleConnect extends Component {
          familyName: basicProfile.getFamilyName()
        });
 
-       console.log('signed in ok');
+    //   console.log('signed in ok');
     }
 
     signIn(e) {
@@ -175,33 +139,33 @@ class GoogleConnect extends Component {
         e.preventDefault();
       }
       if (!this.props.GoogleApiLoggedIn) {
-        const auth2 = window.gapi.auth2.getAuthInstance();
+ 
         const { onSuccess, onFailure, prompt, responseType } = this.props;
-        const options = {
-          prompt
+
+        const params = {
+          prompt,
+          responseType : responseType
         };
 
-        if (responseType === 'code') {
-          auth2.grantOfflineAccess(options).then(res => onSuccess(res), err => onFailure(err));
-        } else {
-          auth2.signIn(options).then(res => this.handleSigninSuccess(res), err => onFailure(err));
-        }
+        GoogleLib.SignIn(window.gapi, params, (res)=>{
+          this.handleSigninSuccess(res);
+        }, (error)=>{
+
+        });
+
       }
     }
 
     signOut() {
-      if (window.gapi) {
-        const auth2 = window.gapi.auth2.getAuthInstance();
-        if (auth2 != null) {
-          auth2.signOut().then(auth2.disconnect().then(()=>{
-            this.props.setProfileObj();
-            this.props.setGoogleToken(undefined,undefined,undefined,undefined);
-            this.props.setGoogleApiActive(false);
-            this.props.setQuizData(undefined);
-            this.props.onLogoutSuccess();
-          }));
-        }
-      }
+
+      GoogleLib.SignOut(window.gapi, ()=>{
+        this.props.setProfileObj();
+        this.props.setGoogleToken(undefined,undefined,undefined,undefined);
+        this.props.setGoogleApiActive(false);
+        this.props.setQuizData(undefined);
+        this.props.onLogoutSuccess();
+      });
+
     }
 
 
@@ -227,12 +191,12 @@ class GoogleConnect extends Component {
   }
 
   renderLogin() {
-    console.log('google api logged in: '+  this.props.GoogleApiLoggedIn);
+    //console.log('google api logged in: '+  this.props.GoogleApiLoggedIn);
 
     const { classes, ClientId, Scope} = this.props;
 
     const responseGoogle = (response) => {
-      console.log(response);
+//      console.log(response);
     }
 
     let buttons = <GoogleButton label ='Login' mode = 'login' onClick ={()=>{
@@ -291,7 +255,7 @@ class GoogleConnect extends Component {
 
 
 const mapStateToProps = state => {
-  console.log('mapStateToProps');
+  //console.log('mapStateToProps');
 
   return {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
