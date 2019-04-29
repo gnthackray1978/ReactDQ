@@ -5,12 +5,12 @@ import { beginSearch } from "../actions/creators.jsx";
 import { withStyles } from '@material-ui/core/styles';
 import SideDrawer from './SideDrawer/SideDrawer.jsx';
 import TopButtons from './ButtonBar/TopButtons.jsx';
-
+import QuizEntrance from './QuizEntrance.jsx';
+import QuizQuestions from './QuizQuestions.jsx';
 
 const styles = theme => ({
 
 });
-
 
 class App extends Component {
   constructor(props) {
@@ -21,30 +21,27 @@ class App extends Component {
 
    }
 
-   handleInput = (e) => {
-
-     this.dataClick();
-   }
-
    render() {
 
-     const { term } = this.props;
+    let result;
+
+    if(this.props.inTest){
+      result = <QuizQuestions/>
+    }
+    else {
+      result = <QuizEntrance/>
+    }
 
     return (
-        <div >
-          <TopButtons  isData = {true} modeChanged = { this.handleInput }/>
-          <SideDrawer onOpenClick = {click => this.dataClick = click} />
-        </div>
+      <div>{result}</div>
     );
   }
 }
 
-//export default App;
-
-
 const mapStateToProps = state => {
   return {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
+    inTest :state.inTest
   };
 };
 

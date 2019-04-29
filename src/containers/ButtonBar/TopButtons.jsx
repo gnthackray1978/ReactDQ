@@ -20,7 +20,7 @@ import ControlIcon from '@material-ui/icons/OpenWith';
 import InfoIcon from '@material-ui/icons/FeedBack';
 
 import { connect } from "react-redux";
-import {setData ,setOrder,setSelected,setPage,setRowsPerPage } from "../../actions/creators.jsx";
+import {setInTest ,selectQuizName,selectQuizCat} from "../../actions/creators.jsx";
 import GoogleConnect  from "./GoogleConnect.jsx";
 
 import './TopButtons.css';
@@ -62,7 +62,7 @@ class TopButtons extends Component {
 
   render() {
 
-    const { classes } = this.props;
+    const { classes,selectQuizName,selectQuizCat } = this.props;
 
     let buttons;
 
@@ -79,7 +79,7 @@ class TopButtons extends Component {
             <MenuIcon  onClick={()=>{ this.props.modeChanged('data'); }}/>
           </IconButton>
 
-          <Button color="inherit" >
+          <Button color="inherit"  onClick={()=>{ this.props.setInTest(!this.props.inTest); }}>
             <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
               Start
             </Typography>
@@ -90,7 +90,7 @@ class TopButtons extends Component {
 
           <Button color="inherit"  className={classes.grow}>
             <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-              C# Quiz
+              {selectQuizName + ' ' + selectQuizCat}
             </Typography>
           </Button>
 
@@ -108,8 +108,11 @@ class TopButtons extends Component {
 
 
 const mapStateToProps = state => {
-
   return {
+    SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
+    inTest : state.inTest,
+    selectQuizName :state.selectQuizName,
+    selectQuizCat : state.selectQuizCat
 
   };
 };
@@ -117,6 +120,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
   return {
+    setSideDrawerLoaderVisible :visible =>{
+      dispatch(setSideDrawerLoaderVisible(visible))
+    },
+    setInTest :inTest =>{
+      dispatch(setInTest(inTest))
+    }
 
   };
 };

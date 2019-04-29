@@ -23,7 +23,7 @@ import StarIcon from '@material-ui/icons/Star';
 import './SideDrawer.css';
 
 import { connect } from "react-redux";
-import { switchControlVisbility,setQuizData,setSideDrawerLoaderVisible,setCatSelection} from "../../actions/creators.jsx";
+import { switchControlVisbility,setQuizData,setSideDrawerLoaderVisible,setCatSelection,setQuizName,setQuizCat} from "../../actions/creators.jsx";
 
 
 
@@ -140,10 +140,13 @@ function QuizItemCats(props) {
     const { classes ,SideDrawerLoaderVisible, catSelection} = this.props;
 
     const setCatSelection = this.props.setCatSelection;
+    const setQuizName = this.props.setQuizName;
+    const setQuizCat = this.props.setQuizCat;
+
 
     const quizClick = (key => {
         console.log('selected quiz :' + key);
-
+        setQuizName(key);
         catSelection.forEach((selection)=>{
          if(selection.quiz == key){
            selection.open = !selection.open;
@@ -156,6 +159,7 @@ function QuizItemCats(props) {
 
      const catClick = (key => {
          console.log('selected cat :' + key);
+         setQuizCat(key);
 
       });
 
@@ -214,7 +218,9 @@ const mapStateToProps = state => {
   return {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
     quizData : state.quizData,
-    catSelection : state.catSelection
+    catSelection : state.catSelection,
+    selectQuizCat : state.selectQuizCat,
+    selectQuizName : state.selectQuizName,
   };
 };
 
@@ -229,8 +235,13 @@ const mapDispatchToProps = dispatch => {
     },
     setCatSelection :data =>{
       dispatch(setCatSelection(data))
+    },
+    setQuizName :selectQuizName =>{
+      dispatch(setQuizName(selectQuizName))
+    },
+    setQuizCat :selectQuizCat =>{
+      dispatch(setQuizCat(selectQuizCat))
     }
-
   };
 };
 

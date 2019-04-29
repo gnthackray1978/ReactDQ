@@ -26,6 +26,24 @@ export default (state = {}, action) => {
         GoogleToken : action.GoogleToken,
     };
 
+    case "SET_QUIZNAME":
+      return {
+        ...state,
+        selectQuizName : action.selectQuizName,
+    };
+    
+    case "SET_QUIZCAT":
+      return {
+        ...state,
+        selectQuizCat : action.selectQuizCat,
+    };
+
+    case "SET_INTEST":
+      return {
+        ...state,
+        inTest : action.inTest,
+    };
+
     case "SET_GOOGLEAPIACTIVE":
       return {
       ...state,

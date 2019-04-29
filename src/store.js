@@ -38,8 +38,13 @@ export default createStore(
     },
     quizData : [],
     catSelection :[],
+
+    selectQuizName : '',
+    selectQuizCat : '',
+    
     profileObj : '',
-    googleApiLoggedIn : false
+    googleApiLoggedIn : false,
+    inTest :false
 
   },
   applyMiddleware(thunk)

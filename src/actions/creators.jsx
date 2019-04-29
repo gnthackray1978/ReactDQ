@@ -27,6 +27,33 @@ export const setProfileObj= profileObj =>{
   };
 }
 
+export const setInTest= inTest =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_INTEST",
+      inTest :inTest
+    });
+  };
+}
+
+export const setQuizName= selectQuizName =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_QUIZNAME",
+      selectQuizName : selectQuizName
+    });
+  };
+}
+export const setQuizCat= selectQuizCat =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_QUIZCAT",
+      selectQuizCat :selectQuizCat
+    });
+  };
+}
+
+
 export const setGoogleToken= (googleId,tokenObj,tokenId,accessToken) =>{
   return async dispatch  => {
     dispatch({
