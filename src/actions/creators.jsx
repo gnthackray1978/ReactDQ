@@ -7,7 +7,7 @@ export const setSideDrawerLoaderVisible = visible =>{
     });
   };
 }
- 
+
 export const setLoginDetailsVisible = visible =>{
   return async dispatch  => {
     dispatch({
@@ -56,6 +56,15 @@ export const setQuizData = data =>{
     dispatch({
       type: "SET_QUIZDATA",
       quizData :data
+    });
+  };
+}
+
+export const setCatSelection = data =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_CATSELECTION",
+      catSelection :data
     });
   };
 }

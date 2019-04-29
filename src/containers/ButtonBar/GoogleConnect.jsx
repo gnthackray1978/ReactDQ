@@ -34,7 +34,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import {GoogleLib} from "../../scripts/GoogleLib.js";
 import {PropTypes,func} from 'prop-types';
-import {setProfileObj ,setGoogleApiActive,setQuizData,setPage,setGoogleToken,setLoginDetailsVisible } from "../../actions/creators.jsx";
+import {setProfileObj ,setGoogleApiActive,setQuizData,setPage,setGoogleToken,setLoginDetailsVisible,setCatSelection } from "../../actions/creators.jsx";
 import ImageButton from "./ImageButton.jsx";
 import GooglePopup from "./GooglePopup.jsx";
 import GoogleButton from "./GoogleButton.jsx";
@@ -103,6 +103,18 @@ class GoogleConnect extends Component {
 
           GoogleLib.AutoConnect(window.gapi, params, (res)=>{
             this.handleSigninSuccess(res);
+
+            GoogleLib.SearchForQuizFiles(window.gapi, this.props.ScriptId, (arg)=>{
+              this.props.setQuizData(arg);
+
+              var selection =[];
+
+              arg.forEach((arg)=>{
+                selection.push({quiz: arg.quiz , open:false});
+              });
+
+              this.props.setCatSelection(selection);
+            });
           });
       });
 
@@ -139,7 +151,7 @@ class GoogleConnect extends Component {
         e.preventDefault();
       }
       if (!this.props.GoogleApiLoggedIn) {
- 
+
         const { onSuccess, onFailure, prompt, responseType } = this.props;
 
         const params = {
@@ -261,6 +273,7 @@ const mapStateToProps = state => {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
     LogInDetailsVisible : state.LogInDetailsVisible,
     ClientId : state.GoogleApiParams.clientId,
+    ScriptId : state.GoogleApiParams.scriptId,
     Scope : state.GoogleApiParams.scopes,
     cookiePolicy: state.GoogleApiParams.cookie_policy,
     LoginHint: state.GoogleApiParams.login_hint,
@@ -303,6 +316,9 @@ const mapDispatchToProps = dispatch => {
     },
     setQuizData :data =>{
       dispatch(setQuizData(data))
+    },
+    setCatSelection :data =>{
+      dispatch(setCatSelection(data))
     },
 
   };

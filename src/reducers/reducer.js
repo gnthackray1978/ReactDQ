@@ -38,6 +38,12 @@ export default (state = {}, action) => {
       quizData : action.quizData,
     };
 
+    case "SET_CATSELECTION":
+      return {
+      ...state,
+      catSelection : [...action.catSelection],
+    };
+
 
 
   default:

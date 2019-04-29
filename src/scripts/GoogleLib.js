@@ -8,8 +8,28 @@ export class GoogleLib {
       window.gapi = gapi;
 
     if (params.responseType === 'code') {
-      params.access_type = 'offline'
+      params.access_type = 'offline';
     }
+
+
+
+   const loadPlus = ()=>{
+
+     window.gapi.client.load('plus', 'v1', function() {
+        var request = gapi.client.plus.people.get({
+          'userId': 'me'
+        });
+        request.execute(function(resp) {
+            console.log('loadPlus finished');
+
+        });
+      });
+
+   };
+
+   window.gapi.load('client', loadPlus);
+
+
 
     window.gapi.load('auth2', () => {
 
@@ -20,24 +40,20 @@ export class GoogleLib {
             scope:  params.scope
         });
 
+
+
         // Listen for sign-in state changes.
         auth2.isSignedIn.listen((res)=>{
-    //      console.log(res);
+          console.log('Listen for sign-in state changes.');
+          //  loadPlus();
         });
 
         // Listen for changes to current user.
         auth2.currentUser.listen((res)=>{
-      //    console.log(res);
-
           if (auth2.isSignedIn.get() == true) {
-            //this.handleSigninSuccess(res);
             response(res);
           }
-
         });
-
-      //  console.log('signed in: ' + auth2.isSignedIn.get());
-
         // Sign in the user if they are currently signed in.
         if (auth2.isSignedIn.get() == true) {
           auth2.signIn();
@@ -80,6 +96,74 @@ export class GoogleLib {
     }
   }
 
+  static RunScript(gapi, scriptId, req,callback){
+
+      if(!window.gapi)
+        window.gapi = gapi;
+
+      // Make the API request.
+      var op = window.gapi.client.request({
+          'root': 'https://script.googleapis.com',
+          'path': 'v1/scripts/' + scriptId + ':run',
+          'method': 'POST',
+          'body': req
+      });
+
+      op.execute(function(resp) {
+            if (resp.error && resp.error.status) {
+              // The API encountered a problem before the script
+              // started executing.
+              console.log('Error calling API:');
+              console.log(JSON.stringify(resp, null, 2));
+            } else if (resp.error) {
+              // The API executed, but the script returned an error.
+
+              // Extract the first (and only) set of error details.
+              // The values of this object are the script's 'errorMessage' and
+              // 'errorType', and an array of stack trace elements.
+              var error = resp.error.details[0];
+
+              if (error.scriptStackTraceElements) {
+                // There may not be a stacktrace if the script didn't start
+                // executing.
+
+                for (var i = 0; i < error.scriptStackTraceElements.length; i++) {
+                  var trace = error.scriptStackTraceElements[i];
+                  console.log(trace);
+                }
+              }
+
+              console.log(error);
+
+            } else {
+              callback(resp.response.result);
+
+            }
+          });
+
+
+  }
+
+  static SearchForQuizFiles(gapi, scriptId, ocallback){
+
+      var fileArray = [];
+
+      var request = {
+          'function': 'readQuizs'
+      };
+
+      GoogleLib.RunScript(gapi, scriptId, request, function(resp){
+          var idx =0;
+
+          while(idx < resp.length){
+              fileArray.push({ key: idx, quiz: resp[idx].quiz, url : resp[idx].quiz , cats : resp[idx].cats});
+              idx++;
+          }
+
+          ocallback(fileArray);
+      });
+
+  }
 
 }
 

@@ -18,10 +18,12 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import StarIcon from '@material-ui/icons/Star';
+
 import './SideDrawer.css';
 
 import { connect } from "react-redux";
-import { switchControlVisbility,reset,setSideDrawerLoaderVisible} from "../../actions/creators.jsx";
+import { switchControlVisbility,setQuizData,setSideDrawerLoaderVisible,setCatSelection} from "../../actions/creators.jsx";
 
 
 
@@ -60,6 +62,48 @@ const styles = theme => ({
 
 });
 
+
+function QuizItem(props) {
+
+  const handleClick = ()=>{
+    props.onClick(props.label);
+  };
+
+  handleClick.bind(this);
+
+  return (
+    <ListItem key = {props.id + props.label}  button onClick = {
+        ()=>{
+          handleClick();
+        }
+      } >
+      <ListItemIcon>
+        <StarIcon />
+      </ListItemIcon>
+       <ListItemText inset primary={props.label} />
+    </ListItem>
+  );
+}
+
+function QuizItemCats(props) {
+
+ if(props.names.length ==0 || !props.isVisible)
+  return(<div></div>);
+
+  return (
+    <List >
+      {props.names.map(function(item, index){
+                 return <ListItem button  key = {index} >
+                   <ListItemText  inset  primary={item} onClick = {()=>{
+                       props.onClick(item);
+                     }} />
+                 </ListItem>;
+      })}
+    </List>
+  );
+}
+
+
  class SideDrawer extends Component {
 
    constructor(props) {
@@ -67,6 +111,7 @@ const styles = theme => ({
        this.state = {
          modalShow: this.props.show ,
        };
+
    }
 
    componentDidMount() {
@@ -84,15 +129,44 @@ const styles = theme => ({
     }
    }
 
-
-
    clearLayout(event){
     this.props.activateLayout(false);
    }
 
    render() {
 
-    const { classes ,SideDrawerLoaderVisible} = this.props;
+     console.log("quiz data length: "+this.props.quizData.length);
+
+    const { classes ,SideDrawerLoaderVisible, catSelection} = this.props;
+
+    const setCatSelection = this.props.setCatSelection;
+
+    const quizClick = (key => {
+        console.log('selected quiz :' + key);
+
+        catSelection.forEach((selection)=>{
+         if(selection.quiz == key){
+           selection.open = !selection.open;
+           setCatSelection(catSelection);
+         }
+       });
+
+
+     });
+
+     const catClick = (key => {
+         console.log('selected cat :' + key);
+
+      });
+
+    const isVisible = (quizName)=>{
+
+      let currentQuiz = catSelection.filter(a=>a.quiz == quizName);
+
+      if (currentQuiz.length == 0) return false;
+
+      return currentQuiz[0].open;
+    };
 
     return (
       <div>
@@ -112,6 +186,13 @@ const styles = theme => ({
 
                </Toolbar>
              </AppBar>
+             <List>
+               {this.props.quizData.map(function(item, index){
+                    return <div><QuizItem label ={item.quiz}  id = {index} onClick = {quizClick}></QuizItem>
+                       <QuizItemCats names = {item.cats}  id = {index} onClick = {catClick}  isVisible ={isVisible(item.quiz)}></QuizItemCats> </div>;
+               })}
+             </List>
+
           </div>
         </Drawer>
       </div>
@@ -132,6 +213,8 @@ SideDrawer.propTypes = {
 const mapStateToProps = state => {
   return {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
+    quizData : state.quizData,
+    catSelection : state.catSelection
   };
 };
 
@@ -140,6 +223,12 @@ const mapDispatchToProps = dispatch => {
   return {
     setSideDrawerLoaderVisible :visible =>{
       dispatch(setSideDrawerLoaderVisible(visible))
+    },
+    setQuizData :data =>{
+      dispatch(setQuizData(data))
+    },
+    setCatSelection :data =>{
+      dispatch(setCatSelection(data))
     }
 
   };
