@@ -31,7 +31,7 @@ export default (state = {}, action) => {
         ...state,
         selectQuizName : action.selectQuizName,
     };
-    
+
     case "SET_QUIZCAT":
       return {
         ...state,
@@ -53,8 +53,15 @@ export default (state = {}, action) => {
     case "SET_QUIZDATA":
       return {
       ...state,
-      quizData : action.quizData,
+      quizData : [...action.quizData],
     };
+
+    case "SET_QUIZCURRENTDATA":
+      return {
+      ...state,
+      quizCurrentData : [...action.quizCurrentData],
+    };
+
 
     case "SET_CATSELECTION":
       return {

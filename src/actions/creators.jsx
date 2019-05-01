@@ -87,6 +87,17 @@ export const setQuizData = data =>{
   };
 }
 
+export const setQuizCurrentData = data =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_QUIZCURRENTDATA",
+      quizCurrentData :data
+    });
+  };
+}
+
+
+
 export const setCatSelection = data =>{
   return async dispatch  => {
     dispatch({

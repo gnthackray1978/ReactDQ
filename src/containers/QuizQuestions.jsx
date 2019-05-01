@@ -10,8 +10,10 @@ import Button from '@material-ui/core/Button';
 
 
 import { connect } from "react-redux";
-import {setInTest} from "../actions/creators.jsx";
-
+import {setInTest,setQuizCurrentData} from "../actions/creators.jsx";
+import {BasicQuestioner} from "../scripts/BasicQuestioner.js";
+import {GoogleLib} from "../scripts/GoogleLib.js";
+import QuestionList from "./Questions/QuestionList.jsx";
 
 
 const styles = theme => ({
@@ -35,38 +37,71 @@ class QuizQuestions extends Component {
      super(props);
    }
 
+   componentDidMount() {
+     console.log('componentDidMount: '  );
+    //init question object
+    const { selectQuizCat} = this.props;
+
+    const setQuizCurrentData = this.props.setQuizCurrentData;
+
+    //BasicQuestioner.
+    GoogleLib.ReadSheet(window.gapi, this.props.ScriptId,this.props.selectQuizName,  (arg)=>{
+        var tp = BasicQuestioner.CreateQuestionSet(arg, selectQuizCat);
+
+         setQuizCurrentData(tp.questionset);
+
+    });
+
+   }
+
+   componentDidUpdate(){
+      console.log('componentDidUpdate: '  );
+     // if (prevProps.inTest !== this.props.inTest) {
+     //   console.log('componentDidUpdate: ' + prevProps.inTest +this.props.inTest );
+     // }
+    }
 
 
-  render() {
 
-    const { classes } = this.props;
+   render() {
+
+    const { classes , selectQuizCat, selectQuizName} = this.props;
     const setInTest = this.props.setInTest;
     const inTest = this.props.inTest;
 
       return (
-        <Toolbar>
+        <div>
+          <Toolbar>
 
-          <Button color="inherit"  className={classes.start}  onClick={()=>{ setInTest(!inTest); }}>
-            <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-              End
-            </Typography>
-          </Button>
-
-
-          <Button color="inherit"  className={classes.grow}>
-            <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-              C# Test
-            </Typography>
-          </Button>
-
-          <Button color="inherit"  className={classes.start}>
-            <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-              Score : 90%
-            </Typography>
-          </Button>
+            <Button color="inherit"  className={classes.start}  onClick={()=>{
+                setInTest(!inTest);
+                //read the questions in ....
 
 
-        </Toolbar>
+              }}>
+              <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
+                End
+              </Typography>
+            </Button>
+
+
+            <Button color="inherit"  className={classes.grow}>
+              <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
+                {selectQuizName} {selectQuizCat}
+              </Typography>
+            </Button>
+
+            <Button color="inherit"  className={classes.start}>
+              <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
+                Score : 90%
+              </Typography>
+            </Button>
+
+
+          </Toolbar>
+
+          <QuestionList></QuestionList>
+        </div>
       );
     }
 }
@@ -76,7 +111,10 @@ const mapStateToProps = state => {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
     inTest : state.inTest,
     selectQuizCat : state.selectQuizCat,
-    selectQuizName : state.selectQuizName
+    selectQuizName : state.selectQuizName,
+    ClientId : state.GoogleApiParams.clientId,
+    ScriptId : state.GoogleApiParams.scriptId,
+    quizCurrentData :state.quizCurrentData
   };
 };
 
@@ -89,8 +127,11 @@ const mapDispatchToProps = dispatch => {
 
     setInTest :inTest =>{
       dispatch(setInTest(inTest))
-    }
+    },
 
+    setQuizCurrentData :data =>{
+      dispatch(setQuizCurrentData(data))
+    }
   };
 };
 

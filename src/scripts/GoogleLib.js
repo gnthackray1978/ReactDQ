@@ -96,6 +96,19 @@ export class GoogleLib {
     }
   }
 
+  static ReadSheet(gapi, scriptId,sheetUrl, ocallback){
+
+      var request = {
+          'function': 'GetSheet',
+          "parameters": [sheetUrl]
+      };
+
+      GoogleLib.RunScript(gapi, scriptId,request, function(resp){
+         ocallback(resp);
+      });
+  }
+
+
   static RunScript(gapi, scriptId, req,callback){
 
       if(!window.gapi)
