@@ -25,7 +25,7 @@ class App extends Component {
 
     let result;
 
-    if(this.props.inTest){
+    if(this.props.TestState.Active){
       result = <QuizQuestions/>
     }
     else {
@@ -41,7 +41,7 @@ class App extends Component {
 const mapStateToProps = state => {
   return {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    inTest :state.inTest
+    TestState :state.TestState
   };
 };
 

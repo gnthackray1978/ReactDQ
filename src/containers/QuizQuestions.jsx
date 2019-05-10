@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 
 
 import { connect } from "react-redux";
-import {setInTest,setQuizCurrentData} from "../actions/creators.jsx";
+import {setTestState,setQuizQuestionData, setAnswerData} from "../actions/creators.jsx";
 import {BasicQuestioner} from "../scripts/BasicQuestioner.js";
 import {GoogleLib} from "../scripts/GoogleLib.js";
 import QuestionList from "./Questions/QuestionList.jsx";
@@ -42,13 +42,17 @@ class QuizQuestions extends Component {
     //init question object
     const { selectQuizCat} = this.props;
 
-    const setQuizCurrentData = this.props.setQuizCurrentData;
+    const setQuizQuestionData = this.props.setQuizQuestionData;
 
     //BasicQuestioner.
     GoogleLib.ReadSheet(window.gapi, this.props.ScriptId,this.props.selectQuizName,  (arg)=>{
-        var tp = BasicQuestioner.CreateQuestionSet(arg, selectQuizCat);
+      //  var tp = BasicQuestioner.CreateQuestionSet(arg, selectQuizCat);
 
-         setQuizCurrentData(tp.questionset);
+         var tp2 = BasicQuestioner.CreateQuestionSetN(arg, selectQuizCat);
+
+         setQuizQuestionData(tp2.questions);
+
+         setAnswerData(tp2.answers);
 
     });
 
@@ -56,9 +60,7 @@ class QuizQuestions extends Component {
 
    componentDidUpdate(){
       console.log('componentDidUpdate: '  );
-     // if (prevProps.inTest !== this.props.inTest) {
-     //   console.log('componentDidUpdate: ' + prevProps.inTest +this.props.inTest );
-     // }
+
     }
 
 
@@ -66,15 +68,25 @@ class QuizQuestions extends Component {
    render() {
 
     const { classes , selectQuizCat, selectQuizName} = this.props;
-    const setInTest = this.props.setInTest;
-    const inTest = this.props.inTest;
+    const setTestState = this.props.setTestState;
+    const TestState = this.props.TestState;
+
+    console.log('state changed');
 
       return (
         <div>
           <Toolbar>
 
             <Button color="inherit"  className={classes.start}  onClick={()=>{
-                setInTest(!inTest);
+
+              let date = new Date();
+
+
+              let newId = TestState.Id;
+
+              setTestState(newId, false, +date);
+
+
                 //read the questions in ....
 
 
@@ -109,12 +121,13 @@ class QuizQuestions extends Component {
 const mapStateToProps = state => {
   return {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    inTest : state.inTest,
+    TestState : state.TestState,
     selectQuizCat : state.selectQuizCat,
     selectQuizName : state.selectQuizName,
     ClientId : state.GoogleApiParams.clientId,
     ScriptId : state.GoogleApiParams.scriptId,
-    quizCurrentData :state.quizCurrentData
+    quizQuestions :state.quizQuestions,
+    answerData :state.answerData
   };
 };
 
@@ -125,12 +138,16 @@ const mapDispatchToProps = dispatch => {
       dispatch(setSideDrawerLoaderVisible(visible))
     },
 
-    setInTest :inTest =>{
-      dispatch(setInTest(inTest))
+    setTestState :(id,active,timestamp) =>{
+      dispatch(setTestState(id,active,timestamp))
     },
 
-    setQuizCurrentData :data =>{
-      dispatch(setQuizCurrentData(data))
+    setQuizQuestionData :data =>{
+      dispatch(setQuizQuestionData(data))
+    },
+
+    setAnswerData :data =>{
+      dispatch(setAnswerData(data))
     }
   };
 };

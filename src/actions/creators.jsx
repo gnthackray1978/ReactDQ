@@ -27,14 +27,21 @@ export const setProfileObj= profileObj =>{
   };
 }
 
-export const setInTest= inTest =>{
+export const setTestState= (id,active,  timestamp) =>{
   return async dispatch  => {
     dispatch({
-      type: "SET_INTEST",
-      inTest :inTest
+      type: "SET_TESTSTATE",
+      testState : {
+        Id :id,
+        TimeStamp : timestamp,
+        Active :active
+      }
     });
   };
 }
+
+
+
 
 export const setQuizName= selectQuizName =>{
   return async dispatch  => {
@@ -78,23 +85,35 @@ export const setGoogleApiActive = isActive =>{
   };
 }
 
-export const setQuizData = data =>{
+export const setQuizMetaData = data =>{
   return async dispatch  => {
     dispatch({
-      type: "SET_QUIZDATA",
-      quizData :data
+      type: "SET_QUIZMETADATA",
+      quizMetaData :data
     });
   };
 }
 
-export const setQuizCurrentData = data =>{
+
+
+export const setQuizQuestionData = data =>{
   return async dispatch  => {
     dispatch({
-      type: "SET_QUIZCURRENTDATA",
-      quizCurrentData :data
+      type: "SET_QUIZQUESTIONDATA",
+      quizQuestions :data
     });
   };
 }
+
+export const setAnswerData = data =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_ANSWERDATA",
+      answerData :data
+    });
+  };
+}
+
 
 
 

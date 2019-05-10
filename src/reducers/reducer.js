@@ -38,10 +38,10 @@ export default (state = {}, action) => {
         selectQuizCat : action.selectQuizCat,
     };
 
-    case "SET_INTEST":
+    case "SET_TESTSTATE":
       return {
         ...state,
-        inTest : action.inTest,
+        TestState : action.testState
     };
 
     case "SET_GOOGLEAPIACTIVE":
@@ -50,18 +50,23 @@ export default (state = {}, action) => {
       googleApiLoggedIn : action.googleApiLoggedIn,
     };
 
-    case "SET_QUIZDATA":
+    case "SET_QUIZMETADATA":
       return {
       ...state,
-      quizData : [...action.quizData],
+      quizMetaData : [...action.quizMetaData],
     };
 
-    case "SET_QUIZCURRENTDATA":
+    case "SET_QUIZQUESTIONDATA":
       return {
       ...state,
-      quizCurrentData : [...action.quizCurrentData],
+      quizQuestions : action.quizQuestions,
     };
 
+    case "SET_ANSWERDATA":
+      return {
+      ...state,
+      answerData : action.answerData,
+    };
 
     case "SET_CATSELECTION":
       return {

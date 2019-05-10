@@ -33,7 +33,7 @@ class QuizEntrance extends Component {
 const mapStateToProps = state => {
   return {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    inTest : state.inTest,
+    TestState : state.TestState,
     selectQuizCat : state.selectQuizCat,
     selectQuizName : state.selectQuizName
   };
@@ -45,8 +45,8 @@ const mapDispatchToProps = dispatch => {
     setSideDrawerLoaderVisible :visible =>{
       dispatch(setSideDrawerLoaderVisible(visible))
     },
-    setInTest :inTest =>{
-      dispatch(setInTest(inTest))
+    setTestState :(id,active,timestamp) =>{
+      dispatch(setTestState(id,active,timestamp))
     }
 
   };

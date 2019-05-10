@@ -222,7 +222,7 @@ const mapStateToProps = state => {
     theme: state.GoogleApiParams.theme,
     jsSrc: state.GoogleApiParams.jsSrc,
 
-    QuizData : state.quizData,
+    QuizMetaData : state.quizMetaData,
     DisplayName : state.displayName,
     GoogleApiLoggedIn : state.googleApiLoggedIn,
     ProfileObj : state.profileObj

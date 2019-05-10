@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {setInTest,setQuizCurrentData} from "../../actions/creators.jsx";
+import {setTestState,setQuizQuestionData} from "../../actions/creators.jsx";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Grid';
@@ -50,13 +50,13 @@ class QuestionList extends React.Component {
 
   render() {
 
-    const { classes,quizCurrentData } = this.props;
+    const { classes,quizQuestions } = this.props;
 
 
     return (
       <Grid container className={classes.root} spacing={16}>
-         {quizCurrentData.map(value => (
-              <SingleAnswer classes = {classes} value = {value.question}></SingleAnswer>
+         {quizQuestions.index.map(value => (
+              <SingleAnswer classes = {classes} value = { quizQuestions[value]}></SingleAnswer>
             ))}
 
       </Grid>
@@ -71,12 +71,12 @@ QuestionList.propTypes = {
 const mapStateToProps = state => {
   return {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    inTest : state.inTest,
+    TestState : state.TestState,
     selectQuizCat : state.selectQuizCat,
     selectQuizName : state.selectQuizName,
     ClientId : state.GoogleApiParams.clientId,
     ScriptId : state.GoogleApiParams.scriptId,
-    quizCurrentData :state.quizCurrentData
+    quizQuestions :state.quizQuestions
   };
 };
 
@@ -87,13 +87,15 @@ const mapDispatchToProps = dispatch => {
       dispatch(setSideDrawerLoaderVisible(visible))
     },
 
-    setInTest :inTest =>{
-      dispatch(setInTest(inTest))
+    setTestState :(id,active,timestamp) =>{
+      dispatch(setTestState(id,active,timestamp))
     },
 
-    setQuizCurrentData :data =>{
-      dispatch(setQuizCurrentData(data))
+    setQuizQuestionData :data =>{
+      dispatch(setQuizQuestionData(data))
     }
+
+
   };
 };
 

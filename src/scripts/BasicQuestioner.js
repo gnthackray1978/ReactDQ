@@ -40,6 +40,109 @@ export class BasicQuestioner {
       return questionset[currentQuestionIdx];
    }
 
+   static GetQuestionType(questionTypeStr){
+     let questionType;
+
+     switch (questionTypeStr) {
+         case 'MA':
+             questionType = 3; // multi answer
+             break;
+         case 'MS':
+             questionType = 4; // multi ordered answer
+             break;
+         case 'MS':
+             questionType = 1; // multi ordered answer
+             break;
+         default:
+             questionType = 0; //question is multiple choice
+             break;
+     }
+
+     return questionType;
+   }
+
+   static CreateQuestionSetN(rawCSVData, selectedcategory) {
+       console.log('creating question set');
+
+       var csvData = rawCSVData;
+
+       var questionColIdx = 3;
+       var multiAnswerStartIdx = 5;
+       var idx = 1;
+
+       var questions = {
+         index : []
+       };
+
+       var answers ={
+         index :[]
+       };
+
+
+       let answerIdx = 0;
+
+       while (idx < csvData.length) {
+               var cols = csvData[idx];
+
+               if (cols[2] == selectedcategory) {
+
+                   var questionTypeStr = cols[4];
+
+                   let questionType = BasicQuestioner.GetQuestionType(questionTypeStr);
+
+                   // questions with multiple answers
+                   if (questionType != 0) {
+
+                       var tp = cols.slice(multiAnswerStartIdx).filter(line => line.trim() !== "").map(m=>{
+                         answers[String(answerIdx)] = {
+                           id: String(answerIdx),
+                           answer : m
+                         };
+                         answers.index.push(String(answerIdx));
+                         answerIdx++;
+                         return String(answerIdx);
+                       });
+
+                       questions[String(idx)] = {
+                         id: String(idx),
+                         question : cols[questionColIdx],
+                         answer : tp,
+                         type: questionType
+                       };
+
+                       questions.index.push(String(idx));
+
+                   } else {
+
+                     answers[String(answerIdx)] = {
+                       id: String(answerIdx),
+                       answer : cols[multiAnswerStartIdx]
+                     };
+
+                     answers.index.push(String(answerIdx));
+
+                     questions[String(idx)] = {
+                       id: String(idx),
+                       question : cols[questionColIdx],
+                       answer : [String(answerIdx)],
+                       type: questionType
+                     };
+                     questions.index.push(String(String(idx)));
+
+                     answerIdx++;
+                   }
+               }
+
+
+               idx++;
+           }
+
+       return {questions : questions,
+       answers :answers};
+   }
+
+
+
    static CreateQuestionSet(rawCSVData, selectedcategory) {
        console.log('creating question set');
 

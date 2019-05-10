@@ -7,7 +7,7 @@ import Paper from '@material-ui/core/Paper';
 import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
 import QuestionFooter from "./QuestionFooter.jsx";
-
+import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
 
@@ -26,10 +26,26 @@ const styles = theme => ({
     justifyContent: "flex-end",
     height: 30,
     width: 220
+  },
+
+  textField: {
+   marginLeft: 0,
+   marginRight: 0,
   }
 });
 
 class SingleAnswer extends React.Component {
+
+  state = {
+     name: '',
+     answerVisible : false
+   };
+
+   handleChange = name => event => {
+      this.setState({
+        [name]: event.target.value,
+      });
+    };
 
   constructor(props) {
     super(props);
@@ -47,9 +63,19 @@ class SingleAnswer extends React.Component {
           <Grid item xs={3} >
           90%
           </Grid>
-          <Grid item xs={12}>{value}</Grid>
+          <Grid item xs={12}>{value.question}</Grid>
 
-          <Grid item xs={12} className={classes.questionContent} />
+          <Grid item xs={12} className={classes.questionContent} >
+            <TextField
+                      id="outlined-name"
+                      label="Answer here"
+                      className={classes.textField}
+                      value={this.state.name}
+                      onChange={this.handleChange('name')}
+                      margin="normal"
+                      variant="outlined"
+                    />
+          </Grid>
 
           <Grid item xs={12}>
             <QuestionFooter classes={classes} />

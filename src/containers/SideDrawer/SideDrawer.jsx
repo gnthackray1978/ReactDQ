@@ -23,7 +23,7 @@ import StarIcon from '@material-ui/icons/Star';
 import './SideDrawer.css';
 
 import { connect } from "react-redux";
-import { switchControlVisbility,setQuizData,setSideDrawerLoaderVisible,setCatSelection,setQuizName,setQuizCat} from "../../actions/creators.jsx";
+import { switchControlVisbility,setQuizMetaData,setSideDrawerLoaderVisible,setCatSelection,setQuizName,setQuizCat} from "../../actions/creators.jsx";
 
 
 
@@ -135,7 +135,7 @@ function QuizItemCats(props) {
 
    render() {
 
-     console.log("quiz data length: "+this.props.quizData.length);
+  //   console.log("quiz data length: "+this.props.quizData.length);
 
     const { classes ,SideDrawerLoaderVisible, catSelection} = this.props;
 
@@ -191,7 +191,7 @@ function QuizItemCats(props) {
                </Toolbar>
              </AppBar>
              <List>
-               {this.props.quizData.map(function(item, index){
+               {this.props.quizMetaData.map(function(item, index){
                     return <div><QuizItem label ={item.quiz}  id = {index} onClick = {quizClick}></QuizItem>
                        <QuizItemCats names = {item.cats}  id = {index} onClick = {catClick}  isVisible ={isVisible(item.quiz)}></QuizItemCats> </div>;
                })}
@@ -217,7 +217,7 @@ SideDrawer.propTypes = {
 const mapStateToProps = state => {
   return {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    quizData : state.quizData,
+    quizMetaData : state.quizMetaData,
     catSelection : state.catSelection,
     selectQuizCat : state.selectQuizCat,
     selectQuizName : state.selectQuizName,
@@ -230,8 +230,8 @@ const mapDispatchToProps = dispatch => {
     setSideDrawerLoaderVisible :visible =>{
       dispatch(setSideDrawerLoaderVisible(visible))
     },
-    setQuizData :data =>{
-      dispatch(setQuizData(data))
+    setQuizMetaData :data =>{
+      dispatch(setQuizMetaData(data))
     },
     setCatSelection :data =>{
       dispatch(setCatSelection(data))

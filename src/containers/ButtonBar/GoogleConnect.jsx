@@ -34,7 +34,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import {GoogleLib} from "../../scripts/GoogleLib.js";
 import {PropTypes,func} from 'prop-types';
-import {setProfileObj ,setGoogleApiActive,setQuizData,setPage,setGoogleToken,setLoginDetailsVisible,setCatSelection } from "../../actions/creators.jsx";
+import {setProfileObj ,setGoogleApiActive,setQuizMetaData,setPage,setGoogleToken,setLoginDetailsVisible,setCatSelection } from "../../actions/creators.jsx";
 import ImageButton from "./ImageButton.jsx";
 import GooglePopup from "./GooglePopup.jsx";
 import GoogleButton from "./GoogleButton.jsx";
@@ -105,7 +105,7 @@ class GoogleConnect extends Component {
             this.handleSigninSuccess(res);
 
             GoogleLib.SearchForQuizFiles(window.gapi, this.props.ScriptId, (arg)=>{
-              this.props.setQuizData(arg);
+              this.props.setQuizMetaData(arg);
 
               var selection =[];
 
@@ -174,7 +174,7 @@ class GoogleConnect extends Component {
         this.props.setProfileObj();
         this.props.setGoogleToken(undefined,undefined,undefined,undefined);
         this.props.setGoogleApiActive(false);
-        this.props.setQuizData(undefined);
+        this.props.setQuizMetaData(undefined);
         this.props.onLogoutSuccess();
       });
 
@@ -289,7 +289,7 @@ const mapStateToProps = state => {
     theme: state.GoogleApiParams.theme,
     jsSrc: state.GoogleApiParams.jsSrc,
 
-    QuizData : state.quizData,
+    QuizMetaData : state.quizMetaData,
     DisplayName : state.displayName,
     GoogleApiLoggedIn : state.googleApiLoggedIn,
     ProfileObj : state.profileObj
@@ -314,8 +314,8 @@ const mapDispatchToProps = dispatch => {
     setGoogleApiActive :isActive =>{
       dispatch(setGoogleApiActive(isActive))
     },
-    setQuizData :data =>{
-      dispatch(setQuizData(data))
+    setQuizMetaData :data =>{
+      dispatch(setQuizMetaData(data))
     },
     setCatSelection :data =>{
       dispatch(setCatSelection(data))

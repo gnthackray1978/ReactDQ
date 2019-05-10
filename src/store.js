@@ -38,8 +38,18 @@ const store = createStore(
       tokenId :undefined,
       accessToken :undefined,
     },
-    quizData : [],
-    quizCurrentData : [],
+
+
+    quizMetaData : [],
+
+    answerData :{
+      index :[]
+    },
+
+    quizQuestions : {
+      index :[]
+    },
+
 
     catSelection :[],
 
@@ -48,7 +58,12 @@ const store = createStore(
 
     profileObj : '',
     googleApiLoggedIn : false,
-    inTest :false
+
+    TestState : {
+      Id :0,
+      Active : false,
+      TimeStamp : 0 //timestamp
+    }
 
   },
   composeEnhancers(
