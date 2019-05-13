@@ -62,7 +62,7 @@ class TopButtons extends Component {
 
   render() {
 
-    const { classes,selectQuizName,selectQuizCat,TestState } = this.props;
+    const { classes,selectedQuiz,selectQuizCat,TestState } = this.props;
 
     let buttons;
 
@@ -98,7 +98,7 @@ class TopButtons extends Component {
 
           <Button color="inherit"  className={classes.grow}>
             <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-              {selectQuizName + ' ' + selectQuizCat}
+              {selectedQuiz.quiz + ' ' + selectQuizCat}
             </Typography>
           </Button>
 
@@ -119,7 +119,7 @@ const mapStateToProps = state => {
   return {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
     TestState : state.TestState,
-    selectQuizName :state.selectQuizName,
+    selectedQuiz :state.selectedQuiz,
     selectQuizCat : state.selectQuizCat
 
   };

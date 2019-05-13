@@ -8,12 +8,14 @@
   "main": "main.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development parcel main.html ",
-    "build": "cross-env NODE_ENV=production parcel build main.html --no-minify --public-url /"
+    "build": "cross-env NODE_ENV=production parcel build main.html --no-minify --public-url /",
+    "test": "jest --watchAll"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.0.0",
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
     "autoprefixer": "^7.2.1",
@@ -25,7 +27,6 @@
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.5",
     "react-dom": "^16.8.6",
-   
     "react-redux": "^6.0.1",
     "react-router-dom": "^4.3.1",
     "recompose": "^0.30.0",
@@ -50,12 +51,19 @@
     "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-class-properties": "^7.3.0",
     "@babel/plugin-transform-regenerator": "^7.3.4",
-    "@babel/plugin-transform-runtime": "^7.3.4",
+    "@babel/plugin-transform-runtime": "^7.0.0",
     "@babel/preset-env": "^7.3.4",
+    "@babel/runtime": "^7.0.0",
     "autoprefixer": "^7.2.6",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-runtime": "^6.26.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "cross-env": "^5.1.1",
+    "jest": "^22.4.4",
     "postcss-modules": "^1.4.1"
+  },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost:1234/"
   }
 }

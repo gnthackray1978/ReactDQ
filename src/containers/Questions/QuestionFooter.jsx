@@ -38,7 +38,7 @@ const styles = theme => ({
   questionFooter: {
     justifyContent: "flex-end",
     height: 30,
-    width: 200
+    width: 300
   }
 });
 
@@ -55,17 +55,17 @@ class QuestionFooter extends React.Component {
     return (
       <Grid container className={classes.questionFooter}>
         <Grid item>
-          <IconButton className={classes.button} aria-label="Add an alarm">
+          <IconButton className={classes.button}  onClick={()=>{ this.props.buttonClicked('visibility'); }}>
             <Icon>visibility</Icon>
           </IconButton>
         </Grid>
         <Grid item>
-          <IconButton className={classes.button} aria-label="Add an alarm">
+          <IconButton className={classes.button} onClick={()=>{ this.props.buttonClicked('undo'); }}>
             <Icon>undo</Icon>
           </IconButton>
         </Grid>
         <Grid item>
-          <IconButton className={classes.button} aria-label="Finished">
+          <IconButton className={classes.button} onClick={()=>{ this.props.buttonClicked('completed'); }}>
             <Icon>done</Icon>
           </IconButton>
         </Grid>

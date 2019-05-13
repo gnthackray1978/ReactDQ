@@ -29,7 +29,13 @@ export default (state = {}, action) => {
     case "SET_QUIZNAME":
       return {
         ...state,
-        selectQuizName : action.selectQuizName,
+        selectedQuiz : action.selectedQuiz,
+    };
+
+    case "SET_QUESTIONVISIBILITY":
+      return {
+        ...state,
+        questionVisibility : action.questionVisibility,
     };
 
     case "SET_QUIZCAT":
@@ -66,6 +72,22 @@ export default (state = {}, action) => {
       return {
       ...state,
       answerData : action.answerData,
+    };
+
+    // export const setCombinedQuizData = data =>{
+    //   return async dispatch  => {
+    //     dispatch({
+    //       type: "SET_COMBINEDDATA",
+    //       data :data
+    //     });
+    //   };
+    // }
+
+    case "SET_COMBINEDDATA":
+      return {
+      ...state,
+      answerData : {...action.data.answers},
+      quizQuestions : {...action.data.questions},
     };
 
     case "SET_CATSELECTION":

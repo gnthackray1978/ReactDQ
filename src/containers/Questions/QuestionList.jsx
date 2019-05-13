@@ -26,21 +26,16 @@ const styles = theme => ({
 
   answerContainer: {
 
-    width: 220,
+    width: 320,
     margin :5,
     padding: 10
   },
   questionContent: {
     height: 110,
-    width: 220
+    width: 320
   },
   button: {},
-
-  questionFooter: {
-    justifyContent: "flex-end",
-    height: 30,
-    width: 220
-  }
+ 
 });
 
 
@@ -56,7 +51,7 @@ class QuestionList extends React.Component {
     return (
       <Grid container className={classes.root} spacing={16}>
          {quizQuestions.index.map(value => (
-              <SingleAnswer classes = {classes} value = { quizQuestions[value]}></SingleAnswer>
+              <SingleAnswer value = { quizQuestions[value]}></SingleAnswer>
             ))}
 
       </Grid>
@@ -73,7 +68,7 @@ const mapStateToProps = state => {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
     TestState : state.TestState,
     selectQuizCat : state.selectQuizCat,
-    selectQuizName : state.selectQuizName,
+    selectedQuiz : state.selectedQuiz,
     ClientId : state.GoogleApiParams.clientId,
     ScriptId : state.GoogleApiParams.scriptId,
     quizQuestions :state.quizQuestions

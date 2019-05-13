@@ -17,6 +17,20 @@ export const setLoginDetailsVisible = visible =>{
   };
 }
 
+// case "SET_QUESTIONVISIBILITY":
+//   return {
+//     ...state,
+//     questionVisibility : action.questionVisibility,
+// };
+
+export const setQuestionVisibility= data =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_QUESTIONVISIBILITY",
+      questionVisibility :{...data}
+    });
+  };
+}
 
 export const setProfileObj= profileObj =>{
   return async dispatch  => {
@@ -43,11 +57,11 @@ export const setTestState= (id,active,  timestamp) =>{
 
 
 
-export const setQuizName= selectQuizName =>{
+export const setQuizName= selectedQuiz =>{
   return async dispatch  => {
     dispatch({
       type: "SET_QUIZNAME",
-      selectQuizName : selectQuizName
+      selectedQuiz : selectedQuiz
     });
   };
 }
@@ -114,7 +128,14 @@ export const setAnswerData = data =>{
   };
 }
 
-
+export const setCombinedQuizData = data =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_COMBINEDDATA",
+      data : data
+    });
+  };
+}
 
 
 export const setCatSelection = data =>{

@@ -50,10 +50,14 @@ const store = createStore(
       index :[]
     },
 
+    questionVisibility :{
+
+    },
 
     catSelection :[],
 
-    selectQuizName : '',
+    selectedQuiz : {},
+
     selectQuizCat : '',
 
     profileObj : '',

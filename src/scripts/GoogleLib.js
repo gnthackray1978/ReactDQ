@@ -159,6 +159,19 @@ export class GoogleLib {
 
   static SearchForQuizFiles(gapi, scriptId, ocallback){
 
+
+    const hasher = function(str) {
+      var hash = 0, i, chr;
+      if (str.length === 0) return hash;
+      for (i = 0; i < str.length; i++) {
+        chr   = str.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+      }
+      return hash;
+    };
+
+
       var fileArray = [];
 
       var request = {
@@ -169,7 +182,7 @@ export class GoogleLib {
           var idx =0;
 
           while(idx < resp.length){
-              fileArray.push({ key: idx, quiz: resp[idx].quiz, url : resp[idx].quiz , cats : resp[idx].cats});
+              fileArray.push({ key: hasher(resp[idx].quiz), quiz: resp[idx].quiz, url : resp[idx].quiz , cats : resp[idx].cats});
               idx++;
           }
 

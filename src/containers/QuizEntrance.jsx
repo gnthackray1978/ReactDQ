@@ -35,7 +35,7 @@ const mapStateToProps = state => {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
     TestState : state.TestState,
     selectQuizCat : state.selectQuizCat,
-    selectQuizName : state.selectQuizName
+    selectedQuiz : state.selectedQuiz
   };
 };
 

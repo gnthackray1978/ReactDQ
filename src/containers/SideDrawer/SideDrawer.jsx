@@ -66,7 +66,12 @@ const styles = theme => ({
 function QuizItem(props) {
 
   const handleClick = ()=>{
-    props.onClick(props.label);
+    let param = {
+      key : props.id,
+      quiz : props.label
+    };
+
+    props.onClick(param);
   };
 
   handleClick.bind(this);
@@ -145,10 +150,10 @@ function QuizItemCats(props) {
 
 
     const quizClick = (key => {
-        console.log('selected quiz :' + key);
+        console.log('selected quiz :' + key.quiz + ' ' + key.key);
         setQuizName(key);
         catSelection.forEach((selection)=>{
-         if(selection.quiz == key){
+         if(selection.quiz == key.key){
            selection.open = !selection.open;
            setCatSelection(catSelection);
          }
@@ -192,8 +197,8 @@ function QuizItemCats(props) {
              </AppBar>
              <List>
                {this.props.quizMetaData.map(function(item, index){
-                    return <div><QuizItem label ={item.quiz}  id = {index} onClick = {quizClick}></QuizItem>
-                       <QuizItemCats names = {item.cats}  id = {index} onClick = {catClick}  isVisible ={isVisible(item.quiz)}></QuizItemCats> </div>;
+                    return <div><QuizItem label ={item.quiz}  id = {item.key} onClick = {quizClick}></QuizItem>
+                       <QuizItemCats names = {item.cats}  id = {index} onClick = {catClick}  isVisible ={isVisible(item.key)}></QuizItemCats> </div>;
                })}
              </List>
 
@@ -220,7 +225,7 @@ const mapStateToProps = state => {
     quizMetaData : state.quizMetaData,
     catSelection : state.catSelection,
     selectQuizCat : state.selectQuizCat,
-    selectQuizName : state.selectQuizName,
+    selectedQuiz : state.selectedQuiz,
   };
 };
 
@@ -236,8 +241,8 @@ const mapDispatchToProps = dispatch => {
     setCatSelection :data =>{
       dispatch(setCatSelection(data))
     },
-    setQuizName :selectQuizName =>{
-      dispatch(setQuizName(selectQuizName))
+    setQuizName :selectedQuiz =>{
+      dispatch(setQuizName(selectedQuiz))
     },
     setQuizCat :selectQuizCat =>{
       dispatch(setQuizCat(selectQuizCat))

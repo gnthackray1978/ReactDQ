@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 
 
 import { connect } from "react-redux";
-import {setTestState,setQuizQuestionData, setAnswerData} from "../actions/creators.jsx";
+import {setTestState,setQuizQuestionData, setAnswerData, setCombinedQuizData} from "../actions/creators.jsx";
 import {BasicQuestioner} from "../scripts/BasicQuestioner.js";
 import {GoogleLib} from "../scripts/GoogleLib.js";
 import QuestionList from "./Questions/QuestionList.jsx";
@@ -43,16 +43,15 @@ class QuizQuestions extends Component {
     const { selectQuizCat} = this.props;
 
     const setQuizQuestionData = this.props.setQuizQuestionData;
+    const setCombinedQuizData = this.props.setCombinedQuizData;
 
     //BasicQuestioner.
-    GoogleLib.ReadSheet(window.gapi, this.props.ScriptId,this.props.selectQuizName,  (arg)=>{
+    GoogleLib.ReadSheet(window.gapi, this.props.ScriptId,this.props.selectedQuiz.quiz,  (arg)=>{
       //  var tp = BasicQuestioner.CreateQuestionSet(arg, selectQuizCat);
 
          var tp2 = BasicQuestioner.CreateQuestionSetN(arg, selectQuizCat);
 
-         setQuizQuestionData(tp2.questions);
-
-         setAnswerData(tp2.answers);
+         setCombinedQuizData(tp2);
 
     });
 
@@ -67,7 +66,7 @@ class QuizQuestions extends Component {
 
    render() {
 
-    const { classes , selectQuizCat, selectQuizName} = this.props;
+    const { classes , selectQuizCat, selectedQuiz} = this.props;
     const setTestState = this.props.setTestState;
     const TestState = this.props.TestState;
 
@@ -99,7 +98,7 @@ class QuizQuestions extends Component {
 
             <Button color="inherit"  className={classes.grow}>
               <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-                {selectQuizName} {selectQuizCat}
+                {selectedQuiz.quiz} {selectQuizCat}
               </Typography>
             </Button>
 
@@ -123,7 +122,7 @@ const mapStateToProps = state => {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
     TestState : state.TestState,
     selectQuizCat : state.selectQuizCat,
-    selectQuizName : state.selectQuizName,
+    selectedQuiz : state.selectedQuiz,
     ClientId : state.GoogleApiParams.clientId,
     ScriptId : state.GoogleApiParams.scriptId,
     quizQuestions :state.quizQuestions,
@@ -148,7 +147,11 @@ const mapDispatchToProps = dispatch => {
 
     setAnswerData :data =>{
       dispatch(setAnswerData(data))
-    }
+    },
+
+    setCombinedQuizData :data =>{
+      dispatch(setCombinedQuizData(data))
+    },
   };
 };
 

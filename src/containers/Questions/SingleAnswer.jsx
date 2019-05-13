@@ -9,28 +9,35 @@ import IconButton from "@material-ui/core/IconButton";
 import QuestionFooter from "./QuestionFooter.jsx";
 import TextField from '@material-ui/core/TextField';
 
+import { connect } from "react-redux";
+
+import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility} from "../../actions/creators.jsx";
+
+
+
 const styles = theme => ({
 
   answerContainer: {
-    width: 220,
+    width: 320,
     margin :5,
     padding: 10
   },
 
   questionContent: {
     height: 110,
-    width: 220
+    width: 320
   },
 
   questionFooter: {
     justifyContent: "flex-end",
     height: 30,
-    width: 220
+    width: 320
   },
 
   textField: {
    marginLeft: 0,
    marginRight: 0,
+   width: 300
   }
 });
 
@@ -51,8 +58,63 @@ class SingleAnswer extends React.Component {
     super(props);
   }
 
+  handleInput = (e) => {
+    console.log(e);
+    // record in the store question id
+    // and whether or not it's visible.
+
+    if(this.props.selectedQuiz)
+      console.log(e + ' clicked: ' +this.props.selectedQuiz.key + ' ' + this.props.selectQuizCat + ' ' + this.props.value.id);
+
+    let questionKey = this.props.value.id + '-' + this.props.selectedQuiz.key + '-'+this.props.selectQuizCat;
+
+    let questionVisibility = this.props.questionVisibility;
+
+
+    if(!questionVisibility.hasOwnProperty(questionKey)){
+      questionVisibility[questionKey] = {
+        visible : false
+      };
+    }
+    else{
+      questionVisibility[questionKey].visible = !questionVisibility[questionKey].visible;
+    }
+
+
+    this.props.setQuestionVisibility(questionVisibility);
+
+  }
+
   render() {
-    const { classes,value } = this.props;
+    const { classes,value,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,answerData } = this.props;
+
+    let questionKey = value.id + '-' + selectedQuiz.key + '-'+selectQuizCat;
+
+    let answerVisible =false;
+
+    if(questionVisibility.hasOwnProperty(questionKey)){
+       answerVisible =questionVisibility[questionKey].visible
+    }
+
+    let questionBlock = <TextField
+              id="outlined-name"
+              label="Answer here"
+              className={classes.textField}
+              value={this.state.name}
+              onChange={this.handleChange('name')}
+              margin="normal"
+              variant="outlined"
+            />
+
+    let tpAnswer = answerData[value.answer[0]].answer;
+    let answerBlock = <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
+                         {tpAnswer}
+                       </Typography>
+
+    let result;
+
+    if(!answerVisible) result = questionBlock;
+    if(answerVisible) result = answerBlock;
 
     return (
      <Paper className={classes.answerContainer}>
@@ -66,19 +128,11 @@ class SingleAnswer extends React.Component {
           <Grid item xs={12}>{value.question}</Grid>
 
           <Grid item xs={12} className={classes.questionContent} >
-            <TextField
-                      id="outlined-name"
-                      label="Answer here"
-                      className={classes.textField}
-                      value={this.state.name}
-                      onChange={this.handleChange('name')}
-                      margin="normal"
-                      variant="outlined"
-                    />
+            {result}
           </Grid>
 
           <Grid item xs={12}>
-            <QuestionFooter classes={classes} />
+            <QuestionFooter  buttonClicked = { this.handleInput }/>
           </Grid>
         </Grid>
       </Paper>
@@ -86,4 +140,25 @@ class SingleAnswer extends React.Component {
   }
 }
 
-export default withStyles(styles)(SingleAnswer);
+const mapStateToProps = state => {
+  return {
+
+    quizMetaData : state.quizMetaData,
+    catSelection : state.catSelection,
+    selectQuizCat : state.selectQuizCat,
+    selectedQuiz : state.selectedQuiz,
+    questionVisibility :state.questionVisibility,
+    answerData : state.answerData
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+
+  return {
+    setQuestionVisibility :data =>{
+      dispatch(setQuestionVisibility(data))
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SingleAnswer));

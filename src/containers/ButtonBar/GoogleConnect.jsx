@@ -110,7 +110,7 @@ class GoogleConnect extends Component {
               var selection =[];
 
               arg.forEach((arg)=>{
-                selection.push({quiz: arg.quiz , open:false});
+                selection.push({quiz: arg.key , open:false});
               });
 
               this.props.setCatSelection(selection);
