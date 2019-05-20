@@ -16,7 +16,7 @@ export class MatchLib {
 
 
   static _basicMatch(answer,solution,callback){
-    console.log('basic matching: ' + answer + ' == ' + solution);
+    //console.log('basic matching: ' + answer + ' == ' + solution);
 
     if (MatchLib._arrayEqual(answer,solution,2)) {
       callback(true);
@@ -29,7 +29,7 @@ export class MatchLib {
   static _equals(answer,solution, toLower){
      toLower = toLower || true;
 
-     console.log('_equals: ' + answer + ' == ' + solution);
+    // console.log('_equals: ' + answer + ' == ' + solution);
 
      if(toLower){
         answer = String(answer).toLowerCase();
@@ -47,7 +47,9 @@ export class MatchLib {
     var that =this;
     var answerParts  =answer.split(' ');
 
-    var solutionParts  =solution.split(' ');
+  //  console.log('solution length: ' + solution.length);
+
+    var solutionParts  = solution.split(' ');
 
     if(answerParts.length != solutionParts.length){
         return false;
@@ -121,7 +123,7 @@ export class MatchLib {
 
 
   static _multiAnswer(answer,solution,callback){
-      console.log('multi answer matching: ' + answer + ' == ' + solution);
+      
       var remainingAnswers = [];
       var correctAnswers = [];
       var that = this;
@@ -134,7 +136,7 @@ export class MatchLib {
           return edittedAnswer;
       };
 
-        
+
       var fillCorrectAndRemainingAnswers = function(charCount){
         remainingAnswers = [];
         correctAnswers = [];
@@ -149,7 +151,7 @@ export class MatchLib {
             }
             idx++;
         }
-    };
+      };
 
       fillCorrectAndRemainingAnswers(2);
 
@@ -159,6 +161,7 @@ export class MatchLib {
           fillCorrectAndRemainingAnswers(charCount);
           charCount++;
       }
+
 
       callback(correctAnswers,remainingAnswers);
   }

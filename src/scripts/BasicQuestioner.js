@@ -100,7 +100,7 @@ export class BasicQuestioner {
                          };
                          answers.index.push(String(answerIdx));
                          answerIdx++;
-                         return String(answerIdx);
+                         return String(answerIdx-1);
                        });
 
                        questions[String(idx)] = {

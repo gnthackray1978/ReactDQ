@@ -35,7 +35,7 @@ const styles = theme => ({
     width: 320
   },
   button: {},
- 
+
 });
 
 
@@ -47,11 +47,25 @@ class QuestionList extends React.Component {
 
     const { classes,quizQuestions } = this.props;
 
+    const getQuestionType =(value)=>{
+      if(quizQuestions[value].type == 0)
+        return <SingleAnswer value = { quizQuestions[value]}></SingleAnswer>
+
+      if(quizQuestions[value].type == 3)
+        return <MultiAnswer value = { quizQuestions[value]}></MultiAnswer>
+
+      if(quizQuestions[value].type == 1)
+        return <SingleAnswer value = { quizQuestions[value]}></SingleAnswer>
+
+      if(quizQuestions[value].type == 3)
+        return <SingleAnswer value = { quizQuestions[value]}></SingleAnswer>
+
+    };
 
     return (
       <Grid container className={classes.root} spacing={16}>
          {quizQuestions.index.map(value => (
-              <SingleAnswer value = { quizQuestions[value]}></SingleAnswer>
+              getQuestionType(value)
             ))}
 
       </Grid>

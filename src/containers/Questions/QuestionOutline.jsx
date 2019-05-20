@@ -7,13 +7,12 @@ import Paper from '@material-ui/core/Paper';
 import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
 import QuestionFooter from "./QuestionFooter.jsx";
-import QuestionOutline from "./QuestionOutline.jsx";
 import TextField from '@material-ui/core/TextField';
 import InputBase from '@material-ui/core/InputBase';
 import DirectionsIcon from '@material-ui/icons/Directions';
 import { connect } from "react-redux";
 
-import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility} from "../../actions/creators.jsx";
+import {setQuestionVisibility} from "../../actions/creators.jsx";
 
 
 
@@ -77,52 +76,61 @@ const styles = theme => ({
 });
 
 
+function QuestionOutline(props) {
 
-class SingleAnswer extends React.Component {
+  const { classes, selectedQuiz, selectQuizCat, value, questionVisibility} = props;
 
-  constructor(props) {
-    super(props);
-  }
+  const handleInput = (e) => {
+    console.log(e);
+    // record in the store question id
+    // and whether or not it's visible.
 
-  render() {
-    const { classes,value,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,answerData } = this.props;
+    if(selectedQuiz)
+      console.log(e + ' clicked: ' + selectedQuiz.key + ' ' + selectQuizCat + ' ' + value.id);
 
     let questionKey = value.id + '-' + selectedQuiz.key + '-'+selectQuizCat;
 
-    let answerVisible = false;
-
-    if(questionVisibility.hasOwnProperty(questionKey)){
-       answerVisible =questionVisibility[questionKey].visible
+    if(!questionVisibility.hasOwnProperty(questionKey)){
+      questionVisibility[questionKey] = {
+        visible : false
+      };
+    }
+    else{
+      questionVisibility[questionKey].visible = !questionVisibility[questionKey].visible;
     }
 
-    let experiment =  <Paper className={classes.root} elevation={1}>
-                        <InputBase className={classes.input} placeholder="Answer here" />
 
-                        <IconButton color="primary" className={classes.iconButton} aria-label="Directions">
-                          <DirectionsIcon />
-                        </IconButton>
-                      </Paper>
+    props.setQuestionVisibility(questionVisibility);
 
-
-    let tpAnswer = answerData[value.answer[0]].answer;
-    let answerBlock = <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-                         {tpAnswer}
-                       </Typography>
-
-    let result;
-
-    if(!answerVisible) result = experiment;
-    if(answerVisible) result = answerBlock;
-
-    return (
-      <QuestionOutline label = 'Single Text Answer' score = '90%' question = {value.question}  value = {value}>{result}</QuestionOutline>
-    );
   }
+
+  return (
+    <Paper className={classes.answerContainer}>
+       <Grid container spacing={16}>
+         <Grid item xs={8}  className={classes.toprow} >
+         {props.label}
+         </Grid>
+         <Grid item xs={2}  className={classes.toprow} >
+         {props.score}
+         </Grid>
+         <Grid item xs={2}  className={classes.toprow} >
+           <IconButton className={classes.button}  onClick = {handleInput}> <Icon>visibility</Icon> </IconButton>
+         </Grid>
+
+         <Grid item xs={12} className ={classes.questionrow}>{props.question}</Grid>
+
+
+
+         <Grid item xs={12} className={classes.questionContent} >
+           {props.children}
+         </Grid>
+
+
+       </Grid>
+     </Paper>
+  );
 }
 
-// <Grid item xs={12}>
-//   <QuestionFooter  buttonClicked = { this.handleInput }/>
-// </Grid>
 
 
 const mapStateToProps = state => {
@@ -146,4 +154,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SingleAnswer));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(QuestionOutline));

@@ -1,6 +1,6 @@
-import MatchLib from './MatchLib.js';
+import {MatchLib} from './MatchLib.js';
 
-export class Scorelib {
+export class ScoreLib {
 
   static GetScoreForSet(questionSet,callback){
 
@@ -31,41 +31,51 @@ export class Scorelib {
 
   static GetScoreBasic(solution,answer,callback){
 
-     MatchLib.Match(answer, solution, type, (correct)=>{
+     MatchLib.Match(answer, solution, 1, (correct)=>{
         if(correct){
-          question.score = 100;
+          callback(100);
         }
         else {
-          question.score = 0;
+          callback(0);
         }
-
-        callback();
      });
 
   }
 
-  static GetScoreMultiAnswer(question,attemptedAnswer, callback){
+  static GetScoreMultiAnswer(correctAnswers, originalAnswers, attemptedAnswer, callback){
 
-     var questionObj = question;
-     var answers = questionObj.answer;
-     var originalAnswers = questionObj.constAnswers;
+  //  console.log(originalAnswers.length + ' ' + correctAnswers.length);
 
-   
+     let remainingAnswers = ScoreLib.GetRemainingAnswers(correctAnswers, originalAnswers);
 
-     MatchLib.Match(correctAnswers, remainingAnswers, 2, (correct)=>{
-       if(correctAnswers.length >0){
-           questionObj.correctAnswers.push(correctAnswers);
-       }
 
-       questionObj.answer = remainingAnswers;
 
-       questionObj.score = Math.floor(((100 / originalAnswers.length) *
-                       questionObj.correctAnswers.length));
+     MatchLib.Match(remainingAnswers, attemptedAnswer, 2, (correct, updatedRemaining)=>{
 
-       callback();
+    //   console.log(correct.length + ' ' + correctAnswers.length + ' ' +originalAnswers.length);
+
+       let percentile = (100 / originalAnswers.length);
+
+       let score = Math.floor(percentile *  (correct.length + correctAnswers.length));
+
+
+
+       callback(correctAnswers.concat(correct),score);
      });
 
 
+
+  }
+
+  static GetRemainingAnswers(userAnswered, correctAnswers){
+
+  //  console.log(userAnswered + ' ' + correctAnswers);
+
+    let difference  = correctAnswers.filter(x => !userAnswered.includes(x));
+
+//    console.log(difference );
+
+    return difference;
 
   }
 
