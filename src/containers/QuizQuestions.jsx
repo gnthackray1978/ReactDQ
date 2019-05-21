@@ -47,11 +47,10 @@ class QuizQuestions extends Component {
 
     //BasicQuestioner.
     GoogleLib.ReadSheet(window.gapi, this.props.ScriptId,this.props.selectedQuiz.quiz,  (arg)=>{
-      //  var tp = BasicQuestioner.CreateQuestionSet(arg, selectQuizCat);
 
-         var tp2 = BasicQuestioner.CreateQuestionSetN(arg, selectQuizCat);
+         var questionSet = BasicQuestioner.CreateQuestionSetN(arg, selectQuizCat);
 
-         setCombinedQuizData(tp2);
+         setCombinedQuizData(questionSet);
 
     });
 

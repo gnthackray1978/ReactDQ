@@ -96,7 +96,7 @@ export class BasicQuestioner {
                        var tp = cols.slice(multiAnswerStartIdx).filter(line => line.trim() !== "").map(m=>{
                          answers[String(answerIdx)] = {
                            id: String(answerIdx),
-                           answer : m
+                           correctAnswers : m
                          };
                          answers.index.push(String(answerIdx));
                          answerIdx++;
@@ -106,7 +106,7 @@ export class BasicQuestioner {
                        questions[String(idx)] = {
                          id: String(idx),
                          question : cols[questionColIdx],
-                         answer : tp,
+                         correctAnswers : tp,
                          type: questionType
                        };
 
@@ -116,7 +116,7 @@ export class BasicQuestioner {
 
                      answers[String(answerIdx)] = {
                        id: String(answerIdx),
-                       answer : cols[multiAnswerStartIdx]
+                       correctAnswers : cols[multiAnswerStartIdx]
                      };
 
                      answers.index.push(String(answerIdx));
@@ -124,7 +124,7 @@ export class BasicQuestioner {
                      questions[String(idx)] = {
                        id: String(idx),
                        question : cols[questionColIdx],
-                       answer : [String(answerIdx)],
+                       correctAnswers : [String(answerIdx)],
                        type: questionType
                      };
                      questions.index.push(String(String(idx)));

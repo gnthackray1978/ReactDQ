@@ -71,7 +71,7 @@ export default (state = {}, action) => {
     case "SET_COMBINEDDATA":
       return {
       ...state,
-      correctAnswers : {...action.data.answers},
+      correctAnswers : {...action.data.correctAnswers},
       quizQuestions : {...action.data.questions},
     };
 
@@ -81,7 +81,7 @@ export default (state = {}, action) => {
       userAnswers : {...action.data.userAnswers},
       userAnswersMapQuizInstance : {...action.data.userAnswersMapQuizInstance},
     };
- 
+
     case "SET_CATSELECTION":
       return {
       ...state,
