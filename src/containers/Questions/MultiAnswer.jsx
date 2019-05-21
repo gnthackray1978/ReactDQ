@@ -11,7 +11,7 @@ import {MatchLib} from "../../scripts/MatchLib.js"
 import {ScoreLib} from "../../scripts/ScoreLib.js"
 import { connect } from "react-redux";
 
-import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility} from "../../actions/creators.jsx";
+import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility, setRelatedUserAnswers} from "../../actions/creators.jsx";
 
 
 
@@ -102,9 +102,11 @@ class MultiAnswer extends React.Component {
    }
 
   onClick = (arg)=>{
+
     MatchLib.Match(this.state.answers,this.state.answerInput, 2, (correctAnswers,remainingAnswers)=>{
       console.log(correctAnswers.length + ' ' + remainingAnswers.length);
     });
+
   }
 
 
@@ -212,7 +214,10 @@ const mapStateToProps = state => {
     selectQuizCat : state.selectQuizCat,
     selectedQuiz : state.selectedQuiz,
     questionVisibility :state.questionVisibility,
-    correctAnswers : state.correctAnswers
+    correctAnswers : state.correctAnswers,
+    userAnswers : state.userAnswers,
+    userAnswersMapQuizInstance: state.userAnswersMapQuizInstance,
+
   };
 };
 
@@ -221,6 +226,9 @@ const mapDispatchToProps = dispatch => {
   return {
     setQuestionVisibility :data =>{
       dispatch(setQuestionVisibility(data))
+    },
+    setRelatedUserAnswers :data =>{
+      dispatch(setRelatedUserAnswers(data))
     }
   };
 };
