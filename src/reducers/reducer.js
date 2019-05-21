@@ -90,6 +90,8 @@ export default (state = {}, action) => {
       quizQuestions : {...action.data.questions},
     };
 
+
+
     case "SET_CATSELECTION":
       return {
       ...state,

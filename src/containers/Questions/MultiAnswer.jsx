@@ -8,7 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import QuestionOutline from "./QuestionOutline.jsx";
 import QuestionInput from "./QuestionInput.jsx";
 import {MatchLib} from "../../scripts/MatchLib.js"
-
+import {ScoreLib} from "../../scripts/ScoreLib.js"
 import { connect } from "react-redux";
 
 import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility} from "../../actions/creators.jsx";
@@ -131,8 +131,10 @@ class MultiAnswer extends React.Component {
       };
 
     //check answer
+
     //store correct ansswers
     //store incorrect answers
+
     //calculate scores
     //store question score
     //store test score
@@ -176,7 +178,7 @@ class MultiAnswer extends React.Component {
                       </div>
 
 
-   
+
     let tpAnswer = this.state.answers.map((value,index) => (
          formatAnswer(value,index)
        ));

@@ -138,6 +138,8 @@ export const setCombinedQuizData = data =>{
 }
 
 
+
+
 export const setCatSelection = data =>{
   return async dispatch  => {
     dispatch({
