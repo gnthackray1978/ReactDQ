@@ -75,6 +75,13 @@ export default (state = {}, action) => {
       quizQuestions : {...action.data.questions},
     };
 
+    case "SET_RELATEDUSERANSWERS":
+      return {
+      ...state,
+      userAnswers : {...action.data.userAnswers},
+      userAnswersMapQuizInstance : {...action.data.userAnswersMapQuizInstance},
+    };
+ 
     case "SET_CATSELECTION":
       return {
       ...state,

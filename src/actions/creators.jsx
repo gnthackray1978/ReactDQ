@@ -128,6 +128,17 @@ export const setCombinedQuizData = data =>{
   };
 }
 
+export const setRelatedUserAnswers = data =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_RELATEDUSERANSWERS",
+      data : data
+    });
+  };
+}
+
+
+
 export const setCatSelection = data =>{
   return async dispatch  => {
     dispatch({

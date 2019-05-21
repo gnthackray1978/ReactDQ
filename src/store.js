@@ -42,9 +42,27 @@ const store = createStore(
 
     quizMetaData : [],
 
+    userAnswers :{
+      index :[]
+    },
+
+    userAnswersMapQuizInstance :{
+      index :[]
+    },
+
+
     correctAnswers :{
       index :[]
     },
+
+    // export const setRelatedUserAnswers = data =>{
+    //   return async dispatch  => {
+    //     dispatch({
+    //       type: "SET_RELATEDUSERANSWERS",
+    //       data : data
+    //     });
+    //   };
+    // }
 
     quizQuestions : {
       index :[]
