@@ -68,29 +68,12 @@ export default (state = {}, action) => {
       quizQuestions : action.quizQuestions,
     };
 
-    case "SET_ANSWERDATA":
-      return {
-      ...state,
-      answerData : action.answerData,
-    };
-
-    // export const setCombinedQuizData = data =>{
-    //   return async dispatch  => {
-    //     dispatch({
-    //       type: "SET_COMBINEDDATA",
-    //       data :data
-    //     });
-    //   };
-    // }
-
     case "SET_COMBINEDDATA":
       return {
       ...state,
-      answerData : {...action.data.answers},
+      correctAnswers : {...action.data.answers},
       quizQuestions : {...action.data.questions},
     };
-
-
 
     case "SET_CATSELECTION":
       return {

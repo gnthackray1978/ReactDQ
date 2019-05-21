@@ -42,7 +42,7 @@ const store = createStore(
 
     quizMetaData : [],
 
-    answerData :{
+    correctAnswers :{
       index :[]
     },
 

@@ -85,7 +85,7 @@ class SingleAnswer extends React.Component {
   }
 
   render() {
-    const { classes,value,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,answerData } = this.props;
+    const { classes,value,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,correctAnswers } = this.props;
 
     let questionKey = value.id + '-' + selectedQuiz.key + '-'+selectQuizCat;
 
@@ -104,7 +104,7 @@ class SingleAnswer extends React.Component {
                       </Paper>
 
 
-    let tpAnswer = answerData[value.answer[0]].answer;
+    let tpAnswer = correctAnswers[value.answer[0]].answer;
     let answerBlock = <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
                          {tpAnswer}
                        </Typography>
@@ -133,7 +133,7 @@ const mapStateToProps = state => {
     selectQuizCat : state.selectQuizCat,
     selectedQuiz : state.selectedQuiz,
     questionVisibility :state.questionVisibility,
-    answerData : state.answerData
+    correctAnswers : state.correctAnswers
   };
 };
 

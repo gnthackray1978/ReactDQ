@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 
 
 import { connect } from "react-redux";
-import {setTestState,setQuizQuestionData, setAnswerData, setCombinedQuizData} from "../actions/creators.jsx";
+import {setTestState,setQuizQuestionData, setCombinedQuizData} from "../actions/creators.jsx";
 import {BasicQuestioner} from "../scripts/BasicQuestioner.js";
 import {GoogleLib} from "../scripts/GoogleLib.js";
 import QuestionList from "./Questions/QuestionList.jsx";
@@ -126,7 +126,7 @@ const mapStateToProps = state => {
     ClientId : state.GoogleApiParams.clientId,
     ScriptId : state.GoogleApiParams.scriptId,
     quizQuestions :state.quizQuestions,
-    answerData :state.answerData
+    correctAnswers :state.correctAnswers
   };
 };
 
@@ -143,10 +143,6 @@ const mapDispatchToProps = dispatch => {
 
     setQuizQuestionData :data =>{
       dispatch(setQuizQuestionData(data))
-    },
-
-    setAnswerData :data =>{
-      dispatch(setAnswerData(data))
     },
 
     setCombinedQuizData :data =>{

@@ -119,15 +119,6 @@ export const setQuizQuestionData = data =>{
   };
 }
 
-export const setAnswerData = data =>{
-  return async dispatch  => {
-    dispatch({
-      type: "SET_ANSWERDATA",
-      answerData :data
-    });
-  };
-}
-
 export const setCombinedQuizData = data =>{
   return async dispatch  => {
     dispatch({
@@ -136,9 +127,6 @@ export const setCombinedQuizData = data =>{
     });
   };
 }
-
-
-
 
 export const setCatSelection = data =>{
   return async dispatch  => {

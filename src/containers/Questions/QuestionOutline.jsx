@@ -141,7 +141,7 @@ const mapStateToProps = state => {
     selectQuizCat : state.selectQuizCat,
     selectedQuiz : state.selectedQuiz,
     questionVisibility :state.questionVisibility,
-    answerData : state.answerData
+    correctAnswers : state.correctAnswers
   };
 };
 

@@ -89,9 +89,9 @@ class MultiAnswer extends React.Component {
 
 
    componentWillMount() {
-     let answerData = this.props.answerData;
+     let correctAnswers = this.props.correctAnswers;
      let answerArray = this.props.value.answer.map((id)=>{
-       return answerData[id].answer;
+       return correctAnswers[id].answer;
      });
 
      this.setState({
@@ -110,7 +110,7 @@ class MultiAnswer extends React.Component {
 
 
   render() {
-    const { classes,value,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,answerData } = this.props;
+    const { classes,value,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,correctAnswers } = this.props;
 
     let questionKey = value.id + '-' + selectedQuiz.key + '-'+selectQuizCat;
     const tpAnswerSoFar = ['oranges', 'and', 'lemons', 'sing', 'the','bells','of','st clements'];
@@ -212,7 +212,7 @@ const mapStateToProps = state => {
     selectQuizCat : state.selectQuizCat,
     selectedQuiz : state.selectedQuiz,
     questionVisibility :state.questionVisibility,
-    answerData : state.answerData
+    correctAnswers : state.correctAnswers
   };
 };
 
