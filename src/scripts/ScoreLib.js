@@ -80,6 +80,89 @@ export class ScoreLib {
   }
 
 
+  static MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance){
+
+    if(!userAnswers){
+      userAnswers ={
+        index :[]
+      };
+    }
+
+    if(!userAnswersMapQuizInstance){
+      userAnswersMapQuizInstance ={
+        index :[]
+      };
+
+    }
+
+    let userAnswerKey = String(userAnswers.index.length -1);
+
+
+
+    let existingAnswer = userAnswers.index.filter((idx)=>{
+      return userAnswers[idx].answer == answer;
+    });
+
+
+
+    if(existingAnswer.length ==0){
+    //  console.log('store new answer: '+ userAnswerKey);
+      userAnswers[userAnswerKey] = {
+        id: userAnswerKey,
+        answer : answer
+      };
+      userAnswers.index.push(userAnswerKey);
+    }
+    else{
+    //  console.log('answer already stored');
+      userAnswerKey = existingAnswer.id;
+    }
+
+  //  console.log('userAnswers 0: ' + userAnswers['0'].answer );
+
+  //  console.log('userAnswers 1: ' + userAnswers['1'].answer);
+
+    let tpAnswer = userAnswers[userAnswerKey].id;
+    let compositeKey = quizId + questionId;
+
+    if(userAnswersMapQuizInstance[compositeKey] ){
+      //could have used indexOf but want to practice using reduce
+      //we have the question and quiz in the store but we dont have the answer.
+
+
+    //  let answerContains = userAnswersMapQuizInstance[compositeKey].answer.reduce((total, num)=>total === answer || num === answer || total == true);
+      let answerContains = userAnswersMapQuizInstance[compositeKey].answer.filter((idx)=>{
+        return idx == answer;
+      });
+    
+  //    console.log('map exists: ' + answerContains );
+
+      if(answerContains==0)
+      {
+        userAnswersMapQuizInstance[compositeKey].answer.push(tpAnswer);
+    //    console.log('added answer' );
+      }
+
+    }
+    else{
+      // we don't have the quiz and the question in the store
+      userAnswersMapQuizInstance[compositeKey] = {
+        id: compositeKey,
+        quizId : quizId,
+        questionId : questionId,
+        answer : [tpAnswer]
+      };
+      userAnswersMapQuizInstance.index.push(compositeKey);
+    }
+
+
+
+    return {
+      userAnswersMapQuizInstance: userAnswersMapQuizInstance ,
+      userAnswers : userAnswers
+    };
+
+  }
 
 
 

@@ -135,3 +135,56 @@ test('Check Remaining Answers Calculated Correctly',()=>{
 
 
 });
+
+test('Check setRelatedUserAnswers made correctly',()=>{
+
+  let quizId = '1';
+  let questionId = '1';
+  let answer = 'new answer';
+
+
+
+  let userAnswers ={
+    index :[]
+  };
+
+  userAnswers['0'] = {
+    id: '0',
+    answer : 'answer 1'
+  };
+  userAnswers.index.push('0');
+
+
+  let userAnswersMapQuizInstance ={
+    index :[]
+  };
+
+  let compositeKey = quizId + questionId;
+  userAnswersMapQuizInstance[compositeKey] = {
+    id: compositeKey,
+    quizId : quizId,
+    questionId : questionId,
+    answer : ['0']
+  };
+  userAnswersMapQuizInstance.index.push(compositeKey);
+
+
+
+
+
+//  console.log('user answers length: ' + userAnswers.index);
+
+  let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+
+  //console.log('user answers length: ' + userAnswers.index);
+
+  //console.log('-userAnswers 0: ' + userAnswers['0'].answer );
+
+  //console.log('-userAnswers 1: ' + userAnswers['1'].answer);
+
+  expect(userAnswers.index.length).toEqual(2);
+
+  expect(userAnswersMapQuizInstance[compositeKey].answer.length).toEqual(2);
+
+
+});
