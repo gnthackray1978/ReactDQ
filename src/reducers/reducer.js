@@ -71,7 +71,7 @@ export default (state = {}, action) => {
     case "SET_COMBINEDDATA":
       return {
       ...state,
-      correctAnswers : {...action.data.correctAnswers},
+      correctAnswers : {...action.data.answers},
       quizQuestions : {...action.data.questions},
     };
 

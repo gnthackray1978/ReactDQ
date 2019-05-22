@@ -90,7 +90,7 @@ class MultiAnswer extends React.Component {
 
    componentWillMount() {
      let correctAnswers = this.props.correctAnswers;
-     let answerArray = this.props.value.answer.map((id)=>{
+     let answerArray = this.props.questionData.correctAnswers.map((id)=>{
        return correctAnswers[id].answer;
      });
 
@@ -112,9 +112,9 @@ class MultiAnswer extends React.Component {
 
 
   render() {
-    const { classes,value,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,correctAnswers } = this.props;
+    const { classes,questionData,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,correctAnswers } = this.props;
 
-    let questionKey = value.id + '-' + selectedQuiz.key + '-'+selectQuizCat;
+    let questionKey = questionData.id + '-' + selectedQuiz.key + '-'+selectQuizCat;
     const tpAnswerSoFar = ['oranges', 'and', 'lemons', 'sing', 'the','bells','of','st clements'];
     let answerVisible = false;
 
@@ -123,8 +123,7 @@ class MultiAnswer extends React.Component {
     }
 
     const handleOnChange = event => {
-      //  console.log('Click');
-      //  console.log(event.target.value);
+
 
         this.setState({
           answerInput : event.target.value,
@@ -141,17 +140,17 @@ class MultiAnswer extends React.Component {
     //store question score
     //store test score
 
-    const formatAnswer =(value,index)=>{
-        if(index !=0) value = ',' + value;
+    const formatAnswer =(string,index)=>{
+        if(index !=0) string = ',' + string;
 
         if(index % 2 ==0){
           return   <Typography variant="h6" className ={classes.black}  >
-              {value}
+              {string}
             </Typography>
         }
         else {
             return   <Typography variant="h6"  className ={classes.red}  >
-                {value}
+                {string}
               </Typography>
           }
     };
@@ -172,8 +171,8 @@ class MultiAnswer extends React.Component {
                       </Typography>
 
                       <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
-                        {tpAnswerSoFar.map((value,index) => (
-                             formatAnswer(value,index)
+                        {tpAnswerSoFar.map((string,index) => (
+                             formatAnswer(string,index)
                            ))}
                       </Paper>
 
@@ -181,8 +180,8 @@ class MultiAnswer extends React.Component {
 
 
 
-    let tpAnswer = this.state.answers.map((value,index) => (
-         formatAnswer(value,index)
+    let tpAnswer = this.state.answers.map((string,index) => (
+         formatAnswer(string,index)
        ));
 
 
@@ -196,7 +195,7 @@ class MultiAnswer extends React.Component {
     if(answerVisible) result = answerBlock;
 
     return (
-      <QuestionOutline label = 'Multi Answer' score = '90%' question = {value.question}  value = {value}>{result}</QuestionOutline>
+      <QuestionOutline label = 'Multi Answer' score = '90%' question = {questionData.question}  value = {questionData}>{result}</QuestionOutline>
     );
   }
 }

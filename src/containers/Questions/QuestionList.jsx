@@ -52,7 +52,7 @@ class QuestionList extends React.Component {
         return <SingleAnswer value = { quizQuestions[value]}></SingleAnswer>
 
       if(quizQuestions[value].type == 3)
-        return <MultiAnswer value = { quizQuestions[value]}></MultiAnswer>
+        return <MultiAnswer questionData = { quizQuestions[value]}></MultiAnswer>
 
       if(quizQuestions[value].type == 1)
         return <SingleAnswer value = { quizQuestions[value]}></SingleAnswer>

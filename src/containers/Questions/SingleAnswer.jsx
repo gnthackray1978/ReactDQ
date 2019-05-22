@@ -104,7 +104,7 @@ class SingleAnswer extends React.Component {
                       </Paper>
 
 
-    let tpAnswer = correctAnswers[value.answer[0]].answer;
+    let tpAnswer = correctAnswers[value.correctAnswers[0]].answer;
     let answerBlock = <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
                          {tpAnswer}
                        </Typography>
