@@ -95,7 +95,7 @@ export class ScoreLib {
 
     }
 
-    let userAnswerKey = String(userAnswers.index.length -1);
+    let userAnswerKey = String(userAnswers.index.length );
 
 
 
@@ -134,7 +134,7 @@ export class ScoreLib {
       let answerContains = userAnswersMapQuizInstance[compositeKey].answer.filter((idx)=>{
         return idx == answer;
       });
-    
+
   //    console.log('map exists: ' + answerContains );
 
       if(answerContains==0)

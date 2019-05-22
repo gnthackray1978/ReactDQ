@@ -136,55 +136,161 @@ test('Check Remaining Answers Calculated Correctly',()=>{
 
 });
 
-test('Check setRelatedUserAnswers made correctly',()=>{
+// test('Check setRelatedUserAnswers made correctly',()=>{
+//
+//   let quizId = '1';
+//   let questionId = '1';
+//   let answer = 'new answer';
+//
+//
+//
+//   let userAnswers ={
+//     index :[]
+//   };
+//
+//   userAnswers['0'] = {
+//     id: '0',
+//     answer : 'answer 1'
+//   };
+//   userAnswers.index.push('0');
+//
+//
+//   let userAnswersMapQuizInstance ={
+//     index :[]
+//   };
+//
+//   let compositeKey = quizId + questionId;
+//   userAnswersMapQuizInstance[compositeKey] = {
+//     id: compositeKey,
+//     quizId : quizId,
+//     questionId : questionId,
+//     answer : ['0']
+//   };
+//   userAnswersMapQuizInstance.index.push(compositeKey);
+//
+//   let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+//
+//   //console.log('user answers length: ' + userAnswers.index);
+//
+//   //console.log('-userAnswers 0: ' + userAnswers['0'].answer );
+//
+//   //console.log('-userAnswers 1: ' + userAnswers['1'].answer);
+//
+//   expect(userAnswers.index.length).toEqual(2);
+//
+//   expect(userAnswersMapQuizInstance[compositeKey].answer.length).toEqual(2);
+//
+//
+// });
 
-  let quizId = '1';
-  let questionId = '1';
-  let answer = 'new answer';
+describe('setRelatedUserAnswers', () => {
+  // Applies only to tests in this describe block
+  let quizId,questionId,answer,userAnswers,userAnswersMapQuizInstance,compositeKey ;
 
 
+  const setup = ()=>{
 
-  let userAnswers ={
-    index :[]
+     quizId = '1';
+     questionId = '1';
+     answer = 'answer 2';
+
+
+    userAnswers ={
+      index :[]
+    };
+
+    userAnswers['0'] = {
+      id: '0',
+      answer : 'answer 1'
+    };
+    userAnswers.index.push('0');
+
+
+    userAnswersMapQuizInstance ={
+      index :[]
+    };
+
+    compositeKey = quizId + questionId;
+    userAnswersMapQuizInstance[compositeKey] = {
+      id: compositeKey,
+      quizId : quizId,
+      questionId : questionId,
+      answer : ['0']
+    };
+    userAnswersMapQuizInstance.index.push(compositeKey);
   };
 
-  userAnswers['0'] = {
-    id: '0',
-    answer : 'answer 1'
-  };
-  userAnswers.index.push('0');
+  beforeEach(() => {
+    return setup();
+  });
+
+  test('correct number of user answers returned',()=>{
+
+    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+
+    expect(userAnswers.index.length).toEqual(2);
+
+  });
+
+  test('existing answer preserved',()=>{
+
+    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+
+    expect(userAnswers['0'].answer).toEqual('answer 1');
+
+  });
+
+  test('answer added correctly',()=>{
+
+    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+
+    expect(userAnswers['1'].answer).toEqual('answer 2');
+
+  });
 
 
-  let userAnswersMapQuizInstance ={
-    index :[]
-  };
+  test('correct number of quiz mappings returned',()=>{
 
-  let compositeKey = quizId + questionId;
-  userAnswersMapQuizInstance[compositeKey] = {
-    id: compositeKey,
-    quizId : quizId,
-    questionId : questionId,
-    answer : ['0']
-  };
-  userAnswersMapQuizInstance.index.push(compositeKey);
+    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+
+    expect(userAnswersMapQuizInstance[compositeKey].answer.length).toEqual(2);
+
+  });
+
+  test('correct quiz mapping answer returned when added to existing mapping',()=>{
+
+    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+    let key = quizId + questionId;
+    expect(userAnswersMapQuizInstance[key].answer[1]).toEqual('1');
+
+  });
+
+  test('correct number of quiz mapping answer returned when added to new question',()=>{
+
+    let localQuestion = "2";
+
+    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, localQuestion, 'the', userAnswers, userAnswersMapQuizInstance);
+    let key = quizId + localQuestion;
+
+    expect(userAnswersMapQuizInstance[key].answer.length).toEqual(1);
+
+  });
+
+  test('correct quiz mapping answer returned when added to new question',()=>{
+
+    let localQuestion = "2";
+
+    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, localQuestion, 'mog', userAnswers, userAnswersMapQuizInstance);
+    result = ScoreLib.MakeRelatedUserAnswerData(quizId, localQuestion, 'gog', userAnswers, userAnswersMapQuizInstance);
 
 
+    let key = quizId + localQuestion;
 
+    let anskwerKey = userAnswersMapQuizInstance[key].answer[1];
 
+    expect(userAnswers[anskwerKey].answer).toEqual('gog');
 
-//  console.log('user answers length: ' + userAnswers.index);
-
-  let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
-
-  //console.log('user answers length: ' + userAnswers.index);
-
-  //console.log('-userAnswers 0: ' + userAnswers['0'].answer );
-
-  //console.log('-userAnswers 1: ' + userAnswers['1'].answer);
-
-  expect(userAnswers.index.length).toEqual(2);
-
-  expect(userAnswersMapQuizInstance[compositeKey].answer.length).toEqual(2);
+  });
 
 
 });
