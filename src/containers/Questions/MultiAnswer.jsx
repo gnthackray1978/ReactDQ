@@ -85,19 +85,6 @@ class MultiAnswer extends React.Component {
     }
 
 
-   componentWillMount() {
-     // let correctAnswers = this.props.correctAnswers;
-     // let answerArray = this.props.questionData.correctAnswers.map((id)=>{
-     //   return correctAnswers[id].answer;
-     // });
-     //
-     // this.setState({
-     //   answers : answerArray,
-     // });
-
-    // console.log(' answer array now:  '+ this.state.answers.length);
-   }
-
   onClick = (arg)=>{
 
     let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
@@ -166,20 +153,20 @@ class MultiAnswer extends React.Component {
 
 
 
-    let experiment =  <div>
+    let questionBlock =  <div>
 
-                      <QuestionInput onChange={handleOnChange} onClick = {this.onClick}/>
+                        <QuestionInput onChange={handleOnChange} onClick = {this.onClick}/>
 
 
-                      <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
-                        Answer so far
-                      </Typography>
+                        <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
+                          Answer so far
+                        </Typography>
 
-                      <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
-                        {tpAnswerSoFar.map((string,index) => (
-                             formatAnswer(string,index)
-                           ))}
-                      </Paper>
+                        <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
+                          {tpAnswerSoFar.map((string,index) => (
+                               formatAnswer(string,index)
+                             ))}
+                        </Paper>
 
                       </div>
 
@@ -196,7 +183,7 @@ class MultiAnswer extends React.Component {
 
     let result;
 
-    if(!answerVisible) result = experiment;
+    if(!answerVisible) result = questionBlock;
     if(answerVisible) result = answerBlock;
 
     return (
