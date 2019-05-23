@@ -81,41 +81,58 @@ class MultiAnswer extends React.Component {
 
   constructor(props) {
       super(props);
-      this.state = {
-                    answerInput : '',
-                    answers :[]
-                  };
+      this.state = { answerInput : ''  };
     }
 
 
    componentWillMount() {
-     let correctAnswers = this.props.correctAnswers;
-     let answerArray = this.props.questionData.correctAnswers.map((id)=>{
-       return correctAnswers[id].answer;
-     });
-
-     this.setState({
-       answers : answerArray,
-     });
+     // let correctAnswers = this.props.correctAnswers;
+     // let answerArray = this.props.questionData.correctAnswers.map((id)=>{
+     //   return correctAnswers[id].answer;
+     // });
+     //
+     // this.setState({
+     //   answers : answerArray,
+     // });
 
     // console.log(' answer array now:  '+ this.state.answers.length);
    }
 
   onClick = (arg)=>{
 
-    MatchLib.Match(this.state.answers,this.state.answerInput, 2, (correctAnswers,remainingAnswers)=>{
-      console.log(correctAnswers.length + ' ' + remainingAnswers.length);
+    let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
+    let questionData = this.props.questionData;
+    let answerInput = this.state.answerInput.toLowerCase();
+    let correctAnswers = this.props.correctAnswers;
+    let selectedQuiz = this.props.selectedQuiz.key;
+    let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
+    let userAnswers = this.props.userAnswers;
+    let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, correctAnswers);
+
+    ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, correctAnswers,
+      (updatedUserAnswers,score, isCorrect)=>{
+          ScoreLib.MakeRelatedUserAnswerData(selectedQuiz, questionData.id, answerInput,
+             userAnswers, userAnswersMapQuizInstance,isCorrect);
+          setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
+
     });
+
+
+
+    //
+    // MatchLib.Match(this.state.answers,this.state.answerInput, 2, (correctAnswers,remainingAnswers)=>{
+    //   console.log(correctAnswers.length + ' ' + remainingAnswers.length);
+    // });
 
   }
 
 
 
   render() {
-    const { classes,questionData,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,correctAnswers } = this.props;
+    const { classes,questionData,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,correctAnswers,userAnswers } = this.props;
 
     let questionKey = questionData.id + '-' + selectedQuiz.key + '-'+selectQuizCat;
-    const tpAnswerSoFar = ['oranges', 'and', 'lemons', 'sing', 'the','bells','of','st clements'];
+    let tpAnswerSoFar = ScoreLib.GetUserAnswersForQuestion(userAnswers, correctAnswers);
     let answerVisible = false;
 
     if(questionVisibility.hasOwnProperty(questionKey)){
@@ -131,14 +148,6 @@ class MultiAnswer extends React.Component {
 
       };
 
-    //check answer
-
-    //store correct ansswers
-    //store incorrect answers
-
-    //calculate scores
-    //store question score
-    //store test score
 
     const formatAnswer =(string,index)=>{
         if(index !=0) string = ',' + string;
@@ -155,11 +164,7 @@ class MultiAnswer extends React.Component {
           }
     };
 
-  //  let matchLib = this.MatchLib;
 
-
-
-    //onClick.bind(this);
 
     let experiment =  <div>
 
@@ -178,9 +183,9 @@ class MultiAnswer extends React.Component {
 
                       </div>
 
+    let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(questionData, correctAnswers);
 
-
-    let tpAnswer = this.state.answers.map((string,index) => (
+    let tpAnswer = correctAnswersArray.map((string,index) => (
          formatAnswer(string,index)
        ));
 

@@ -42,6 +42,34 @@ export class ScoreLib {
 
   }
 
+  static GetCorrectAnswersForQuestion(questionData, correctAnswers){
+    let carray = questionData.correctAnswers.map((id)=>{
+      return correctAnswers[id].correctAnswers;
+    });
+
+    return carray;
+  }
+
+  static GetUserAnswersForQuestion(userAnswersObject, correctAnswers){
+
+    let carray = userAnswersObject.index.map((id)=>{
+      return userAnswersObject[id].answer;
+    });
+
+    return carray;
+  }
+
+
+  static GetScoreMultiAnswerByQueestionData(usersCorrectAnswers, questionData, attemptedAnswer,correctAnswers, callback){
+    correctAnswers = questionData.correctAnswers.map((id)=>{
+      return correctAnswers[id].correctAnswers;
+    });
+
+
+    ScoreLib.GetScoreMultiAnswer(usersCorrectAnswers, correctAnswers, attemptedAnswer, callback);
+
+  }
+
   static GetScoreMultiAnswer(correctAnswers, originalAnswers, attemptedAnswer, callback){
 
   //  console.log(originalAnswers.length + ' ' + correctAnswers.length);
@@ -52,15 +80,16 @@ export class ScoreLib {
 
      MatchLib.Match(remainingAnswers, attemptedAnswer, 2, (correct, updatedRemaining)=>{
 
-    //   console.log(correct.length + ' ' + correctAnswers.length + ' ' +originalAnswers.length);
+       console.log('comparison result: '+remainingAnswers.length + ' ' + updatedRemaining.length  );
 
        let percentile = (100 / originalAnswers.length);
 
        let score = Math.floor(percentile *  (correct.length + correctAnswers.length));
 
 
+       let isAttemptedAnswerCorrect = (remainingAnswers.length > updatedRemaining.length);
 
-       callback(correctAnswers.concat(correct),score);
+       callback(correctAnswers.concat(correct),score,isAttemptedAnswerCorrect);
      });
 
 
@@ -69,80 +98,95 @@ export class ScoreLib {
 
   static GetRemainingAnswers(userAnswered, correctAnswers){
 
-  //  console.log(userAnswered + ' ' + correctAnswers);
 
-    let difference  = correctAnswers.filter(x => !userAnswered.includes(x));
+    //let difference  = correctAnswers.filter(x => !userAnswered.includes(x));
 
-//    console.log(difference );
+     let difference  = correctAnswers.filter(x => {
+       return userAnswered.indexOf(x) == -1;
+     });
 
     return difference;
 
   }
 
 
-  static MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance){
-
-    if(!userAnswers){
-      userAnswers ={
-        index :[]
-      };
-    }
-
-    if(!userAnswersMapQuizInstance){
-      userAnswersMapQuizInstance ={
-        index :[]
-      };
-
-    }
-
-    let userAnswerKey = String(userAnswers.index.length );
+  static MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance, isCorrect){
 
 
+    const initObjectsIfReq = () => {
+        if(!userAnswers){
+          userAnswers ={
+            index :[]
+          };
+        }
 
-    let existingAnswer = userAnswers.index.filter((idx)=>{
-      return userAnswers[idx].answer == answer;
-    });
+        if(!userAnswersMapQuizInstance){
+          userAnswersMapQuizInstance ={
+            index :[]
+          };
+
+        }
+    };
+
+    initObjectsIfReq();
+
+    const storeUserAnswerIfReq =() =>{
+      let existingAnswer = userAnswers.index.filter((idx)=>{
+        return userAnswers[idx].answer == answer;
+      });
+
+
+      let userAnswerKey = String(userAnswers.index.length );
+
+      //create a new answer in the user answers object
+      //if our answer isnt already in there
+      if(existingAnswer.length ==0){
+
+        userAnswers[userAnswerKey] = {
+          id: userAnswerKey,
+          answer : answer
+        };
+        userAnswers.index.push(userAnswerKey);
+      }
+      else{
+      //  console.log('answer already stored');
+        userAnswerKey = existingAnswer.id;
+      }
+
+      return userAnswerKey;
+    };
+
+    let userAnswerKey = storeUserAnswerIfReq();
+
+    const mappingContainsCorrectAnswer = () => {
+      let answerContains = userAnswersMapQuizInstance[compositeKey].answer.filter((idx)=>{
+        return idx == userAnswerKey;
+      });
+
+      return (answerContains.length!=0);
+    };
+
+    const mappingContainsWrongAnswer = () => {
+      let answerContains = userAnswersMapQuizInstance[compositeKey].wrongAnswer.filter((idx)=>{
+        return idx == userAnswerKey;
+      });
+
+      return (answerContains.length!=0);
+    };
 
 
 
-    if(existingAnswer.length ==0){
-    //  console.log('store new answer: '+ userAnswerKey);
-      userAnswers[userAnswerKey] = {
-        id: userAnswerKey,
-        answer : answer
-      };
-      userAnswers.index.push(userAnswerKey);
-    }
-    else{
-    //  console.log('answer already stored');
-      userAnswerKey = existingAnswer.id;
-    }
-
-  //  console.log('userAnswers 0: ' + userAnswers['0'].answer );
-
-  //  console.log('userAnswers 1: ' + userAnswers['1'].answer);
-
-    let tpAnswer = userAnswers[userAnswerKey].id;
     let compositeKey = quizId + questionId;
 
     if(userAnswersMapQuizInstance[compositeKey] ){
-      //could have used indexOf but want to practice using reduce
-      //we have the question and quiz in the store but we dont have the answer.
-
-
-    //  let answerContains = userAnswersMapQuizInstance[compositeKey].answer.reduce((total, num)=>total === answer || num === answer || total == true);
-      let answerContains = userAnswersMapQuizInstance[compositeKey].answer.filter((idx)=>{
-        return idx == answer;
-      });
-
-  //    console.log('map exists: ' + answerContains );
-
-      if(answerContains==0)
-      {
-        userAnswersMapQuizInstance[compositeKey].answer.push(tpAnswer);
-    //    console.log('added answer' );
+      if(isCorrect){
+        if(!mappingContainsCorrectAnswer())
+          userAnswersMapQuizInstance[compositeKey].answer.push(userAnswerKey);
       }
-
+      else{
+        if(!mappingContainsWrongAnswer())
+          userAnswersMapQuizInstance[compositeKey].wrongAnswer.push(userAnswerKey);
+      }
     }
     else{
       // we don't have the quiz and the question in the store
@@ -150,8 +194,10 @@ export class ScoreLib {
         id: compositeKey,
         quizId : quizId,
         questionId : questionId,
-        answer : [tpAnswer]
+        answer : isCorrect ? [userAnswerKey] : [],
+        wrongAnswer :isCorrect ? [] : [userAnswerKey],
       };
+
       userAnswersMapQuizInstance.index.push(compositeKey);
     }
 
