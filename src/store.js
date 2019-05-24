@@ -55,14 +55,13 @@ const store = createStore(
       index :[]
     },
 
-    // export const setRelatedUserAnswers = data =>{
-    //   return async dispatch  => {
-    //     dispatch({
-    //       type: "SET_RELATEDUSERANSWERS",
-    //       data : data
-    //     });
-    //   };
-    // }
+    testList :{
+      index :[]
+    },
+
+    currentTest : undefined,
+
+    testActive: false,
 
     quizQuestions : {
       index :[]

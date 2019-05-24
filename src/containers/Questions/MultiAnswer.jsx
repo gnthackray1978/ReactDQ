@@ -93,12 +93,13 @@ class MultiAnswer extends React.Component {
     let correctAnswers = this.props.correctAnswers;
     let selectedQuiz = this.props.selectedQuiz.key;
     let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
+    let testInstance = this.props.currentTest;
     let userAnswers = this.props.userAnswers;
     let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, correctAnswers);
 
     ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, correctAnswers,
       (updatedUserAnswers,score, isCorrect)=>{
-          ScoreLib.MakeRelatedUserAnswerData(selectedQuiz, questionData.id, answerInput,
+          ScoreLib.MakeRelatedUserAnswerData( questionData.id, testInstance, answerInput,
              userAnswers, userAnswersMapQuizInstance,isCorrect);
           setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
 
@@ -114,77 +115,86 @@ class MultiAnswer extends React.Component {
   }
 
 
+ formatString(classes, string,index){
+   if(index !=0) string = ',' + string;
 
-  render() {
-    const { classes,questionData,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,correctAnswers,userAnswers } = this.props;
+   if(index % 2 ==0){
+     return   <Typography variant="h6" className ={classes.black}  >
+         {string}
+       </Typography>
+   }
+   else {
+       return   <Typography variant="h6"  className ={classes.red}  >
+           {string}
+         </Typography>
+     }
+ }
 
-    let questionKey = questionData.id + '-' + selectedQuiz.key + '-'+selectQuizCat;
-    let tpAnswerSoFar = ScoreLib.GetUserAnswersForQuestion(userAnswers, correctAnswers);
-    let answerVisible = false;
+  answersSoFar(classes){
 
-    if(questionVisibility.hasOwnProperty(questionKey)){
-       answerVisible =questionVisibility[questionKey].visible
+    let tpAnswerSoFar = ScoreLib.GetUserAnswersForQuestion(this.props.userAnswers, this.props.correctAnswers);
+
+    return   <div>
+        <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
+          Answer so far
+        </Typography>
+
+        <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
+          {tpAnswerSoFar.map((string,index) => (
+               this.formatString(classes,string,index)
+             ))}
+        </Paper>
+      </div>
+
+  }
+
+  makeCorrectAnswersBlock(classes){
+    let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(this.props.questionData, this.props.correctAnswers);
+
+    let tpAnswer = correctAnswersArray.map((string,index) => (
+         this.formatString(classes,string,index)
+       ));
+
+    let answerBlock = <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
+                        {tpAnswer}
+                      </Typography>
+
+    return  answerBlock;
+  }
+
+  isQuestionVisible (){
+
+    let questionKey = this.props.questionData.id + '-' + this.props.selectedQuiz.key + '-'+ this.props.selectQuizCat;
+
+    let answerVisible = true;
+
+    if(this.props.questionVisibility.hasOwnProperty(questionKey)){
+       answerVisible = this.props.questionVisibility[questionKey].visible
     }
 
+    return answerVisible;
+  }
+
+  render() {
+    const { classes,questionData,quizMetaData } = this.props;
+
     const handleOnChange = event => {
-
-
         this.setState({
           answerInput : event.target.value,
         });
-
       };
-
-
-    const formatAnswer =(string,index)=>{
-        if(index !=0) string = ',' + string;
-
-        if(index % 2 ==0){
-          return   <Typography variant="h6" className ={classes.black}  >
-              {string}
-            </Typography>
-        }
-        else {
-            return   <Typography variant="h6"  className ={classes.red}  >
-                {string}
-              </Typography>
-          }
-    };
-
-
-
-    let questionBlock =  <div>
-
-                        <QuestionInput onChange={handleOnChange} onClick = {this.onClick}/>
-
-
-                        <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
-                          Answer so far
-                        </Typography>
-
-                        <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
-                          {tpAnswerSoFar.map((string,index) => (
-                               formatAnswer(string,index)
-                             ))}
-                        </Paper>
-
-                      </div>
-
-    let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(questionData, correctAnswers);
-
-    let tpAnswer = correctAnswersArray.map((string,index) => (
-         formatAnswer(string,index)
-       ));
-
-
-    let answerBlock = <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-                         {tpAnswer}
-                       </Typography>
 
     let result;
 
-    if(!answerVisible) result = questionBlock;
-    if(answerVisible) result = answerBlock;
+    if(!this.isQuestionVisible()){
+      result = this.makeCorrectAnswersBlock(classes);
+    }
+    else {
+       result = <div>
+                   <QuestionInput onChange={handleOnChange} onClick = {this.onClick}  answer = {this.state.answerInput}/>
+                   {this.answersSoFar(classes)}
+                </div>
+    }
 
     return (
       <QuestionOutline label = 'Multi Answer' score = '90%' question = {questionData.question}  value = {questionData}>{result}</QuestionOutline>
@@ -208,7 +218,7 @@ const mapStateToProps = state => {
     correctAnswers : state.correctAnswers,
     userAnswers : state.userAnswers,
     userAnswersMapQuizInstance: state.userAnswersMapQuizInstance,
-
+    currentTest :state.currentTest
   };
 };
 

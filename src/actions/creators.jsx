@@ -41,21 +41,44 @@ export const setProfileObj= profileObj =>{
   };
 }
 
-export const setTestState= (id,active,  timestamp) =>{
+export const setTestState= (testList) =>{
   return async dispatch  => {
     dispatch({
-      type: "SET_TESTSTATE",
-      testState : {
-        Id :id,
-        TimeStamp : timestamp,
-        Active :active
-      }
+      type: "ADD_TEST",
+      testList : testList
+    });
+
+  };
+}
+
+export const setCurrentTest= (currentTest) =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_CURRENTTEST",
+      currentTest : currentTest
     });
   };
 }
 
+export const setTestBatch= (testList, currentTest) =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_TESTBATCH",
+      currentTest : currentTest,
+      testList : testList,
+      testActive :true
+    });
+  };
+}
 
-
+export const setTestActive= (testActive) =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_TESTACTIVE",
+      testActive : testActive
+    });
+  };
+}
 
 export const setQuizName= selectedQuiz =>{
   return async dispatch  => {

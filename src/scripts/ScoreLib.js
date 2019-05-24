@@ -110,7 +110,7 @@ export class ScoreLib {
   }
 
 
-  static MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance, isCorrect){
+  static MakeRelatedUserAnswerData(questionId, instanceId, answer, userAnswers, userAnswersMapQuizInstance, isCorrect){
 
 
     const initObjectsIfReq = () => {
@@ -176,7 +176,7 @@ export class ScoreLib {
 
 
 
-    let compositeKey = quizId + questionId;
+    let compositeKey = instanceId + '.' +questionId;
 
     if(userAnswersMapQuizInstance[compositeKey] ){
       if(isCorrect){
@@ -192,7 +192,7 @@ export class ScoreLib {
       // we don't have the quiz and the question in the store
       userAnswersMapQuizInstance[compositeKey] = {
         id: compositeKey,
-        quizId : quizId,
+        quizInstanceId : instanceId,
         questionId : questionId,
         answer : isCorrect ? [userAnswerKey] : [],
         wrongAnswer :isCorrect ? [] : [userAnswerKey],

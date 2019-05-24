@@ -20,7 +20,7 @@ import ControlIcon from '@material-ui/icons/OpenWith';
 import InfoIcon from '@material-ui/icons/FeedBack';
 
 import { connect } from "react-redux";
-import {setTestState ,selectQuizName,selectQuizCat} from "../../actions/creators.jsx";
+import {setTestBatch ,selectQuizName,selectQuizCat} from "../../actions/creators.jsx";
 import GoogleConnect  from "./GoogleConnect.jsx";
 
 import './TopButtons.css';
@@ -70,6 +70,25 @@ class TopButtons extends Component {
       console.log(response);
     }
 
+    let createNewTest = ()=>{
+
+
+      let key = String(this.props.testList.index.length );
+
+      this.props.testList[key] = {
+        id: key,
+        quizName : this.props.selectedQuiz,
+        quizCat : this.props.selectQuizCat,
+        timeStamp : new Date(),
+        started : true
+      };
+
+      this.props.testList.index.push(key);
+
+
+      this.props.setTestBatch(this.props.testList, key);
+
+    };
 
      return (
 
@@ -79,15 +98,7 @@ class TopButtons extends Component {
             <MenuIcon  onClick={()=>{ this.props.modeChanged('data'); }}/>
           </IconButton>
 
-          <Button color="inherit"  onClick={()=>{
-              //TestState
-              //id,active,timestamp
-              let date = new Date();
-              let newId = TestState.Id+1;
-
-              this.props.setTestState(newId, true, +date);
-
-            }}>
+          <Button color="inherit"  onClick={()=>createNewTest()}>
             <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
               Start
             </Typography>
@@ -120,8 +131,9 @@ const mapStateToProps = state => {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
     TestState : state.TestState,
     selectedQuiz :state.selectedQuiz,
-    selectQuizCat : state.selectQuizCat
-
+    selectQuizCat : state.selectQuizCat,
+    testList : state.testList,
+    currentTest : state.currentTest
   };
 };
 
@@ -131,8 +143,8 @@ const mapDispatchToProps = dispatch => {
     setSideDrawerLoaderVisible :visible =>{
       dispatch(setSideDrawerLoaderVisible(visible))
     },
-    setTestState :(id,active,timestamp) =>{
-      dispatch(setTestState(id,active,timestamp))
+    setTestBatch :(testList,currentTest) =>{
+      dispatch(setTestBatch(testList,currentTest))
     }
 
   };

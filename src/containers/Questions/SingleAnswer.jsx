@@ -11,10 +11,14 @@ import QuestionOutline from "./QuestionOutline.jsx";
 import TextField from '@material-ui/core/TextField';
 import InputBase from '@material-ui/core/InputBase';
 import DirectionsIcon from '@material-ui/icons/Directions';
+
+import QuestionInput from "./QuestionInput.jsx";
+import {MatchLib} from "../../scripts/MatchLib.js"
+import {ScoreLib} from "../../scripts/ScoreLib.js"
+
 import { connect } from "react-redux";
 
-import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility} from "../../actions/creators.jsx";
-
+import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility, setRelatedUserAnswers} from "../../actions/creators.jsx";
 
 
 const styles = theme => ({
@@ -23,13 +27,6 @@ const styles = theme => ({
      display: 'flex',
      alignItems: 'center',
      width: 300,
-   },
-   input: {
-     marginLeft: 8,
-     flex: 1,
-   },
-   iconButton: {
-     padding: 10,
    },
 
   answerContainer: {
@@ -44,12 +41,6 @@ const styles = theme => ({
     margin: 0,
     padding: 0
 
-  },
-
-  questionFooter: {
-    justifyContent: "flex-end",
-    height: 30,
-    width: 320
   },
 
   button: {
@@ -67,12 +58,22 @@ const styles = theme => ({
     height:55
   },
 
-  textField: {
-   marginLeft: 0,
-   marginRight: 0,
-   width: 300,
-   margin: 0,
-   padding: 0
+  red: {
+    color: 'red',
+    display: 'contents'
+  },
+  black: {
+    color: 'black',
+    display: 'contents'
+  },
+
+  answersofarlabel: {
+    marginTop :5,
+    height:30
+  },
+  answersofar: {
+    marginTop :5,
+    height:70
   }
 });
 
@@ -80,49 +81,114 @@ const styles = theme => ({
 
 class SingleAnswer extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
 
-  render() {
-    const { classes,value,questionVisibility,quizMetaData,selectQuizCat,selectedQuiz,correctAnswers } = this.props;
+    constructor(props) {
+        super(props);
+        this.state = { answerInput : 'test'  };
+      }
 
-    let questionKey = value.id + '-' + selectedQuiz.key + '-'+selectQuizCat;
 
-    let answerVisible = false;
+    onClick = (arg)=>{
 
-    if(questionVisibility.hasOwnProperty(questionKey)){
-       answerVisible =questionVisibility[questionKey].visible
+      let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
+      let questionData = this.props.questionData;
+      let answerInput = this.state.answerInput.toLowerCase();
+      let correctAnswers = this.props.correctAnswers;
+      let selectedQuiz = this.props.selectedQuiz.key;
+      let testInstance = this.props.currentTest;
+      let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
+      let userAnswers = this.props.userAnswers;
+      let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, correctAnswers);
+
+      ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, correctAnswers,
+        (updatedUserAnswers,score, isCorrect)=>{
+            ScoreLib.MakeRelatedUserAnswerData(questionData.id, testInstance, answerInput,
+               userAnswers, userAnswersMapQuizInstance,isCorrect);
+            setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
+
+      });
+
+
+
+      //
+      // MatchLib.Match(this.state.answers,this.state.answerInput, 2, (correctAnswers,remainingAnswers)=>{
+      //   console.log(correctAnswers.length + ' ' + remainingAnswers.length);
+      // });
+
     }
 
-    let experiment =  <Paper className={classes.root} elevation={1}>
-                        <InputBase className={classes.input} placeholder="Answer here" />
 
-                        <IconButton color="primary" className={classes.iconButton} aria-label="Directions">
-                          <DirectionsIcon />
-                        </IconButton>
-                      </Paper>
+    formatString(classes, string,index){
+     if(index !=0) string = ',' + string;
 
+     if(index % 2 ==0){
+       return   <Typography variant="h6" className ={classes.black}  >
+           {string}
+         </Typography>
+     }
+     else {
+         return   <Typography variant="h6"  className ={classes.red}  >
+             {string}
+           </Typography>
+       }
+   }
 
-    let tpAnswer = correctAnswers[value.correctAnswers[0]].answer;
-    let answerBlock = <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-                         {tpAnswer}
-                       </Typography>
+   componentWillMount(){
 
-    let result;
+   }
 
-    if(!answerVisible) result = experiment;
-    if(answerVisible) result = answerBlock;
+    makeCorrectAnswersBlock(classes){
+      let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(this.props.questionData, this.props.correctAnswers);
 
-    return (
-      <QuestionOutline label = 'Single Text Answer' score = '90%' question = {value.question}  value = {value}>{result}</QuestionOutline>
-    );
-  }
+      let tpAnswer = correctAnswersArray.map((string,index) => (
+           this.formatString(classes,string,index)
+         ));
+
+      let answerBlock = <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
+                          {tpAnswer}
+                        </Typography>
+
+      return  answerBlock;
+    }
+
+    isQuestionVisible (){
+
+      let questionKey = this.props.questionData.id + '-' + this.props.selectedQuiz.key + '-'+ this.props.selectQuizCat;
+
+      let answerVisible = true;
+
+      if(this.props.questionVisibility.hasOwnProperty(questionKey)){
+         answerVisible = this.props.questionVisibility[questionKey].visible
+      }
+
+      return answerVisible;
+    }
+
+    render() {
+      const { classes,questionData,quizMetaData } = this.props;
+
+      const handleOnChange = event => {
+          this.setState({
+            answerInput : event.target.value,
+          });
+        };
+
+      let result;
+
+      if(!this.isQuestionVisible()){
+        result = this.makeCorrectAnswersBlock(classes);
+      }
+      else {
+         result = <div>
+                     <QuestionInput onChange={handleOnChange} onClick = {this.onClick} answer = {this.state.answerInput}/>
+                  </div>
+      }
+
+      return (
+        <QuestionOutline label = 'Single Answer' score = '90%' question = {questionData.question}  value = {questionData} >{result}</QuestionOutline>
+      );
+    }
 }
-
-// <Grid item xs={12}>
-//   <QuestionFooter  buttonClicked = { this.handleInput }/>
-// </Grid>
 
 
 const mapStateToProps = state => {
@@ -133,7 +199,10 @@ const mapStateToProps = state => {
     selectQuizCat : state.selectQuizCat,
     selectedQuiz : state.selectedQuiz,
     questionVisibility :state.questionVisibility,
-    correctAnswers : state.correctAnswers
+    correctAnswers : state.correctAnswers,
+    userAnswers : state.userAnswers,
+    userAnswersMapQuizInstance: state.userAnswersMapQuizInstance,
+    currentTest :state.currentTest
   };
 };
 
@@ -142,6 +211,9 @@ const mapDispatchToProps = dispatch => {
   return {
     setQuestionVisibility :data =>{
       dispatch(setQuestionVisibility(data))
+    },
+    setRelatedUserAnswers :data =>{
+      dispatch(setRelatedUserAnswers(data))
     }
   };
 };

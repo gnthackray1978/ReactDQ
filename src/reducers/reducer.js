@@ -44,10 +44,30 @@ export default (state = {}, action) => {
         selectQuizCat : action.selectQuizCat,
     };
 
-    case "SET_TESTSTATE":
+    case "ADD_TEST":
       return {
         ...state,
-        TestState : action.testState
+        testList : action.testList
+    };
+
+    case "SET_CURRENTTEST":
+      return {
+        ...state,
+        currentTest : action.currentTest
+    };
+
+    case "SET_TESTBATCH":
+      return {
+        ...state,
+        testList : action.testList,
+        currentTest : action.currentTest,
+        testActive :action.testActive
+    };
+
+    case "SET_TESTACTIVE":
+      return {
+      ...state,
+      testActive : action.testActive,
     };
 
     case "SET_GOOGLEAPIACTIVE":

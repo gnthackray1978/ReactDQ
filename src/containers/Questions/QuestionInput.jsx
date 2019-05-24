@@ -90,7 +90,7 @@ const styles = theme => ({
 
 
 const QuestionInput = props =>   <Paper className={props.classes.root} elevation={1}>
-    <InputBase className={props.classes.input} placeholder="Answer here"  onChange={props.onChange}/>
+    <InputBase className={props.classes.input} placeholder="Answer here"  onChange={props.onChange} value ={props.answer}/>
 
     <IconButton color="primary" className={props.classes.iconButton} aria-label="Directions" onClick = { props.onClick }>
       <DirectionsIcon />
