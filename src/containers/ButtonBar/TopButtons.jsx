@@ -72,7 +72,7 @@ class TopButtons extends Component {
 
     let createNewTest = ()=>{
 
-
+      // add new test into the list of tests
       let key = String(this.props.testList.index.length );
 
       this.props.testList[key] = {
@@ -85,7 +85,9 @@ class TopButtons extends Component {
 
       this.props.testList.index.push(key);
 
-
+      //update the list of tests to include the new one
+      //set that we are now in a test
+      //set what the current test is
       this.props.setTestBatch(this.props.testList, key);
 
     };
@@ -104,16 +106,11 @@ class TopButtons extends Component {
             </Typography>
           </Button>
 
-
-
-
           <Button color="inherit"  className={classes.grow}>
             <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
               {selectedQuiz.quiz + ' ' + selectQuizCat}
             </Typography>
           </Button>
-
-
 
           <GoogleConnect mode = "login"></GoogleConnect>
 

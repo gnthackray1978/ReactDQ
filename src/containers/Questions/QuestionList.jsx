@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {setTestState,setQuizQuestionData} from "../../actions/creators.jsx";
+import {setQuizQuestionData} from "../../actions/creators.jsx";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Grid';
@@ -94,10 +94,6 @@ const mapDispatchToProps = dispatch => {
   return {
     setSideDrawerLoaderVisible :visible =>{
       dispatch(setSideDrawerLoaderVisible(visible))
-    },
-
-    setTestState :(id,active,timestamp) =>{
-      dispatch(setTestState(id,active,timestamp))
     },
 
     setQuizQuestionData :data =>{

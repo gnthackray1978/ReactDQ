@@ -44,9 +44,6 @@ const mapDispatchToProps = dispatch => {
   return {
     setSideDrawerLoaderVisible :visible =>{
       dispatch(setSideDrawerLoaderVisible(visible))
-    },
-    setTestState :(id,active,timestamp) =>{
-      dispatch(setTestState(id,active,timestamp))
     }
 
   };
