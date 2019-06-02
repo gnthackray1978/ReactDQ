@@ -72,23 +72,30 @@ class TopButtons extends Component {
 
     let createNewTest = ()=>{
 
-      // add new test into the list of tests
-      let key = String(this.props.testList.index.length );
 
-      this.props.testList[key] = {
-        id: key,
-        quizName : this.props.selectedQuiz,
-        quizCat : this.props.selectQuizCat,
-        timeStamp : new Date(),
-        started : true
-      };
+      console.log('selected quiz: ' +this.props.selectedQuiz.key + ' selected cat: ' + this.props.selectQuizCat);
 
-      this.props.testList.index.push(key);
 
-      //update the list of tests to include the new one
-      //set that we are now in a test
-      //set what the current test is
-      this.props.setTestBatch(this.props.testList, key);
+      if(this.props.selectedQuiz.key != ''){
+        // add new test into the list of tests
+        let key = String(this.props.testList.index.length );
+
+        this.props.testList[key] = {
+          id: key,
+          quizName : this.props.selectedQuiz,
+          quizCat : this.props.selectQuizCat,
+          startedTime : new Date(),
+          active : true
+        };
+
+        this.props.testList.index.push(key);
+
+        //update the list of tests to include the new one
+        //set that we are now in a test
+        //set what the current test is
+        this.props.setTestBatch(this.props.testList, key);
+
+      }
 
     };
 

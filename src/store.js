@@ -73,7 +73,10 @@ const store = createStore(
 
     catSelection :[],
 
-    selectedQuiz : {},
+    selectedQuiz : {
+      key: '',
+      quiz :'Not Set'
+    },
 
     selectQuizCat : '',
 

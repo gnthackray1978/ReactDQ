@@ -41,15 +41,8 @@ export const setProfileObj= profileObj =>{
   };
 }
 
-export const setTestState= (testList) =>{
-  return async dispatch  => {
-    dispatch({
-      type: "ADD_TEST",
-      testList : testList
-    });
 
-  };
-}
+
 
 export const setCurrentTest= (currentTest) =>{
   return async dispatch  => {
@@ -68,6 +61,20 @@ export const setTestBatch= (testList, currentTest) =>{
       testList : testList,
       testActive :true
     });
+  };
+}
+
+export const setEndTestBatch= (currentTest, testList) =>{
+  return async dispatch  => {
+
+
+    dispatch({
+      type: "SET_ENDTEST",
+      currentTest : currentTest,
+      testList : testList,
+      testActive :false
+    });
+
   };
 }
 

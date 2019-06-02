@@ -44,11 +44,7 @@ export default (state = {}, action) => {
         selectQuizCat : action.selectQuizCat,
     };
 
-    case "ADD_TEST":
-      return {
-        ...state,
-        testList : action.testList
-    };
+
 
     case "SET_CURRENTTEST":
       return {
@@ -63,6 +59,15 @@ export default (state = {}, action) => {
         currentTest : action.currentTest,
         testActive :action.testActive
     };
+
+    case "SET_ENDTEST":
+      return {
+        ...state,
+        testList : action.testList,
+        currentTest : action.currentTest,
+        testActive :action.testActive
+    };
+
 
     case "SET_TESTACTIVE":
       return {

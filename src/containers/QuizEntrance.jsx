@@ -21,10 +21,13 @@ class QuizEntrance extends Component {
   }
 
   render() {
+      const numTests = this.props.testList.index.length;
+
       return (
         <div >
           <TopButtons  isData = {true} modeChanged = { this.handleInput }/>
           <SideDrawer onOpenClick = {click => this.dataClick = click} />
+          <div>{numTests}</div>
         </div>
       );
     }
@@ -35,7 +38,10 @@ const mapStateToProps = state => {
     SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
     TestState : state.TestState,
     selectQuizCat : state.selectQuizCat,
-    selectedQuiz : state.selectedQuiz
+    selectedQuiz : state.selectedQuiz,
+    currentTest : state.currentTest,
+    testList : state.testList,
+    testActive :state.testActive
   };
 };
 

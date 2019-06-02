@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 
 
 import { connect } from "react-redux";
-import {setTestState,setQuizQuestionData, setCombinedQuizData} from "../actions/creators.jsx";
+import {setEndTestBatch,setQuizQuestionData, setCombinedQuizData} from "../actions/creators.jsx";
 import {BasicQuestioner} from "../scripts/BasicQuestioner.js";
 import {GoogleLib} from "../scripts/GoogleLib.js";
 import QuestionList from "./Questions/QuestionList.jsx";
@@ -57,7 +57,7 @@ class QuizQuestions extends Component {
    }
 
    componentDidUpdate(){
-      console.log('componentDidUpdate: '  );
+    //  console.log('componentDidUpdate: '  );
 
     }
 
@@ -65,9 +65,11 @@ class QuizQuestions extends Component {
 
    render() {
 
-    const { classes , selectQuizCat, selectedQuiz} = this.props;
-    const setTestState = this.props.setTestState;
+    const { classes , selectQuizCat, selectedQuiz, currentTest,testList, testActive} = this.props;
+    const setEndTestBatch = this.props.setEndTestBatch;
     const TestState = this.props.TestState;
+
+
 
     console.log('state changed');
 
@@ -77,15 +79,10 @@ class QuizQuestions extends Component {
 
             <Button color="inherit"  className={classes.start}  onClick={()=>{
 
-              let date = new Date();
+              testList[currentTest].active = false;
+              testList[currentTest].endTime = new Date();
 
-
-              let newId = TestState.Id;
-
-              setTestState(newId, false, +date);
-
-
-                //read the questions in ....
+              setEndTestBatch(currentTest, testList);
 
 
               }}>
@@ -125,7 +122,10 @@ const mapStateToProps = state => {
     ClientId : state.GoogleApiParams.clientId,
     ScriptId : state.GoogleApiParams.scriptId,
     quizQuestions :state.quizQuestions,
-    correctAnswers :state.correctAnswers
+    correctAnswers :state.correctAnswers,
+    currentTest : state.currentTest,
+    testList : state.testList,
+    testActive :state.testActive
   };
 };
 
@@ -136,8 +136,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(setSideDrawerLoaderVisible(visible))
     },
 
-    setTestState :(id,active,timestamp) =>{
-      dispatch(setTestState(id,active,timestamp))
+    setEndTestBatch :(id,active,timestamp) =>{
+      dispatch(setEndTestBatch(id,active,timestamp))
     },
 
     setQuizQuestionData :data =>{
