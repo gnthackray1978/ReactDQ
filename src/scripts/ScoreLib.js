@@ -50,11 +50,27 @@ export class ScoreLib {
     return carray;
   }
 
-  static GetUserAnswersForQuestion(userAnswersObject, correctAnswers){
+  static GetUserAnswersForQuestion(userAnswersObject, userAnswersMapQuizInstance, questionId, instanceId){
+    // return answers for a given question id and test instance
+    //user info not implemented yet
+    let compositeKey = instanceId + '.' +questionId;
+    let carray = [];
 
-    let carray = userAnswersObject.index.map((id)=>{
-      return userAnswersObject[id].answer;
-    });
+
+    let returnAnswers= (item)=>{
+      return userAnswersObject.index.filter((str)=>{
+        return item == userAnswersObject[str].id;
+      }).map((id)=>{
+          return userAnswersObject[id].answer;
+      });
+    };
+
+    if(userAnswersMapQuizInstance[compositeKey]){
+      carray = userAnswersMapQuizInstance[compositeKey].answer.map((item)=>{
+        return returnAnswers(item);
+      });
+    }
+
 
     return carray;
   }
@@ -110,7 +126,7 @@ export class ScoreLib {
   }
 
 
-  static MakeRelatedUserAnswerData(questionId, instanceId, answer, userAnswers, userAnswersMapQuizInstance, isCorrect){
+  static MakeRelatedUserAnswerData(questionId, instanceId, answer, userAnswers, userAnswersMapQuizInstance, isCorrect,score){
 
 
     const initObjectsIfReq = () => {
@@ -156,6 +172,8 @@ export class ScoreLib {
       return userAnswerKey;
     };
 
+    // add answer to the user answer object
+    // and return the new id
     let userAnswerKey = storeUserAnswerIfReq();
 
     const mappingContainsCorrectAnswer = () => {
@@ -182,6 +200,7 @@ export class ScoreLib {
       if(isCorrect){
         if(!mappingContainsCorrectAnswer())
           userAnswersMapQuizInstance[compositeKey].answer.push(userAnswerKey);
+          userAnswersMapQuizInstance[compositeKey].score = score;
       }
       else{
         if(!mappingContainsWrongAnswer())
@@ -194,6 +213,7 @@ export class ScoreLib {
         id: compositeKey,
         quizInstanceId : instanceId,
         questionId : questionId,
+        score : score,
         answer : isCorrect ? [userAnswerKey] : [],
         wrongAnswer :isCorrect ? [] : [userAnswerKey],
       };

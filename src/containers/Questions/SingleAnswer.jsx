@@ -89,6 +89,7 @@ class SingleAnswer extends React.Component {
 
 
     onClick = (arg)=>{
+      console.log('current test is : ' + this.props.currentTest + ' - test name: ' + this.props.selectedQuiz.key + ' ' + this.props.selectedQuiz.quiz);
 
       let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
       let questionData = this.props.questionData;
@@ -98,12 +99,21 @@ class SingleAnswer extends React.Component {
       let testInstance = this.props.currentTest;
       let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
       let userAnswers = this.props.userAnswers;
-      let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, correctAnswers);
+      let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,testInstance);
+
+ //ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,testInstance);
 
       ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, correctAnswers,
         (updatedUserAnswers,score, isCorrect)=>{
-            ScoreLib.MakeRelatedUserAnswerData(questionData.id, testInstance, answerInput,
-               userAnswers, userAnswersMapQuizInstance,isCorrect);
+            ScoreLib.MakeRelatedUserAnswerData(questionData.id, testInstance, answerInput, userAnswers, userAnswersMapQuizInstance,isCorrect,score);
+
+            // we need to know the number of correct answers
+            let numCorrectAnswers = correctAnswers.length;
+            const getScore =(questionId,testInstanceId,numCorrectAnswers, userAnswersMapQuizInstance)=>{
+              let lookUpKey = userAnswersMapQuizInstance[testInstanceId + questionId];
+
+            };
+
             setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
 
       });

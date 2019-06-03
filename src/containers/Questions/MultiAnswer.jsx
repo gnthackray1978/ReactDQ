@@ -87,6 +87,13 @@ class MultiAnswer extends React.Component {
 
   onClick = (arg)=>{
 
+    // id: compositeKey,
+    // quizInstanceId : instanceId,
+    // questionId : questionId,
+    // score : score,
+    // answer : isCorrect ? [userAnswerKey] : [],
+    // wrongAnswer :isCorrect ? [] : [userAnswerKey],
+
     let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
     let questionData = this.props.questionData;
     let answerInput = this.state.answerInput.toLowerCase();
@@ -94,13 +101,17 @@ class MultiAnswer extends React.Component {
     let selectedQuiz = this.props.selectedQuiz.key;
     let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
     let testInstance = this.props.currentTest;
+    //user answers does not save the associated question id or test instance
     let userAnswers = this.props.userAnswers;
-    let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, correctAnswers);
+
+
+    //array of answer strings
+    let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,testInstance);
 
     ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, correctAnswers,
       (updatedUserAnswers,score, isCorrect)=>{
           ScoreLib.MakeRelatedUserAnswerData( questionData.id, testInstance, answerInput,
-             userAnswers, userAnswersMapQuizInstance,isCorrect);
+             userAnswers, userAnswersMapQuizInstance,isCorrect,score);
           setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
 
     });
@@ -131,8 +142,11 @@ class MultiAnswer extends React.Component {
  }
 
   answersSoFar(classes){
+let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
+  let questionData = this.props.questionData;
+      let testInstance = this.props.currentTest;
 
-    let tpAnswerSoFar = ScoreLib.GetUserAnswersForQuestion(this.props.userAnswers, this.props.correctAnswers);
+    let tpAnswerSoFar = ScoreLib.GetUserAnswersForQuestion(this.props.userAnswers, userAnswersMapQuizInstance,questionData.id,testInstance);
 
     return   <div>
         <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
