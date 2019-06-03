@@ -142,10 +142,9 @@ class MultiAnswer extends React.Component {
  }
 
   answersSoFar(classes){
-let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
-  let questionData = this.props.questionData;
-      let testInstance = this.props.currentTest;
-
+    let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
+    let questionData = this.props.questionData;
+    let testInstance = this.props.currentTest;
     let tpAnswerSoFar = ScoreLib.GetUserAnswersForQuestion(this.props.userAnswers, userAnswersMapQuizInstance,questionData.id,testInstance);
 
     return   <div>

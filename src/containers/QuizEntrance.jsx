@@ -5,7 +5,7 @@ import { beginSearch,setSideDrawerLoaderVisible } from "../actions/creators.jsx"
 import { withStyles } from '@material-ui/core/styles';
 import SideDrawer from './SideDrawer/SideDrawer.jsx';
 import TopButtons from './ButtonBar/TopButtons.jsx';
-
+import TestHistory from './TestHistory.jsx';
 
 const styles = theme => ({
 
@@ -21,53 +21,53 @@ class QuizEntrance extends Component {
   }
 
   render() {
-      const numTests = this.props.testList.index.length;
+      // const numTests = this.props.testList.index.length;
+      //
+      //
+      //
+      // let testHistory = this.props.testList.index.map((key)=>{
+      //   // this.props.testList[key]
+      //
+      //   let scores = this.props.userAnswersMapQuizInstance.index.map((instancedata)=>{
+      //     // id: compositeKey,
+      //     // quizInstanceId : instanceId,
+      //     // questionId : questionId,
+      //     // score : score,
+      //     // answer : isCorrect ? [userAnswerKey] : [],
+      //     // wrongAnswer :isCorrect ? [] : [userAnswerKey],
+      //
+      //     if(this.props.userAnswersMapQuizInstance[instancedata].quizInstanceId == this.props.testList[key].id){
+      //       return this.props.userAnswersMapQuizInstance[instancedata].score;
+      //     }
+      //   });
+      //
+      //   let total = scores.reduce((total,sum)=>{
+      //       return total+sum;
+      //   });
+      //
+      //   return {
+      //     quizName: key.selectedQuiz,
+      //     score: total,
+      //     started : key.startedTime,
+      //     ended : key.endTime
+      //   };
+      //
+      //   // this.props.testList[key] = {
+      //   //   id: key,
+      //   //   quizName : this.props.selectedQuiz,
+      //   //   quizCat : this.props.selectQuizCat,
+      //   //   startedTime : new Date(),
+      //   //   active : true
+      //   // };
+      // });
 
-
-
-      let testHistory = this.props.testList.index.map((key)=>{
-        // this.props.testList[key]
-
-        let scores = this.props.userAnswersMapQuizInstance.index.map((instancedata)=>{
-          // id: compositeKey,
-          // quizInstanceId : instanceId,
-          // questionId : questionId,
-          // score : score,
-          // answer : isCorrect ? [userAnswerKey] : [],
-          // wrongAnswer :isCorrect ? [] : [userAnswerKey],
-
-          if(this.props.userAnswersMapQuizInstance[instancedata].quizInstanceId == this.props.testList[key].id){
-            return this.props.userAnswersMapQuizInstance[instancedata].score;
-          }
-        });
-
-        let total = scores.reduce((total,sum)=>{
-            return total+sum;
-        });
-
-        return {
-          quizName: key.selectedQuiz,
-          score: total,
-          started : key.startedTime,
-          ended : key.endTime
-        };
-
-        // this.props.testList[key] = {
-        //   id: key,
-        //   quizName : this.props.selectedQuiz,
-        //   quizCat : this.props.selectQuizCat,
-        //   startedTime : new Date(),
-        //   active : true
-        // };
-      });
-
-      console.log(testHistory.length);
+  //    console.log(testHistory.length);
 
       return (
         <div >
           <TopButtons  isData = {true} modeChanged = { this.handleInput }/>
           <SideDrawer onOpenClick = {click => this.dataClick = click} />
-          <div>{numTests}</div>
+          <TestHistory></TestHistory>
         </div>
       );
     }

@@ -42,6 +42,59 @@ export class ScoreLib {
 
   }
 
+  static MakeTestHistoryObj(testList, userAnswersMapQuizInstance){
+    const numTests = testList.index.length;
+
+    let testHistory = [{
+      quizName: 'test data',
+      score: 95,
+      started : '9am 12/4/2019',
+      ended : '10am 12/4/2019'
+    }];
+
+    if(testList.index.length > 0){
+        testHistory = testList.index.map((key)=>{
+        // this.props.testList[key]
+
+        let scores = userAnswersMapQuizInstance.index.map((instancedata)=>{
+          // id: compositeKey,
+          // quizInstanceId : instanceId,
+          // questionId : questionId,
+          // score : score,
+          // answer : isCorrect ? [userAnswerKey] : [],
+          // wrongAnswer :isCorrect ? [] : [userAnswerKey],
+
+          if(userAnswersMapQuizInstance[instancedata].quizInstanceId == testList[key].id){
+            return userAnswersMapQuizInstance[instancedata].score;
+          }
+        });
+
+        let total = scores.reduce((total,sum)=>{
+            return total+sum;
+        });
+
+
+        return {
+          quizName: testList[key].quizName.quiz,
+          score: total,
+          started : testList[key].startedTime.toLocaleString(),
+          ended : testList[key].endTime.toLocaleString()
+        };
+
+        // this.props.testList[key] = {
+        //   id: key,
+        //   quizName : this.props.selectedQuiz,
+        //   quizCat : this.props.selectQuizCat,
+        //   startedTime : new Date(),
+        //   active : true
+        // };
+
+        });
+    }
+
+    return testHistory;
+  }
+
   static GetCorrectAnswersForQuestion(questionData, correctAnswers){
     let carray = questionData.correctAnswers.map((id)=>{
       return correctAnswers[id].correctAnswers;
