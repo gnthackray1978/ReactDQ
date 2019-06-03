@@ -95,6 +95,20 @@ export class ScoreLib {
     return testHistory;
   }
 
+  static GetScoreForQuestion(userAnswersMapQuizInstance, questionId, instanceId){
+    let compositeKey = instanceId + '.' +questionId;
+
+    let mapping = userAnswersMapQuizInstance[compositeKey];
+
+    if(!mapping){
+      return 0;
+    }
+    else{
+      return userAnswersMapQuizInstance[compositeKey].score;
+    }
+
+  }
+
   static GetCorrectAnswersForQuestion(questionData, correctAnswers){
     let carray = questionData.correctAnswers.map((id)=>{
       return correctAnswers[id].correctAnswers;
@@ -129,38 +143,44 @@ export class ScoreLib {
   }
 
 
-  static GetScoreMultiAnswerByQueestionData(usersCorrectAnswers, questionData, attemptedAnswer,correctAnswers, callback){
+  static GetScoreMultiAnswerByQueestionData(usersAnswers, questionData, attemptedAnswer,correctAnswers, callback){
     correctAnswers = questionData.correctAnswers.map((id)=>{
       return correctAnswers[id].correctAnswers;
     });
 
 
-    ScoreLib.GetScoreMultiAnswer(usersCorrectAnswers, correctAnswers, attemptedAnswer, callback);
+    ScoreLib.GetScoreMultiAnswer(usersAnswers, correctAnswers, attemptedAnswer, callback);
 
   }
 
-  static GetScoreMultiAnswer(correctAnswers, originalAnswers, attemptedAnswer, callback){
+  static GetScoreMultiAnswer(userAnswers, correctAnswers, attemptedAnswer, callback){
 
   //  console.log(originalAnswers.length + ' ' + correctAnswers.length);
 
-     let remainingAnswers = ScoreLib.GetRemainingAnswers(correctAnswers, originalAnswers);
+     let remainingAnswers = ScoreLib.GetRemainingAnswers(userAnswers, correctAnswers);
+
+     //if the correct answers that the user has already entered
+     //match the original answers
+     if(userAnswers.length == correctAnswers.length){
+       callback(userAnswers,100,true);
+     }
+     else{
+       MatchLib.Match(remainingAnswers, attemptedAnswer, 2, (correct, updatedRemaining)=>{
+
+         console.log('comparison result: '+remainingAnswers.length + ' ' + updatedRemaining.length  );
+
+         let percentile = (100 / correctAnswers.length);
 
 
 
-     MatchLib.Match(remainingAnswers, attemptedAnswer, 2, (correct, updatedRemaining)=>{
-
-       console.log('comparison result: '+remainingAnswers.length + ' ' + updatedRemaining.length  );
-
-       let percentile = (100 / originalAnswers.length);
-
-       let score = Math.floor(percentile *  (correct.length + correctAnswers.length));
+         let score = Math.floor(percentile *  (correctAnswers.length - updatedRemaining.length));
 
 
-       let isAttemptedAnswerCorrect = (remainingAnswers.length > updatedRemaining.length);
+         let isAttemptedAnswerCorrect = (remainingAnswers.length > updatedRemaining.length);
 
-       callback(correctAnswers.concat(correct),score,isAttemptedAnswerCorrect);
-     });
-
+         callback(userAnswers.concat(correct),score,isAttemptedAnswerCorrect);
+       });
+      }
 
 
   }

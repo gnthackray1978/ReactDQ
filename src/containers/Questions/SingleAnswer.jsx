@@ -175,7 +175,11 @@ class SingleAnswer extends React.Component {
     }
 
     render() {
-      const { classes,questionData,quizMetaData } = this.props;
+      console.log('single answer rendered');
+
+      const { classes,questionData,quizMetaData ,userAnswersMapQuizInstance, currentTest} = this.props;
+
+      let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
       const handleOnChange = event => {
           this.setState({
@@ -195,7 +199,7 @@ class SingleAnswer extends React.Component {
       }
 
       return (
-        <QuestionOutline label = 'Single Answer' score = '90%' question = {questionData.question}  value = {questionData} >{result}</QuestionOutline>
+        <QuestionOutline label = 'Single Answer' score = {score} question = {questionData.question}  value = {questionData} >{result}</QuestionOutline>
       );
     }
 }
