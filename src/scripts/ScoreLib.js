@@ -220,6 +220,12 @@ export class ScoreLib {
 
 
     //let difference  = correctAnswers.filter(x => !userAnswered.includes(x));
+    userAnswered = userAnswered.map((m)=>{
+      return String(m).toLowerCase();
+    });
+    correctAnswers = correctAnswers.map((m)=>{
+      return String(m).toLowerCase();
+    });
 
      let difference  = correctAnswers.filter(x => {
        return userAnswered.indexOf(x) == -1;
@@ -264,13 +270,14 @@ export class ScoreLib {
 
         refUserAnswers[userAnswerKey] = {
           id: userAnswerKey,
-          answer : answer
+          answer : answer,
+          deleted : false
         };
         refUserAnswers.index.push(userAnswerKey);
       }
       else{
       //  console.log('answer already stored');
-        userAnswerKey = existingAnswer.id;
+        userAnswerKey = refUserAnswers[existingAnswer].id;
       }
 
       return userAnswerKey;
@@ -334,7 +341,24 @@ export class ScoreLib {
 
   }
 
+  static ResetCorrectAnswersInEnteredAnswerObjs(questionId, instanceId, refUserAnswers, refUserAnswersMapQuizInstance){
 
+    let compositeKey = instanceId + '.' +questionId;
+
+    if(refUserAnswersMapQuizInstance[compositeKey] ){
+          refUserAnswersMapQuizInstance[compositeKey].answer =[];
+          refUserAnswersMapQuizInstance[compositeKey].score = 0;
+    }
+    else{
+      // question hasnt been answered yet.
+    }
+
+    return {
+      refUserAnswersMapQuizInstance: refUserAnswersMapQuizInstance ,
+      refUserAnswers : refUserAnswers
+    };
+
+  }
 
 
 

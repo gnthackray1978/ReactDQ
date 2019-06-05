@@ -52,7 +52,9 @@ const styles = theme => ({
   },
 
   button: {
-    margin :0,
+
+    marginLeft : 0,
+    marginRight : 0,
     top: -11
   },
 
@@ -60,7 +62,13 @@ const styles = theme => ({
 
     height:35
   },
-
+  label:{
+    verticalAlign: 'top',
+      marginRight : 10
+  },
+  score:{
+    textAlign: 'end'
+  },
   questionrow: {
 
     height:55
@@ -81,12 +89,6 @@ function QuestionOutline(props) {
   const { classes, selectedQuiz, selectQuizCat, value, questionVisibility} = props;
 
   const handleInput = (e) => {
-    console.log(e);
-    // record in the store question id
-    // and whether or not it's visible.
-
-    if(selectedQuiz)
-      console.log(e + ' clicked: ' + selectedQuiz.key + ' ' + selectQuizCat + ' ' + value.id);
 
     let questionKey = value.id + '-' + selectedQuiz.key + '-'+selectQuizCat;
 
@@ -99,24 +101,26 @@ function QuestionOutline(props) {
       questionVisibility[questionKey].visible = !questionVisibility[questionKey].visible;
     }
 
-
     props.setQuestionVisibility(questionVisibility);
 
+  }
+
+  const handleUndo = (e)=>{
+    props.undo();
   }
 
   return (
     <Paper className={classes.answerContainer}>
        <Grid container spacing={16}>
-         <Grid item xs={8}  className={classes.toprow} >
-         {props.label}
-         </Grid>
-         <Grid item xs={2}  className={classes.toprow} >
-         {props.score}
-         </Grid>
-         <Grid item xs={2}  className={classes.toprow} >
+         <Grid item xs={9}  className={classes.toprow} >
+           <span className={classes.label} >{props.label}</span>
+           <IconButton className={classes.button}  onClick = {handleUndo}> <Icon>replay</Icon> </IconButton>
            <IconButton className={classes.button}  onClick = {handleInput}> <Icon>visibility</Icon> </IconButton>
          </Grid>
 
+         <Grid item xs={3}  className={classes.score} >
+         {props.score}
+         </Grid>
          <Grid item xs={12} className ={classes.questionrow}>{props.question}</Grid>
 
 

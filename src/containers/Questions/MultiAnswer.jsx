@@ -113,15 +113,10 @@ class MultiAnswer extends React.Component {
           ScoreLib.UpdateEnteredAnswerObjs( questionData.id, testInstance, answerInput,
              userAnswers, userAnswersMapQuizInstance,isCorrect,score);
           setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
-
+          this.setState({
+            answerInput : ''
+          });
     });
-
-
-
-    //
-    // MatchLib.Match(this.state.answers,this.state.answerInput, 2, (correctAnswers,remainingAnswers)=>{
-    //   console.log(correctAnswers.length + ' ' + remainingAnswers.length);
-    // });
 
   }
 
@@ -189,13 +184,18 @@ class MultiAnswer extends React.Component {
   }
 
   render() {
-    const { classes,questionData,quizMetaData } = this.props;
+    const { classes,questionData,quizMetaData,userAnswersMapQuizInstance ,currentTest,userAnswers} = this.props;
+
+
+
 
     const handleOnChange = event => {
         this.setState({
           answerInput : event.target.value,
         });
       };
+
+    let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
     let result;
 
@@ -210,7 +210,13 @@ class MultiAnswer extends React.Component {
     }
 
     return (
-      <QuestionOutline label = 'Multi Answer' score = '90%' question = {questionData.question}  value = {questionData}>{result}</QuestionOutline>
+      <QuestionOutline label = 'Multi Answer' score = {score} question = {questionData.question}  value = {questionData} undo = {()=>{
+          console.log('undo clicked');
+          // so that if the user changes their mind and enters the wrong answer then their score goes down.
+          ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
+
+          this.props.setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
+        }}>{result}</QuestionOutline>
     );
   }
 }
