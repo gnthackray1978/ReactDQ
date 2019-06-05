@@ -168,7 +168,7 @@ test('Check Remaining Answers Calculated Correctly',()=>{
 //   };
 //   userAnswersMapQuizInstance.index.push(compositeKey);
 //
-//   let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+//   let result = ScoreLib.UpdateEnteredAnswerObjs(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
 //
 //   //console.log('user answers length: ' + userAnswers.index);
 //
@@ -226,7 +226,7 @@ describe('setRelatedUserAnswers', () => {
 
   test('correct number of user answers returned',()=>{
 
-    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+    let result = ScoreLib.UpdateEnteredAnswerObjs(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
 
     expect(userAnswers.index.length).toEqual(2);
 
@@ -234,7 +234,7 @@ describe('setRelatedUserAnswers', () => {
 
   test('existing answer preserved',()=>{
 
-    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+    let result = ScoreLib.UpdateEnteredAnswerObjs(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
 
     expect(userAnswers['0'].answer).toEqual('answer 1');
 
@@ -242,7 +242,7 @@ describe('setRelatedUserAnswers', () => {
 
   test('answer added correctly',()=>{
 
-    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+    let result = ScoreLib.UpdateEnteredAnswerObjs(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
 
     expect(userAnswers['1'].answer).toEqual('answer 2');
 
@@ -251,7 +251,7 @@ describe('setRelatedUserAnswers', () => {
 
   test('correct number of quiz mappings returned',()=>{
 
-    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+    let result = ScoreLib.UpdateEnteredAnswerObjs(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
 
     expect(userAnswersMapQuizInstance[compositeKey].answer.length).toEqual(2);
 
@@ -259,7 +259,7 @@ describe('setRelatedUserAnswers', () => {
 
   test('correct quiz mapping answer returned when added to existing mapping',()=>{
 
-    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
+    let result = ScoreLib.UpdateEnteredAnswerObjs(quizId, questionId, answer, userAnswers, userAnswersMapQuizInstance);
     let key = quizId + questionId;
     expect(userAnswersMapQuizInstance[key].answer[1]).toEqual('1');
 
@@ -269,7 +269,7 @@ describe('setRelatedUserAnswers', () => {
 
     let localQuestion = "2";
 
-    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, localQuestion, 'the', userAnswers, userAnswersMapQuizInstance);
+    let result = ScoreLib.UpdateEnteredAnswerObjs(quizId, localQuestion, 'the', userAnswers, userAnswersMapQuizInstance);
     let key = quizId + localQuestion;
 
     expect(userAnswersMapQuizInstance[key].answer.length).toEqual(1);
@@ -280,8 +280,8 @@ describe('setRelatedUserAnswers', () => {
 
     let localQuestion = "2";
 
-    let result = ScoreLib.MakeRelatedUserAnswerData(quizId, localQuestion, 'mog', userAnswers, userAnswersMapQuizInstance);
-    result = ScoreLib.MakeRelatedUserAnswerData(quizId, localQuestion, 'gog', userAnswers, userAnswersMapQuizInstance);
+    let result = ScoreLib.UpdateEnteredAnswerObjs(quizId, localQuestion, 'mog', userAnswers, userAnswersMapQuizInstance);
+    result = ScoreLib.UpdateEnteredAnswerObjs(quizId, localQuestion, 'gog', userAnswers, userAnswersMapQuizInstance);
 
 
     let key = quizId + localQuestion;

@@ -94,25 +94,26 @@ class SingleAnswer extends React.Component {
       let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
       let questionData = this.props.questionData;
       let answerInput = this.state.answerInput.toLowerCase();
-      let correctAnswers = this.props.correctAnswers;
+      let solution = this.props.correctAnswers;
       let selectedQuiz = this.props.selectedQuiz.key;
-      let testInstance = this.props.currentTest;
+      let currentTestId = this.props.currentTest;
       let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
       let userAnswers = this.props.userAnswers;
       let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,testInstance);
 
  //ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,testInstance);
 
-      ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, correctAnswers,
+      ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, solution,
         (updatedUserAnswers,score, isCorrect)=>{
-            ScoreLib.MakeRelatedUserAnswerData(questionData.id, testInstance, answerInput, userAnswers, userAnswersMapQuizInstance,isCorrect,score);
+
+            ScoreLib.UpdateEnteredAnswerObjs(questionData.id, currentTestId, answerInput, userAnswers, userAnswersMapQuizInstance,isCorrect,score);
 
             // we need to know the number of correct answers
-            let numCorrectAnswers = correctAnswers.length;
-            const getScore =(questionId,testInstanceId,numCorrectAnswers, userAnswersMapQuizInstance)=>{
-              let lookUpKey = userAnswersMapQuizInstance[testInstanceId + questionId];
-
-            };
+            // let numCorrectAnswers = solution.length;
+            // const getScore =(questionId,testInstanceId,numCorrectAnswers, userAnswersMapQuizInstance)=>{
+            //   let lookUpKey = userAnswersMapQuizInstance[testInstanceId + questionId];
+            //
+            // };
 
             setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
 

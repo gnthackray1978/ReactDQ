@@ -110,7 +110,7 @@ class MultiAnswer extends React.Component {
 
     ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, correctAnswers,
       (updatedUserAnswers,score, isCorrect)=>{
-          ScoreLib.MakeRelatedUserAnswerData( questionData.id, testInstance, answerInput,
+          ScoreLib.UpdateEnteredAnswerObjs( questionData.id, testInstance, answerInput,
              userAnswers, userAnswersMapQuizInstance,isCorrect,score);
           setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
 

@@ -10,7 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import TextField from '@material-ui/core/TextField';
 import InputBase from '@material-ui/core/InputBase';
 import DirectionsIcon from '@material-ui/icons/Directions';
-import {ScoreLib} from "../scripts/ScoreLib.js"
+import {ScoreLib} from "../scripts/ScoreLib.js";
 import { connect } from "react-redux";
 
 

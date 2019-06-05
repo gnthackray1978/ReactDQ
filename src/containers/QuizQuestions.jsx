@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import {PropTypes,func} from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-
+import {ScoreLib} from "../scripts/ScoreLib.js";
 
 import { connect } from "react-redux";
 import {setEndTestBatch,setQuizQuestionData, setCombinedQuizData} from "../actions/creators.jsx";
@@ -65,11 +65,11 @@ class QuizQuestions extends Component {
 
    render() {
 
-    const { classes , selectQuizCat, selectedQuiz, currentTest,testList, testActive} = this.props;
+    const { classes , selectQuizCat, selectedQuiz, currentTest,testList, testActive,userAnswersMapQuizInstance, quizQuestions} = this.props;
     const setEndTestBatch = this.props.setEndTestBatch;
     const TestState = this.props.TestState;
 
-
+    let score = 'Score: '+ScoreLib.GetScoreForTest(userAnswersMapQuizInstance,currentTest,quizQuestions.index.length)+ '%';
 
     console.log('state changed');
 
@@ -100,7 +100,7 @@ class QuizQuestions extends Component {
 
             <Button color="inherit"  className={classes.start}>
               <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-                Score : 90%
+                {score}
               </Typography>
             </Button>
 
@@ -125,7 +125,8 @@ const mapStateToProps = state => {
     correctAnswers :state.correctAnswers,
     currentTest : state.currentTest,
     testList : state.testList,
-    testActive :state.testActive
+    testActive :state.testActive,
+    userAnswersMapQuizInstance: state.userAnswersMapQuizInstance
   };
 };
 

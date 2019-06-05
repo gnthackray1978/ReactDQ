@@ -109,6 +109,37 @@ export class ScoreLib {
 
   }
 
+  static GetScoreForTest(userAnswersMapQuizInstance, instanceId, numberofquestions){
+
+     console.log('GetScoreForTest : '+instanceId);
+    //
+    // userAnswersMapQuizInstance.index.forEach((e)=>{
+    //   console.log(userAnswersMapQuizInstance[e].id);
+    //
+    //
+    // });
+
+    let scores = userAnswersMapQuizInstance.index.filter(f=>userAnswersMapQuizInstance[f].quizInstanceId == instanceId).map(m=>{
+
+     if(userAnswersMapQuizInstance[m].score  ==0) return 0;
+
+      return userAnswersMapQuizInstance[m].score /100;
+    });
+
+
+    let total = 0;
+
+    if(scores.length >0){
+        total= scores.reduce((total,sum)=>{
+            return total+sum;
+        });
+    }
+
+
+    return (total/ numberofquestions)*100;
+
+  }
+
   static GetCorrectAnswersForQuestion(questionData, correctAnswers){
     let carray = questionData.correctAnswers.map((id)=>{
       return correctAnswers[id].correctAnswers;
@@ -199,18 +230,18 @@ export class ScoreLib {
   }
 
 
-  static MakeRelatedUserAnswerData(questionId, instanceId, answer, userAnswers, userAnswersMapQuizInstance, isCorrect,score){
+  static UpdateEnteredAnswerObjs(questionId, instanceId, answer, refUserAnswers, refUserAnswersMapQuizInstance, isCorrect,score){
 
 
     const initObjectsIfReq = () => {
-        if(!userAnswers){
-          userAnswers ={
+        if(!refUserAnswers){
+          refUserAnswers ={
             index :[]
           };
         }
 
-        if(!userAnswersMapQuizInstance){
-          userAnswersMapQuizInstance ={
+        if(!refUserAnswersMapQuizInstance){
+          refUserAnswersMapQuizInstance ={
             index :[]
           };
 
@@ -220,22 +251,22 @@ export class ScoreLib {
     initObjectsIfReq();
 
     const storeUserAnswerIfReq =() =>{
-      let existingAnswer = userAnswers.index.filter((idx)=>{
-        return userAnswers[idx].answer == answer;
+      let existingAnswer = refUserAnswers.index.filter((idx)=>{
+        return refUserAnswers[idx].answer == answer;
       });
 
 
-      let userAnswerKey = String(userAnswers.index.length );
+      let userAnswerKey = String(refUserAnswers.index.length );
 
       //create a new answer in the user answers object
       //if our answer isnt already in there
       if(existingAnswer.length ==0){
 
-        userAnswers[userAnswerKey] = {
+        refUserAnswers[userAnswerKey] = {
           id: userAnswerKey,
           answer : answer
         };
-        userAnswers.index.push(userAnswerKey);
+        refUserAnswers.index.push(userAnswerKey);
       }
       else{
       //  console.log('answer already stored');
@@ -250,7 +281,7 @@ export class ScoreLib {
     let userAnswerKey = storeUserAnswerIfReq();
 
     const mappingContainsCorrectAnswer = () => {
-      let answerContains = userAnswersMapQuizInstance[compositeKey].answer.filter((idx)=>{
+      let answerContains = refUserAnswersMapQuizInstance[compositeKey].answer.filter((idx)=>{
         return idx == userAnswerKey;
       });
 
@@ -258,7 +289,7 @@ export class ScoreLib {
     };
 
     const mappingContainsWrongAnswer = () => {
-      let answerContains = userAnswersMapQuizInstance[compositeKey].wrongAnswer.filter((idx)=>{
+      let answerContains = refUserAnswersMapQuizInstance[compositeKey].wrongAnswer.filter((idx)=>{
         return idx == userAnswerKey;
       });
 
@@ -269,20 +300,20 @@ export class ScoreLib {
 
     let compositeKey = instanceId + '.' +questionId;
 
-    if(userAnswersMapQuizInstance[compositeKey] ){
+    if(refUserAnswersMapQuizInstance[compositeKey] ){
       if(isCorrect){
         if(!mappingContainsCorrectAnswer())
-          userAnswersMapQuizInstance[compositeKey].answer.push(userAnswerKey);
-          userAnswersMapQuizInstance[compositeKey].score = score;
+          refUserAnswersMapQuizInstance[compositeKey].answer.push(userAnswerKey);
+          refUserAnswersMapQuizInstance[compositeKey].score = score;
       }
       else{
         if(!mappingContainsWrongAnswer())
-          userAnswersMapQuizInstance[compositeKey].wrongAnswer.push(userAnswerKey);
+          refUserAnswersMapQuizInstance[compositeKey].wrongAnswer.push(userAnswerKey);
       }
     }
     else{
       // we don't have the quiz and the question in the store
-      userAnswersMapQuizInstance[compositeKey] = {
+      refUserAnswersMapQuizInstance[compositeKey] = {
         id: compositeKey,
         quizInstanceId : instanceId,
         questionId : questionId,
@@ -291,14 +322,14 @@ export class ScoreLib {
         wrongAnswer :isCorrect ? [] : [userAnswerKey],
       };
 
-      userAnswersMapQuizInstance.index.push(compositeKey);
+      refUserAnswersMapQuizInstance.index.push(compositeKey);
     }
 
 
 
     return {
-      userAnswersMapQuizInstance: userAnswersMapQuizInstance ,
-      userAnswers : userAnswers
+      refUserAnswersMapQuizInstance: refUserAnswersMapQuizInstance ,
+      refUserAnswers : refUserAnswers
     };
 
   }

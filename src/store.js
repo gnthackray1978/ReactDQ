@@ -78,6 +78,9 @@ const store = createStore(
       quiz :'Not Set'
     },
 
+    //answer store
+
+
     selectQuizCat : '',
 
     profileObj : '',
