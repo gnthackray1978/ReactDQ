@@ -135,9 +135,7 @@ class SingleAnswer extends React.Component {
        }
    }
 
-   componentWillMount(){
 
-   }
 
     makeCorrectAnswersBlock(classes){
       let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(this.props.questionData, this.props.correctAnswers);

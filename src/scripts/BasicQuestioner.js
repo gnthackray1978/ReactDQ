@@ -53,6 +53,9 @@ export class BasicQuestioner {
          case 'MS':
              questionType = 1; // multi ordered answer
              break;
+         case 'BO':
+             questionType = 2; // multi ordered answer
+             break;
          default:
              questionType = 0; //question is multiple choice
              break;
@@ -93,7 +96,7 @@ export class BasicQuestioner {
                    // questions with multiple answers
                    if (questionType != 0) {
 
-                       var tp = cols.slice(multiAnswerStartIdx).filter(line => line.trim() !== "").map(m=>{
+                       var tp = cols.slice(multiAnswerStartIdx).filter(line => String(line).trim() !== "").map(m=>{
                          answers[String(answerIdx)] = {
                            id: String(answerIdx),
                            correctAnswers : m
