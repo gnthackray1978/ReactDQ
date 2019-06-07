@@ -36,9 +36,11 @@ const styles = theme => ({
 });
 
 
-const QuestionBooleanInput = props =>   <Paper className={props.classes.root} elevation={1}>
+const QuestionBooleanInput = props =>
+<div>
+<Paper className={props.classes.root} elevation={1}>
         <FormControl component="fieldset">
-        <RadioGroup aria-label="position" name="position" onChange={props.onChange} value ={props.answer} row  className ={props.classes.rg}>
+        <RadioGroup aria-label="position" name="position" onChange={props.onChange} row  className ={props.classes.rg}>
           <FormControlLabel
             value="true"
             control={<Radio color="primary" />}
@@ -54,7 +56,7 @@ const QuestionBooleanInput = props =>   <Paper className={props.classes.root} el
         </RadioGroup>
       </FormControl>
 
-  </Paper>;
+  </Paper></div>;
 
 
 export default withStyles(styles)(QuestionBooleanInput);

@@ -13,8 +13,10 @@ import InputBase from '@material-ui/core/InputBase';
 import DirectionsIcon from '@material-ui/icons/Directions';
 
 import QuestionBooleanInput from "./QuestionBooleanInput.jsx";
+import CorrectAnswer from "./CorrectAnswer.jsx";
 import {MatchLib} from "../../scripts/MatchLib.js"
 import {ScoreLib} from "../../scripts/ScoreLib.js"
+import {QuestionHelpers} from "./QuestionHelpers.js"
 
 import { connect } from "react-redux";
 
@@ -58,15 +60,6 @@ const styles = theme => ({
     height:55
   },
 
-  red: {
-    color: 'red',
-    display: 'contents'
-  },
-  black: {
-    color: 'black',
-    display: 'contents'
-  },
-
   answersofarlabel: {
     marginTop :5,
     height:30
@@ -82,25 +75,23 @@ class BooleanAnswer extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { answerInput : ''  };
+
   }
 
-
-  onClick = (arg)=>{
-    //console.log('current test is : ' + this.props.currentTest + ' - test name: ' + this.props.selectedQuiz.key + ' ' + this.props.selectedQuiz.quiz);
-
+  inputChanged =(arg)=>{
+    console.log('input changed');
 
 
-    let answerInput = this.state.answerInput.toLowerCase();
+
+    let answerInput = arg.target.value.toLowerCase();
     let solution = this.props.correctAnswers;
     let selectedQuiz = this.props.selectedQuiz.key;
-
     let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
-
     let userAnswers = this.props.userAnswers;
     let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
     let currentTestId = this.props.currentTest;
     let questionData = this.props.questionData;
+
     // so that if the user changes their mind and enters the wrong answer then their score goes down.
     ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTestId, userAnswers, userAnswersMapQuizInstance);
 
@@ -115,88 +106,42 @@ class BooleanAnswer extends React.Component {
 
     });
 
-  }
 
-  formatString(classes, string,index){
-   if(index !=0) string = ',' + string;
+  };
 
-   if(index % 2 ==0){
-     return   <Typography variant="h6" className ={classes.black}  >
-         {string}
-       </Typography>
-   }
-   else {
-       return   <Typography variant="h6"  className ={classes.red}  >
-           {string}
-         </Typography>
-     }
- }
+  undo = () =>{
 
+    const { questionData,userAnswersMapQuizInstance, currentTest,userAnswers} = this.props;
 
+    console.log('undo clicked');
+    // so that if the user changes their mind and enters the wrong answer then their score goes down.
+    ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
 
-  makeCorrectAnswersBlock(classes){
-    let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(this.props.questionData, this.props.correctAnswers);
+    this.props.setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
 
-    let tpAnswer = correctAnswersArray.map((string,index) => (
-         this.formatString(classes,String(string),index)
-       ));
+  };
 
-    let answerBlock = <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-                        {tpAnswer}
-                      </Typography>
-
-    return  answerBlock;
-  }
-
-  isQuestionVisible (){
-
-    let questionKey = this.props.questionData.id + '-' + this.props.selectedQuiz.key + '-'+ this.props.selectQuizCat;
-
-    let answerVisible = true;
-
-    if(this.props.questionVisibility.hasOwnProperty(questionKey)){
-       answerVisible = this.props.questionVisibility[questionKey].visible
-    }
-
-    return answerVisible;
-  }
 
   render() {
     console.log('boolean answer rendered');
 
-    const { classes,questionData,quizMetaData ,userAnswersMapQuizInstance, currentTest,userAnswers} = this.props;
+    const { classes,questionData,userAnswersMapQuizInstance, currentTest,selectQuizCat,questionVisibility,correctAnswers,selectedQuiz} = this.props;
 
     let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
-    const handleOnChange = event => {
-        this.setState({
-          answerInput : event.target.value,
-        });
-      };
-
     let result;
 
-    if(!this.isQuestionVisible()){
-      result = this.makeCorrectAnswersBlock(classes);
+    if(!QuestionHelpers.IsAnswerVisible(questionData.id,selectedQuiz.key,selectQuizCat,questionVisibility)){
+      result = <CorrectAnswer>{ScoreLib.GetCorrectAnswersForQuestion(questionData, correctAnswers)}</CorrectAnswer>
     }
     else {
-       result = <div>
-                   <QuestionBooleanInput onChange={handleOnChange} onClick = {this.onClick} answer = {this.state.answerInput}/>
-                </div>
+       result = <QuestionBooleanInput onChange={this.inputChanged} onClick = {this.onClick} />
     }
 
     return (
-      <QuestionOutline label = 'Boolean Answer' score = {score} question = {questionData.question}  value = {questionData} undo = {()=>{
-          console.log('undo clicked');
-          // so that if the user changes their mind and enters the wrong answer then their score goes down.
-          ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
-
-          this.props.setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
-
-          this.setState({
-            answerInput : ''
-          });
-        }}>{result}</QuestionOutline>
+      <QuestionOutline label = 'Boolean Answer' score = {score} question = {questionData.question}  value = {questionData}  undo = { this.undo}>
+        {result}
+      </QuestionOutline>
     );
   }
 }
