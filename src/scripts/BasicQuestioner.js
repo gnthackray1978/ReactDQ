@@ -7,7 +7,7 @@ export class BasicQuestioner {
       const questionColIdx = 3;
       const multiAnswerStartIdx = 5;
 
-      const createQuestion =( answers,questionType, cols)=> {
+      const createQuestion =( answers,questionType, cols, questionObjIdx)=> {
 
        if(!answers){
          answers ={
@@ -15,10 +15,10 @@ export class BasicQuestioner {
          };
        }
 
-       let idx = String(answers.index.length+1);
+
 
        var tp = cols.slice(multiAnswerStartIdx).filter(line => String(line).trim() !== "").map(m=>{
-
+         let idx = String(answers.index.length+1);
          answers[idx] = {
            id: idx,
            answerText : m
@@ -29,7 +29,7 @@ export class BasicQuestioner {
        });
 
        return {
-         id: idx,
+         id: questionObjIdx,
          question : cols[questionColIdx],
          correctAnswers : tp,
          type: questionType
@@ -38,8 +38,8 @@ export class BasicQuestioner {
 
      };
 
-      const createMultiChoiceQuestion =( answers,questionType, cols)=> {
-        let idx = String(answers.index.length+1);
+      const createMultiChoiceQuestion =( answers,questionType, cols, questionObjIdx)=> {
+
 
         if(!answers){
           answers ={
@@ -47,27 +47,40 @@ export class BasicQuestioner {
           };
         }
 
-        let indexToCorrectAnswers = cols.slice(multiAnswerStartIdx+1).filter(line => String(line).trim() !== "").map(m=>{
+        let solutionIdxs = cols[multiAnswerStartIdx].split('|');
+
+        let correctAnswersIdxs = [];
+
+        let indexToAnswers = cols.slice(multiAnswerStartIdx+1).filter(line => String(line).trim() !== "").map((m,arIdx)=>{
+          let idx = String(answers.index.length+1);
+
           answers[idx] = {
             id: idx,
             answerText : m
           };
           answers.index.push(idx);
 
+          if(solutionIdxs.includes(String(arIdx))){
+            correctAnswersIdxs.push(idx);
+          }
+
           return idx;
         });
 
+
+
       return {
-        id: idx,
+        id: questionObjIdx,
         question : cols[questionColIdx],
-        correctAnswers : indexToCorrectAnswers,
+        correctAnswers : correctAnswersIdxs,
+        possibleAnswers : indexToAnswers,
         type: questionType
       };
 
 
     };
 
-      const createQuestionBasic =( answers,questionType, cols)=> {
+      const createQuestionBasic =( answers,questionType, cols, questionObjIdx)=> {
 
        if(!answers){
          answers ={
@@ -84,7 +97,7 @@ export class BasicQuestioner {
        answers.index.push(idx);
 
        return {
-         id: idx,
+         id: questionObjIdx,
          question : cols[questionColIdx],
          correctAnswers : [idx],
          type: questionType
@@ -118,7 +131,7 @@ export class BasicQuestioner {
        };
 
         questions.index =  csvData.filter(f=> Array.isArray(f) && f.length > 2 && f[2]==selectedcategory).map((cols,idx)=>{
-          questions[String(idx)] = BasicQuestioner.QuestionFactory(cols[4])(answers,cols[4],cols);
+          questions[String(idx)] = BasicQuestioner.QuestionFactory(cols[4])(answers,cols[4],cols,idx);
 
           return String(idx);
 
