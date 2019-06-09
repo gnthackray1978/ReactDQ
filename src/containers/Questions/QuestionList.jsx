@@ -12,6 +12,7 @@ import SingleAnswer from "./SingleAnswer.jsx";
 import MultiAnswer from "./MultiAnswer.jsx";
 import ChoiceAnswer from "./ChoiceAnswer.jsx";
 import BooleanAnswer from "./BooleanAnswer.jsx";
+import MultiChoiceAnswer from "./MultiChoiceAnswer.jsx";
 
 
 const styles = theme => ({
@@ -60,6 +61,8 @@ class QuestionList extends React.Component {
       if(quizQuestions[value].type == 'BO')
         return <BooleanAnswer questionData = { quizQuestions[value]}></BooleanAnswer>
 
+      if(quizQuestions[value].type == 'MC')
+        return <MultiChoiceAnswer questionData = { quizQuestions[value]}></MultiChoiceAnswer>
     };
 
     return (
