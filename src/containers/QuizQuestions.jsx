@@ -122,7 +122,7 @@ const mapStateToProps = state => {
     ClientId : state.GoogleApiParams.clientId,
     ScriptId : state.GoogleApiParams.scriptId,
     quizQuestions :state.quizQuestions,
-    correctAnswers :state.correctAnswers,
+    //serverAnswers :state.serverAnswers,
     currentTest : state.currentTest,
     testList : state.testList,
     testActive :state.testActive,

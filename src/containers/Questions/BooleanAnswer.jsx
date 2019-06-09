@@ -84,7 +84,7 @@ class BooleanAnswer extends React.Component {
 
 
     let answerInput = arg.target.value.toLowerCase();
-    let solution = this.props.correctAnswers;
+    let serverAnswers = this.props.serverAnswers;
     let selectedQuiz = this.props.selectedQuiz.key;
     let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
     let userAnswers = this.props.userAnswers;
@@ -97,7 +97,7 @@ class BooleanAnswer extends React.Component {
 
     let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,currentTestId);
 
-    ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, solution,
+    ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, serverAnswers,
       (updatedUserAnswers,score, isCorrect)=>{
 
           ScoreLib.UpdateEnteredAnswerObjs(questionData.id, currentTestId, answerInput, userAnswers, userAnswersMapQuizInstance,isCorrect,score);
@@ -125,14 +125,14 @@ class BooleanAnswer extends React.Component {
   render() {
     console.log('boolean answer rendered');
 
-    const { classes,questionData,userAnswersMapQuizInstance, currentTest,selectQuizCat,questionVisibility,correctAnswers,selectedQuiz} = this.props;
+    const { classes,questionData,userAnswersMapQuizInstance, currentTest,selectQuizCat,questionVisibility,serverAnswers,selectedQuiz} = this.props;
 
     let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
     let result;
 
     if(!QuestionHelpers.IsAnswerVisible(questionData.id,selectedQuiz.key,selectQuizCat,questionVisibility)){
-      result = <CorrectAnswer>{ScoreLib.GetCorrectAnswersForQuestion(questionData, correctAnswers)}</CorrectAnswer>
+      result = <CorrectAnswer>{ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers)}</CorrectAnswer>
     }
     else {
        result = <QuestionBooleanInput onChange={this.inputChanged} onClick = {this.onClick} />
@@ -155,7 +155,7 @@ const mapStateToProps = state => {
     selectQuizCat : state.selectQuizCat,
     selectedQuiz : state.selectedQuiz,
     questionVisibility :state.questionVisibility,
-    correctAnswers : state.correctAnswers,
+    serverAnswers : state.serverAnswers,
     userAnswers : state.userAnswers,
     userAnswersMapQuizInstance: state.userAnswersMapQuizInstance,
     currentTest :state.currentTest

@@ -97,7 +97,7 @@ class MultiAnswer extends React.Component {
     let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
     let questionData = this.props.questionData;
     let answerInput = this.state.answerInput.toLowerCase();
-    let correctAnswers = this.props.correctAnswers;
+    let serverAnswers = this.props.serverAnswers;
     let selectedQuiz = this.props.selectedQuiz.key;
     let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
     let testInstance = this.props.currentTest;
@@ -108,7 +108,7 @@ class MultiAnswer extends React.Component {
     //array of answer strings
     let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,testInstance);
 
-    ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, correctAnswers,
+    ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, serverAnswers,
       (updatedUserAnswers,score, isCorrect)=>{
           ScoreLib.UpdateEnteredAnswerObjs( questionData.id, testInstance, answerInput,
              userAnswers, userAnswersMapQuizInstance,isCorrect,score);
@@ -157,7 +157,7 @@ class MultiAnswer extends React.Component {
   }
 
   makeCorrectAnswersBlock(classes){
-    let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(this.props.questionData, this.props.correctAnswers);
+    let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(this.props.questionData, this.props.serverAnswers);
 
     let tpAnswer = correctAnswersArray.map((string,index) => (
          this.formatString(classes,string,index)
@@ -234,7 +234,7 @@ const mapStateToProps = state => {
     selectQuizCat : state.selectQuizCat,
     selectedQuiz : state.selectedQuiz,
     questionVisibility :state.questionVisibility,
-    correctAnswers : state.correctAnswers,
+    serverAnswers : state.serverAnswers,
     userAnswers : state.userAnswers,
     userAnswersMapQuizInstance: state.userAnswersMapQuizInstance,
     currentTest :state.currentTest

@@ -51,7 +51,7 @@ const store = createStore(
     },
 
 
-    correctAnswers :{
+    serverAnswers :{
       index :[]
     },
 

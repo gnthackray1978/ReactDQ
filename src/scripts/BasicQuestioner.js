@@ -7,7 +7,7 @@ export class BasicQuestioner {
       const questionColIdx = 3;
       const multiAnswerStartIdx = 5;
 
-      const createQuestion =( answers,questionType)=> {
+      const createQuestion =( answers,questionType, cols)=> {
 
        if(!answers){
          answers ={
@@ -15,13 +15,13 @@ export class BasicQuestioner {
          };
        }
 
-       var tp = cols.slice(multiAnswerStartIdx).filter(line => String(line).trim() !== "").map(m=>{
+       let idx = String(answers.index.length+1);
 
-         let idx = String(answers.index.length+1);
+       var tp = cols.slice(multiAnswerStartIdx).filter(line => String(line).trim() !== "").map(m=>{
 
          answers[idx] = {
            id: idx,
-           correctAnswers : m
+           answerText : m
          };
          answers.index.push(idx);
          //answerIdx++;
@@ -38,7 +38,7 @@ export class BasicQuestioner {
 
      };
 
-      const createMultiChoiceQuestion =( answers,questionType)=> {
+      const createMultiChoiceQuestion =( answers,questionType, cols)=> {
         let idx = String(answers.index.length+1);
 
         if(!answers){
@@ -50,7 +50,7 @@ export class BasicQuestioner {
         let indexToCorrectAnswers = cols.slice(multiAnswerStartIdx+1).filter(line => String(line).trim() !== "").map(m=>{
           answers[idx] = {
             id: idx,
-            correctAnswers : m
+            answerText : m
           };
           answers.index.push(idx);
 
@@ -67,7 +67,7 @@ export class BasicQuestioner {
 
     };
 
-      const createQuestionBasic =( answers,questionType)=> {
+      const createQuestionBasic =( answers,questionType, cols)=> {
 
        if(!answers){
          answers ={
@@ -78,12 +78,10 @@ export class BasicQuestioner {
        let idx = String(answers.index.length+1);
        answers[idx] = {
          id: idx,
-         correctAnswers : cols[multiAnswerStartIdx]
+         answerText : cols[multiAnswerStartIdx]
        };
 
        answers.index.push(idx);
-
-    //   answerIdx++;
 
        return {
          id: idx,
@@ -120,7 +118,7 @@ export class BasicQuestioner {
        };
 
         questions.index =  csvData.filter(f=> Array.isArray(f) && f.length > 2 && f[2]==selectedcategory).map((cols,idx)=>{
-          questions[String(idx)] = BasicQuestioner.QuestionFactory(cols[4])(answers,cols[4]);
+          questions[String(idx)] = BasicQuestioner.QuestionFactory(cols[4])(answers,cols[4],cols);
 
           return String(idx);
 

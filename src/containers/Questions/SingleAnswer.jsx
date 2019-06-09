@@ -94,7 +94,7 @@ class SingleAnswer extends React.Component {
 
 
       let answerInput = this.state.answerInput.toLowerCase();
-      let solution = this.props.correctAnswers;
+      let serverAnswers = this.props.serverAnswers;
       let selectedQuiz = this.props.selectedQuiz.key;
 
       let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
@@ -108,7 +108,7 @@ class SingleAnswer extends React.Component {
 
       let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,currentTestId);
 
-      ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, solution,
+      ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, serverAnswers,
         (updatedUserAnswers,score, isCorrect)=>{
 
             ScoreLib.UpdateEnteredAnswerObjs(questionData.id, currentTestId, answerInput, userAnswers, userAnswersMapQuizInstance,isCorrect,score);
@@ -138,7 +138,7 @@ class SingleAnswer extends React.Component {
 
 
     makeCorrectAnswersBlock(classes){
-      let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(this.props.questionData, this.props.correctAnswers);
+      let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(this.props.questionData, this.props.serverAnswers);
 
       let tpAnswer = correctAnswersArray.map((string,index) => (
            this.formatString(classes,string,index)
@@ -213,7 +213,7 @@ const mapStateToProps = state => {
     selectQuizCat : state.selectQuizCat,
     selectedQuiz : state.selectedQuiz,
     questionVisibility :state.questionVisibility,
-    correctAnswers : state.correctAnswers,
+    serverAnswers : state.serverAnswers,
     userAnswers : state.userAnswers,
     userAnswersMapQuizInstance: state.userAnswersMapQuizInstance,
     currentTest :state.currentTest

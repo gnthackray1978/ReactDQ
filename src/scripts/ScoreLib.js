@@ -142,7 +142,7 @@ export class ScoreLib {
 
   static GetCorrectAnswersForQuestion(questionData, correctAnswers){
     let carray = questionData.correctAnswers.map((id)=>{
-      return correctAnswers[id].correctAnswers;
+      return correctAnswers[id].answerText;
     });
 
     return carray;
@@ -174,13 +174,13 @@ export class ScoreLib {
   }
 
 
-  static GetScoreMultiAnswerByQueestionData(usersAnswers, questionData, attemptedAnswer,correctAnswers, callback){
-    correctAnswers = questionData.correctAnswers.map((id)=>{
-      return correctAnswers[id].correctAnswers;
+  static GetScoreMultiAnswerByQueestionData(usersAnswers, questionData, attemptedAnswer,answersArg, callback){
+    let correctAnswersArg = questionData.correctAnswers.map((id)=>{
+      return answersArg[id].answerText;
     });
 
 
-    ScoreLib.GetScoreMultiAnswer(usersAnswers, correctAnswers, attemptedAnswer, callback);
+    ScoreLib.GetScoreMultiAnswer(usersAnswers, correctAnswersArg, attemptedAnswer, callback);
 
   }
 
@@ -188,23 +188,23 @@ export class ScoreLib {
 
   //  console.log(originalAnswers.length + ' ' + correctAnswers.length);
 
-     let remainingAnswers = ScoreLib.GetRemainingAnswers(userAnswers, correctAnswers);
+     let remainingAnswers = ScoreLib.GetRemainingAnswers(userAnswers, correctAnswersArg);
 
      //if the correct answers that the user has already entered
      //match the original answers
-     if(userAnswers.length == correctAnswers.length){
+     if(userAnswers.length == correctAnswersArg.length){
        callback(userAnswers,100,true);
      }
      else{
        MatchLib.Match(remainingAnswers, attemptedAnswer, 2, (correct, updatedRemaining)=>{
 
-         console.log('comparison result: '+remainingAnswers.length + ' ' + updatedRemaining.length  );
+      //   console.log('comparison result: '+remainingAnswers.length + ' ' + updatedRemaining.length  );
 
-         let percentile = (100 / correctAnswers.length);
+         let percentile = (100 / correctAnswersArg.length);
 
 
 
-         let score = Math.floor(percentile *  (correctAnswers.length - updatedRemaining.length));
+         let score = Math.floor(percentile *  (correctAnswersArg.length - updatedRemaining.length));
 
 
          let isAttemptedAnswerCorrect = (remainingAnswers.length > updatedRemaining.length);
