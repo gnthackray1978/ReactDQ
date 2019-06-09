@@ -1,77 +1,115 @@
 export class BasicQuestioner {
 
-  // var BasicQuestioner = function (channel) {
-  //     this.selectedcategory = '';
-  //     this.selectedCSV = 3;
-  //     this.listoftests = [];
-  //     this.rawCSVData =[];
-  //     this.categories =[];
-  //     this.questionset = [];
-  //     this.answerset = [];
-  //     // used for multi answer questions
-  //     this.currentQuestionState = [];
-  //     this.isAnswerDisplayed = false;
-  //     this.currentQuestionIdx = 0;
-  //     this.score = 0;
-  //     this.questionscore = 0;
-  // };
 
-  static validTestSelected(quizName, catName){
-      return (quizName !=='' && catName !== '');
+
+   static QuestionFactory(question){
+
+      const questionColIdx = 3;
+      const multiAnswerStartIdx = 5;
+
+      const createQuestion =( answers,questionType)=> {
+
+       if(!answers){
+         answers ={
+           index :[]
+         };
+       }
+
+       var tp = cols.slice(multiAnswerStartIdx).filter(line => String(line).trim() !== "").map(m=>{
+
+         let idx = String(answers.index.length+1);
+
+         answers[idx] = {
+           id: idx,
+           correctAnswers : m
+         };
+         answers.index.push(idx);
+         //answerIdx++;
+         return idx;
+       });
+
+       return {
+         id: idx,
+         question : cols[questionColIdx],
+         correctAnswers : tp,
+         type: questionType
+       };
+
+
+     };
+
+      const createMultiChoiceQuestion =( answers,questionType)=> {
+        let idx = String(answers.index.length+1);
+
+        if(!answers){
+          answers ={
+            index :[]
+          };
+        }
+
+        let indexToCorrectAnswers = cols.slice(multiAnswerStartIdx+1).filter(line => String(line).trim() !== "").map(m=>{
+          answers[idx] = {
+            id: idx,
+            correctAnswers : m
+          };
+          answers.index.push(idx);
+
+          return idx;
+        });
+
+      return {
+        id: idx,
+        question : cols[questionColIdx],
+        correctAnswers : indexToCorrectAnswers,
+        type: questionType
+      };
+
+
+    };
+
+      const createQuestionBasic =( answers,questionType)=> {
+
+       if(!answers){
+         answers ={
+           index :[]
+         };
+       }
+
+       let idx = String(answers.index.length+1);
+       answers[idx] = {
+         id: idx,
+         correctAnswers : cols[multiAnswerStartIdx]
+       };
+
+       answers.index.push(idx);
+
+    //   answerIdx++;
+
+       return {
+         id: idx,
+         question : cols[questionColIdx],
+         correctAnswers : [idx],
+         type: questionType
+       };
+
+
+     };
+
+      const questionMap = {
+        'MA' : createQuestion,
+        'MC' : createMultiChoiceQuestion,
+        'SN' : createQuestionBasic,
+        'BO' : createQuestion
+      };
+
+      return questionMap[question] || createQuestionBasic; //ignoring falsy values here
   }
 
-  static ResetQuestion(questionSet, currentQuestionIdx){
 
-      var question = questionset[currentQuestionIdx];
-
-      question.score =0;
-      question.correctAnswers = [];
-      question.attemptedAnswer =[];
-      question.answer = JSON.parse(JSON.stringify(question.constAnswers));
-
-      return question;
-   }
-
-   static currentQuestionAnswer(questionset,currentQuestionIdx){
-      return questionset[currentQuestionIdx].answer;
-   }
-
-   static currentQuestion(questionset,currentQuestionIdx){
-      return questionset[currentQuestionIdx];
-   }
-
-   static GetQuestionType(questionTypeStr){
-     let questionType;
-
-     switch (questionTypeStr) {
-         case 'MA':
-             questionType = 3; // multi answer
-             break;
-         case 'MS':
-             questionType = 4; // multi ordered answer
-             break;
-         case 'MS':
-             questionType = 1; // multi ordered answer
-             break;
-         case 'BO':
-             questionType = 2; // multi ordered answer
-             break;
-         default:
-             questionType = 0; //question is multiple choice
-             break;
-     }
-
-     return questionType;
-   }
-
-   static CreateQuestionSetN(rawCSVData, selectedcategory) {
+   static CreateQuestionSetN(rawCSVData, selectedcategory, questionType) {
        console.log('creating question set');
 
        var csvData = rawCSVData;
-
-       var questionColIdx = 3;
-       var multiAnswerStartIdx = 5;
-       var idx = 1;
 
        var questions = {
          index : []
@@ -81,166 +119,18 @@ export class BasicQuestioner {
          index :[]
        };
 
+        questions.index =  csvData.filter(f=> Array.isArray(f) && f.length > 2 && f[2]==selectedcategory).map((cols,idx)=>{
+          questions[String(idx)] = BasicQuestioner.QuestionFactory(cols[4])(answers,cols[4]);
 
-       let answerIdx = 0;
+          return String(idx);
 
-       while (idx < csvData.length) {
-               var cols = csvData[idx];
-
-               if (cols[2] == selectedcategory) {
-
-                   var questionTypeStr = cols[4];
-
-                   let questionType = BasicQuestioner.GetQuestionType(questionTypeStr);
-
-                   // questions with multiple answers
-                   if (questionType != 0) {
-
-                       var tp = cols.slice(multiAnswerStartIdx).filter(line => String(line).trim() !== "").map(m=>{
-                         answers[String(answerIdx)] = {
-                           id: String(answerIdx),
-                           correctAnswers : m
-                         };
-                         answers.index.push(String(answerIdx));
-                         answerIdx++;
-                         return String(answerIdx-1);
-                       });
-
-                       questions[String(idx)] = {
-                         id: String(idx),
-                         question : cols[questionColIdx],
-                         correctAnswers : tp,
-                         type: questionType
-                       };
-
-                       questions.index.push(String(idx));
-
-                   } else {
-
-                     answers[String(answerIdx)] = {
-                       id: String(answerIdx),
-                       correctAnswers : cols[multiAnswerStartIdx]
-                     };
-
-                     answers.index.push(String(answerIdx));
-
-                     questions[String(idx)] = {
-                       id: String(idx),
-                       question : cols[questionColIdx],
-                       correctAnswers : [String(answerIdx)],
-                       type: questionType
-                     };
-                     questions.index.push(String(String(idx)));
-
-                     answerIdx++;
-                   }
-               }
-
-
-               idx++;
-           }
+        });
 
        return {questions : questions,
        answers :answers};
    }
 
 
-
-   static CreateQuestionSet(rawCSVData, selectedcategory) {
-       console.log('creating question set');
-
-       var csvData = rawCSVData;
-
-       var questionColIdx = 3;
-       var multiAnswerStartIdx = 5;
-       var idx = 1;
-
-       var results = {
-           questionset :[],
-           answerset :[]
-       };
-
-       while (idx < csvData.length) {
-               var cols = csvData[idx];
-
-               if (cols[2] == selectedcategory) {
-                   var questionType = 0; // default option
-
-                   var questionTypeStr = cols[4];
-
-                   // questions with multiple answers
-                   if (questionTypeStr != "SN") {
-
-                       var colIdx = multiAnswerStartIdx;
-                       var answer = []; // this can get over written
-                       var constAnswers = []; // to use a permanent answer collection
-
-                       while (colIdx < cols.length) {
-                           answer.push(cols[colIdx]);
-                           constAnswers.push(cols[colIdx]);
-                           colIdx++;
-                       }
-
-                       if (colIdx > multiAnswerStartIdx) {
-                           switch (questionTypeStr) {
-                               case 'MA':
-                                   questionType = 3; // multi answer
-                                   break;
-                               case 'MS':
-                                   questionType = 4; // multi ordered answer
-                                   break;
-                               default:
-                                   questionType = 1; //question is multiple choice
-                                   break;
-                           }
-                       }
-
-                       // questiontype is multiple choice
-                       if (questionType != 1) {
-                           answer.splice(0, 1);
-                           constAnswers.splice(0, 1);
-                       } else {
-                           results.answerset.push('');
-
-                       }
-
-
-                       results.questionset.push({ question: cols[questionColIdx],
-                                               answer: answer,
-                                               type: questionType,
-                                               constAnswers: constAnswers,
-                                               score: 0,
-                                               attemptedAnswer:'',
-                                               correctAnswers:[]
-                                             });
-                   } else {
-
-
-                       results.questionset.push({ question: cols[questionColIdx],
-                                               answer: cols[multiAnswerStartIdx],
-                                               type: questionType,
-                                               constAnswers: cols[multiAnswerStartIdx],
-                                               score: 0,
-                                               attemptedAnswer:'',
-                                               correctAnswers:[]
-                                             });
-                       results.answerset.push('');
-                   }
-               }
-
-
-               idx++;
-           }
-
-       return results;
-   }
-
-   static currentQuestionSetLength(questionset){
-       if (questionset !== undefined && questionset.length > 0)
-           return questionset.length;
-       else
-           return 0;
-   }
 
 
 }

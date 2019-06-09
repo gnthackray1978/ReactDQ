@@ -48,16 +48,16 @@ class QuestionList extends React.Component {
     const { classes,quizQuestions } = this.props;
 
     const getQuestionType =(value)=>{
-      if(quizQuestions[value].type == 0)
+      if(quizQuestions[value].type == 'SN')
         return <SingleAnswer questionData = { quizQuestions[value]}></SingleAnswer>
 
-      if(quizQuestions[value].type == 3)
+      if(quizQuestions[value].type == 'MA')
         return <MultiAnswer questionData = { quizQuestions[value]}></MultiAnswer>
 
-      if(quizQuestions[value].type == 1)
+      if(quizQuestions[value].type == 'SN')
         return <SingleAnswer questionData = { quizQuestions[value]}></SingleAnswer>
 
-      if(quizQuestions[value].type == 2)
+      if(quizQuestions[value].type == 'BO')
         return <BooleanAnswer questionData = { quizQuestions[value]}></BooleanAnswer>
 
     };
