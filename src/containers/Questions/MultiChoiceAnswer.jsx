@@ -67,7 +67,7 @@ const styles = theme => ({
   },
   answersofar: {
     marginTop :5,
-    height:70
+    
   }
 
 });
@@ -78,12 +78,19 @@ const CorrectAnswer = props => {
   const { classes} = props;
 
   return   <div>
-      <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
-        Correct Answer
-      </Typography>
+
 
       <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
-       {props.children}
+
+        <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
+          The correct options are :
+        </Typography>
+
+       {props.children.map((str)=>{
+         return <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
+           {str}
+         </Typography>
+       })}
       </Paper>
     </div>
 
@@ -166,7 +173,7 @@ class MultiChoiceAnswer extends React.Component {
     let result;
 
     if(!QuestionHelpers.IsAnswerVisible(questionData.id,selectedQuiz.key,selectQuizCat,questionVisibility)){
-      let correctAnswer = 'tbc';//ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers);
+      let correctAnswer = ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers);
 
       result = <CorrectAnswer classes ={classes}>{correctAnswer}</CorrectAnswer>
     }
