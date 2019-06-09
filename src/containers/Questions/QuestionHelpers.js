@@ -1,4 +1,5 @@
 
+
 export class QuestionHelpers {
 
   static IsAnswerVisible(questionId, quizId, questionCat, questionVisibility){
@@ -13,7 +14,6 @@ export class QuestionHelpers {
     return answerVisible;
 
   }
-
 
 
 

@@ -184,7 +184,7 @@ export class ScoreLib {
 
   }
 
-  static GetScoreMultiAnswer(userAnswers, correctAnswers, attemptedAnswer, callback){
+  static GetScoreMultiAnswer(userAnswers, correctAnswersArg, attemptedAnswer, callback){
 
   //  console.log(originalAnswers.length + ' ' + correctAnswers.length);
 

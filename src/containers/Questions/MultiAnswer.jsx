@@ -10,7 +10,8 @@ import QuestionInput from "./QuestionInput.jsx";
 import {MatchLib} from "../../scripts/MatchLib.js"
 import {ScoreLib} from "../../scripts/ScoreLib.js"
 import { connect } from "react-redux";
-
+import CorrectAnswer from "./CorrectAnswer.jsx";
+import {QuestionHelpers} from "./QuestionHelpers.js";
 import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility, setRelatedUserAnswers} from "../../actions/creators.jsx";
 
 
@@ -75,6 +76,42 @@ const styles = theme => ({
 
 
 
+const FormattedString = props => {
+
+  const { classes,index,string} = props;
+
+  let formattedString = string;
+  if(index !=0) formattedString = ',' + formattedString;
+
+  if(index % 2 ==0){
+    return   <Typography variant="h6" className ={classes.black}  >
+        {formattedString}
+      </Typography>
+  }
+  else {
+      return   <Typography variant="h6"  className ={classes.red}  >
+          {formattedString}
+        </Typography>
+    }
+}
+
+const AnswerSoFar = props => {
+
+  const { classes,AnswerSoFar} = props;
+
+  return   <div>
+      <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
+        Answer so far
+      </Typography>
+
+      <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
+        {AnswerSoFar.map((string,index) => (
+             <FormattedString classes = {classes} string = {string} index ={index}/>
+           ))}
+      </Paper>
+    </div>
+
+}
 
 
 class MultiAnswer extends React.Component {
@@ -120,110 +157,44 @@ class MultiAnswer extends React.Component {
 
   }
 
-
- formatString(classes, string,index){
-   if(index !=0) string = ',' + string;
-
-   if(index % 2 ==0){
-     return   <Typography variant="h6" className ={classes.black}  >
-         {string}
-       </Typography>
-   }
-   else {
-       return   <Typography variant="h6"  className ={classes.red}  >
-           {string}
-         </Typography>
-     }
- }
-
-  answersSoFar(classes){
-    let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
-    let questionData = this.props.questionData;
-    let testInstance = this.props.currentTest;
-    let tpAnswerSoFar = ScoreLib.GetUserAnswersForQuestion(this.props.userAnswers, userAnswersMapQuizInstance,questionData.id,testInstance);
-
-    return   <div>
-        <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
-          Answer so far
-        </Typography>
-
-        <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
-          {tpAnswerSoFar.map((string,index) => (
-               this.formatString(classes,string,index)
-             ))}
-        </Paper>
-      </div>
-
+  handleOnChange = (arg)=>{
+    this.setState({
+      answerInput : event.target.value,
+    });
   }
 
-  makeCorrectAnswersBlock(classes){
-    let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(this.props.questionData, this.props.serverAnswers);
+  undo = (arg) =>{
+    console.log('undo clicked');
+    const { questionData,userAnswersMapQuizInstance ,currentTest,userAnswers} = this.props;
+    // so that if the user changes their mind and enters the wrong answer then their score goes down.
+    ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
 
-    let tpAnswer = correctAnswersArray.map((string,index) => (
-         this.formatString(classes,string,index)
-       ));
-
-    let answerBlock = <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-                        {tpAnswer}
-                      </Typography>
-
-    return  answerBlock;
-  }
-
-  isQuestionVisible (){
-
-    let questionKey = this.props.questionData.id + '-' + this.props.selectedQuiz.key + '-'+ this.props.selectQuizCat;
-
-    let answerVisible = true;
-
-    if(this.props.questionVisibility.hasOwnProperty(questionKey)){
-       answerVisible = this.props.questionVisibility[questionKey].visible
-    }
-
-    return answerVisible;
+    this.props.setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
   }
 
   render() {
-    const { classes,questionData,quizMetaData,userAnswersMapQuizInstance ,currentTest,userAnswers} = this.props;
-
-
-
-
-    const handleOnChange = event => {
-        this.setState({
-          answerInput : event.target.value,
-        });
-      };
+    const { classes,questionData,userAnswersMapQuizInstance ,currentTest,selectQuizCat,questionVisibility,serverAnswers,selectedQuiz,userAnswers} = this.props;
 
     let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
     let result;
 
-    if(!this.isQuestionVisible()){
-      result = this.makeCorrectAnswersBlock(classes);
+    if(!QuestionHelpers.IsAnswerVisible(questionData.id,selectedQuiz.key,selectQuizCat,questionVisibility)){
+      result = <CorrectAnswer>{ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers)}</CorrectAnswer>
     }
     else {
+       let tpAnswerSoFar = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,currentTest);
        result = <div>
-                   <QuestionInput onChange={handleOnChange} onClick = {this.onClick}  answer = {this.state.answerInput}/>
-                   {this.answersSoFar(classes)}
+                   <QuestionInput onChange={this.handleOnChange} onClick = {this.onClick}  answer = {this.state.answerInput}/>
+                   <AnswerSoFar classes = {classes} AnswerSoFar ={tpAnswerSoFar}/>
                 </div>
     }
 
     return (
-      <QuestionOutline label = 'Multi Answer' score = {score} question = {questionData.question}  value = {questionData} undo = {()=>{
-          console.log('undo clicked');
-          // so that if the user changes their mind and enters the wrong answer then their score goes down.
-          ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
-
-          this.props.setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
-        }}>{result}</QuestionOutline>
+      <QuestionOutline label = 'Multi Answer' score = {score} question = {questionData.question}  value = {questionData} undo = {this.undo}>{result}</QuestionOutline>
     );
   }
 }
-
-// <Grid item xs={12}>
-//   <QuestionFooter  buttonClicked = { this.handleInput }/>
-// </Grid>
 
 
 const mapStateToProps = state => {
