@@ -44,6 +44,7 @@ export class ScoreLib {
 
   static MakeTestHistoryObj(testList, userAnswersMapQuizInstance){
     const numTests = testList.index.length;
+  //  console.log('MakeTestHistoryObj');
 
     let testHistory = [{
       quizName: 'test data',
@@ -54,40 +55,16 @@ export class ScoreLib {
 
     if(testList.index.length > 0){
         testHistory = testList.index.map((key)=>{
-        // this.props.testList[key]
 
-        let scores = userAnswersMapQuizInstance.index.map((instancedata)=>{
-          // id: compositeKey,
-          // quizInstanceId : instanceId,
-          // questionId : questionId,
-          // score : score,
-          // answer : isCorrect ? [userAnswerKey] : [],
-          // wrongAnswer :isCorrect ? [] : [userAnswerKey],
-
-          if(userAnswersMapQuizInstance[instancedata].quizInstanceId == testList[key].id){
-            return userAnswersMapQuizInstance[instancedata].score;
-          }
-        });
-
-        let total = scores.reduce((total,sum)=>{
-            return total+sum;
-        });
-
+        let score = ScoreLib.GetScoreForTest(userAnswersMapQuizInstance,testList[key].id,testList[key].questionCount);
 
         return {
-          quizName: testList[key].quizName.quiz,
-          score: total,
+          quizName: testList[key].quizName,
+          quizCat : testList[key].quizCat,
+          score: score,
           started : testList[key].startedTime.toLocaleString(),
           ended : testList[key].endTime.toLocaleString()
         };
-
-        // this.props.testList[key] = {
-        //   id: key,
-        //   quizName : this.props.selectedQuiz,
-        //   quizCat : this.props.selectQuizCat,
-        //   startedTime : new Date(),
-        //   active : true
-        // };
 
         });
     }
@@ -216,10 +193,45 @@ export class ScoreLib {
       }
   }
 
-  static GetScoreForMultiChoice(answer, solution, numberOfCorrectAnswers){
-    let matchResult = MatchLib.MatchArray(answer, solution ,numberOfCorrectAnswers);
+//(correctAnswerPattern,userAnsweredPattern,questionData.correctAnswers.length);
+  static GetScoreForMultiChoice(questionData,serverAnswers,newState){//answer, solution, numberOfCorrectAnswers
 
-    return matchResult;
+    let correctAnswerPattern = [...questionData.possibleAnswers].map(m=>{
+      if(questionData.correctAnswers.includes(m)){
+        return m;
+      }
+        else {
+          return "-1";
+        }
+    });
+
+
+
+    let userAnsweredPattern = [...questionData.possibleAnswers].map(m=>{
+      let _possibleAnswer =serverAnswers[m].answerText.toLowerCase();
+
+      if(newState.includes(_possibleAnswer))
+      {
+        return m;
+      }
+      else {
+        return "-1";
+      }
+
+    });
+
+
+
+
+    let matchResult = MatchLib.MatchArray(correctAnswerPattern, userAnsweredPattern ,questionData.correctAnswers.length);
+
+    //console.log('match array: ' + matchResult);
+
+    return {
+      score : matchResult,
+      answer : userAnsweredPattern,
+      isCorrect : (matchResult ==100)
+    };
   }
 
   static GetScoreMultiAnswerByQueestionDataNC(usersAnswers, questionData, attemptedAnswer,answersArg){
@@ -396,6 +408,7 @@ export class ScoreLib {
         if(!mappingContainsCorrectAnswer()){
           refUserAnswersMapQuizInstance[compositeKey].answer.push(userAnswerKey);
           refUserAnswersMapQuizInstance[compositeKey].score = score;
+          console.log('set score 1 : ' + score);
         }
       }
       else{
@@ -404,6 +417,7 @@ export class ScoreLib {
 
         }
         refUserAnswersMapQuizInstance[compositeKey].score = score;
+        console.log('set score 2 : ' + score);
       }
     }
     else{

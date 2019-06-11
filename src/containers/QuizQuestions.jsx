@@ -81,7 +81,7 @@ class QuizQuestions extends Component {
 
               testList[currentTest].active = false;
               testList[currentTest].endTime = new Date();
-
+              testList[currentTest].questionCount = quizQuestions.index.length;
               setEndTestBatch(currentTest, testList);
 
 

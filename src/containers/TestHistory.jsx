@@ -93,8 +93,11 @@ function TestHistory(props) {
 
   let historyComponent = history.map((m)=>{
      return <Grid container   >
-               <Grid item xs={2} className ={classes.griditem}  >
+               <Grid item xs={1} className ={classes.griditem}  >
                  {m.quizName}
+               </Grid>
+               <Grid item xs={1} className ={classes.griditem}  >
+                 {m.quizCat}
                </Grid>
                <Grid item xs={2} className ={classes.griditem} >
                  {m.score}

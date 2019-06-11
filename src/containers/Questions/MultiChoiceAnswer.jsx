@@ -151,50 +151,14 @@ class MultiChoiceAnswer extends React.Component {
 
       this.setState( { options : newState  });
 
-      console.log(newState);
-
-
-      let correctAnswerPattern = [...questionData.possibleAnswers].map(m=>{
-        if(questionData.correctAnswers.includes(m)){
-          return m;
-        }
-          else {
-            return "-1";
-          }
-      });
-
-      console.log(correctAnswerPattern);
-
-
-      let userAnsweredPattern = [...questionData.possibleAnswers].map(m=>{
-        let _possibleAnswer =serverAnswers[m].answerText.toLowerCase();
-
-        if(newState.includes(_possibleAnswer))
-        {
-          return m;
-        }
-        else {
-          return "-1";
-        }
-
-      });
-
-      console.log(userAnsweredPattern);
-
-
-
       // // so that if the user changes their mind and enters the wrong answer then their score goes down.
-       ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTestId, userAnswers, userAnswersMapQuizInstance);
+      ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTestId, userAnswers, userAnswersMapQuizInstance);
 
-       let score = ScoreLib.GetScoreForMultiChoice(correctAnswerPattern,userAnsweredPattern,questionData.correctAnswers.length);
+      let result = ScoreLib.GetScoreForMultiChoice(questionData,serverAnswers,newState);
 
-         let isCorrect = score == 100;
+       ScoreLib.UpdateEnteredAnswerObjs(questionData.id, currentTestId, result.answer, userAnswers, userAnswersMapQuizInstance,result.isCorrect, result.score);
 
-
-
-         ScoreLib.UpdateEnteredAnswerObjs(questionData.id, currentTestId, userAnsweredPattern, userAnswers, userAnswersMapQuizInstance,isCorrect,score);
-
-         setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
+       setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
 
     };
 

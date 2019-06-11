@@ -82,7 +82,7 @@ class TopButtons extends Component {
 
         this.props.testList[key] = {
           id: key,
-          quizName : this.props.selectedQuiz,
+          quizName : this.props.selectedQuiz.quiz,
           quizCat : this.props.selectQuizCat,
           startedTime : new Date(),
           active : true
