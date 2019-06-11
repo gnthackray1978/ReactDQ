@@ -4,6 +4,12 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Grid';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 import QuestionOutline from "./QuestionOutline.jsx";
 import QuestionInput from "./QuestionInput.jsx";
@@ -67,7 +73,7 @@ const styles = theme => ({
   },
   answersofar: {
     marginTop :5,
-    
+
   }
 
 });
@@ -78,14 +84,10 @@ const CorrectAnswer = props => {
   const { classes} = props;
 
   return   <div>
-
-
       <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
-
         <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
           The correct options are :
         </Typography>
-
        {props.children.map((str)=>{
          return <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
            {str}
@@ -98,10 +100,21 @@ const CorrectAnswer = props => {
 
 const MultiChoiceInput = props => {
 
-  const { classes} = props;
+  const { classes, possibleAnswers,onChange} = props;
 
   return   <div>
-    MultiChoiceInput
+    <FormControl component="fieldset" className={classes.formControl}>
+       <FormGroup  onChange={onChange}>
+         {possibleAnswers.map((str, index)=>{
+             return <FormControlLabel key ={index}
+                      control={ <Checkbox value={str}/> }
+                      label={str}
+                    />
+           })}
+       </FormGroup>
+     </FormControl>
+
+
     </div>
 
 }
@@ -110,50 +123,81 @@ class MultiChoiceAnswer extends React.Component {
 
   constructor(props) {
       super(props);
-      this.state = { answerInput : ''  };
+      this.state = { options : []  };
     }
 
 
-  onClick = (arg)=>{
-
-    // id: compositeKey,
-    // quizInstanceId : instanceId,
-    // questionId : questionId,
-    // score : score,
-    // answer : isCorrect ? [userAnswerKey] : [],
-    // wrongAnswer :isCorrect ? [] : [userAnswerKey],
-
-    let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
-    let questionData = this.props.questionData;
-    let answerInput = this.state.answerInput.toLowerCase();
-    let serverAnswers = this.props.serverAnswers;
-    let selectedQuiz = this.props.selectedQuiz.key;
-    let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
-    let testInstance = this.props.currentTest;
-    //user answers does not save the associated question id or test instance
-    let userAnswers = this.props.userAnswers;
+    inputChanged =(arg)=>{
 
 
-    //array of answer strings
-    let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,testInstance);
 
-    ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, serverAnswers,
-      (updatedUserAnswers,score, isCorrect)=>{
-          ScoreLib.UpdateEnteredAnswerObjs( questionData.id, testInstance, answerInput,
-             userAnswers, userAnswersMapQuizInstance,isCorrect,score);
-          setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
-          this.setState({
-            answerInput : ''
-          });
-    });
+      //
+      let answerInput = arg.target.value.toLowerCase();
+      let serverAnswers = this.props.serverAnswers;
+      let selectedQuiz = this.props.selectedQuiz.key;
+      let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
+      let userAnswers = this.props.userAnswers;
+      let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
+      let currentTestId = this.props.currentTest;
+      let questionData = this.props.questionData;
 
-  }
+      let newState = this.state.options;
+      if(newState.includes(answerInput)){
+        newState = newState.filter(f=>f != answerInput);
+      }
+      else{
+        newState.push(answerInput);
+      }
 
-  handleOnChange = (arg)=>{
-    this.setState({
-      answerInput : event.target.value,
-    });
-  }
+      this.setState( { options : newState  });
+
+      console.log(newState);
+
+
+      let correctAnswerPattern = [...questionData.possibleAnswers].map(m=>{
+        if(questionData.correctAnswers.includes(m)){
+          return m;
+        }
+          else {
+            return "-1";
+          }
+      });
+
+      console.log(correctAnswerPattern);
+
+
+      let userAnsweredPattern = [...questionData.possibleAnswers].map(m=>{
+        let _possibleAnswer =serverAnswers[m].answerText.toLowerCase();
+
+        if(newState.includes(_possibleAnswer))
+        {
+          return m;
+        }
+        else {
+          return "-1";
+        }
+
+      });
+
+      console.log(userAnsweredPattern);
+
+
+
+      // // so that if the user changes their mind and enters the wrong answer then their score goes down.
+       ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTestId, userAnswers, userAnswersMapQuizInstance);
+
+       let score = ScoreLib.GetScoreForMultiChoice(correctAnswerPattern,userAnsweredPattern,questionData.correctAnswers.length);
+
+         let isCorrect = score == 100;
+
+
+
+         ScoreLib.UpdateEnteredAnswerObjs(questionData.id, currentTestId, userAnsweredPattern, userAnswers, userAnswersMapQuizInstance,isCorrect,score);
+
+         setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
+
+    };
+
 
   undo = (arg) =>{
     console.log('undo clicked');
@@ -167,8 +211,7 @@ class MultiChoiceAnswer extends React.Component {
   render() {
     const { classes,questionData,userAnswersMapQuizInstance ,currentTest,selectQuizCat,questionVisibility,serverAnswers,selectedQuiz,userAnswers} = this.props;
 
-    let score = '77%';
-    //ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
+    let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
     let result;
 
@@ -178,9 +221,11 @@ class MultiChoiceAnswer extends React.Component {
       result = <CorrectAnswer classes ={classes}>{correctAnswer}</CorrectAnswer>
     }
     else {
-       result = <div>
-                   <MultiChoiceInput onChange={this.handleOnChange} onClick = {this.onClick}  answer = {this.state.answerInput}/>
 
+       let possibleAnswers = ScoreLib.GetPossibleAnswersForQuestion(questionData, serverAnswers);
+
+       result = <div>
+                   <MultiChoiceInput  classes ={classes} onChange={this.inputChanged} possibleAnswers = {possibleAnswers}/>
                 </div>
     }
 

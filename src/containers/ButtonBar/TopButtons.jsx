@@ -73,7 +73,7 @@ class TopButtons extends Component {
     let createNewTest = ()=>{
 
 
-      console.log('selected quiz: ' +this.props.selectedQuiz.key + ' selected cat: ' + this.props.selectQuizCat);
+    //  console.log('selected quiz: ' +this.props.selectedQuiz.key + ' selected cat: ' + this.props.selectQuizCat);
 
 
       if(this.props.selectedQuiz.key != ''){

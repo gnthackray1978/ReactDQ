@@ -165,7 +165,7 @@ class SingleAnswer extends React.Component {
     }
 
     render() {
-      console.log('single answer rendered');
+    //  console.log('single answer rendered');
 
       const { classes,questionData,quizMetaData ,userAnswersMapQuizInstance, currentTest,userAnswers} = this.props;
 

@@ -134,7 +134,7 @@ const unsubscribe = store.subscribe((arg) => {
       return bytes;
   }
 
-  console.log("store size: " + roughSizeOfObject(store.getState()));
+//  console.log("store size: " + roughSizeOfObject(store.getState()));
 });
 
 export default store;

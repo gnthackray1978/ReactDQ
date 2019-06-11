@@ -79,7 +79,7 @@ class BooleanAnswer extends React.Component {
   }
 
   inputChanged =(arg)=>{
-    console.log('input changed');
+    //console.log('input changed');
 
 
 
@@ -113,7 +113,7 @@ class BooleanAnswer extends React.Component {
 
     const { questionData,userAnswersMapQuizInstance, currentTest,userAnswers} = this.props;
 
-    console.log('undo clicked');
+  //  console.log('undo clicked');
     // so that if the user changes their mind and enters the wrong answer then their score goes down.
     ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
 
@@ -123,7 +123,7 @@ class BooleanAnswer extends React.Component {
 
 
   render() {
-    console.log('boolean answer rendered');
+//    console.log('boolean answer rendered');
 
     const { classes,questionData,userAnswersMapQuizInstance, currentTest,selectQuizCat,questionVisibility,serverAnswers,selectedQuiz} = this.props;
 

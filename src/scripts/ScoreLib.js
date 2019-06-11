@@ -111,7 +111,7 @@ export class ScoreLib {
 
   static GetScoreForTest(userAnswersMapQuizInstance, instanceId, numberofquestions){
 
-     console.log('GetScoreForTest : '+instanceId);
+  //   console.log('GetScoreForTest : '+instanceId);
     //
     // userAnswersMapQuizInstance.index.forEach((e)=>{
     //   console.log(userAnswersMapQuizInstance[e].id);
@@ -143,6 +143,14 @@ export class ScoreLib {
   static GetCorrectAnswersForQuestion(questionData, correctAnswers){
     let carray = questionData.correctAnswers.map((id)=>{
       return correctAnswers[id].answerText;
+    });
+
+    return carray;
+  }
+
+  static GetPossibleAnswersForQuestion(questionData, possibleAnswers){
+    let carray = questionData.possibleAnswers.map((id)=>{
+      return possibleAnswers[id].answerText;
     });
 
     return carray;
@@ -196,25 +204,35 @@ export class ScoreLib {
        callback(userAnswers,100,true);
      }
      else{
-       MatchLib.Match(remainingAnswers, attemptedAnswer, 2, (correct, updatedRemaining)=>{
-
-      //   console.log('comparison result: '+remainingAnswers.length + ' ' + updatedRemaining.length  );
+         let matchResult = MatchLib.Match(remainingAnswers, attemptedAnswer );
 
          let percentile = (100 / correctAnswersArg.length);
 
+         let score = Math.floor(percentile *  (correctAnswersArg.length - matchResult.remainingAnswers.length));
 
+         let isAttemptedAnswerCorrect = (remainingAnswers.length > matchResult.remainingAnswers.length);
 
-         let score = Math.floor(percentile *  (correctAnswersArg.length - updatedRemaining.length));
-
-
-         let isAttemptedAnswerCorrect = (remainingAnswers.length > updatedRemaining.length);
-
-         callback(userAnswers.concat(correct),score,isAttemptedAnswerCorrect);
-       });
+         callback(userAnswers.concat(matchResult.correctAnswers),score,isAttemptedAnswerCorrect);
       }
-
-
   }
+
+  static GetScoreForMultiChoice(answer, solution, numberOfCorrectAnswers){
+    let matchResult = MatchLib.MatchArray(answer, solution ,numberOfCorrectAnswers);
+
+    return matchResult;
+  }
+
+  static GetScoreMultiAnswerByQueestionDataNC(usersAnswers, questionData, attemptedAnswer,answersArg){
+    usersAnswers= Object.freeze(usersAnswers);
+    questionData= Object.freeze(questionData);
+    attemptedAnswer= Object.freeze(attemptedAnswer);
+    answersArg= Object.freeze(answersArg);
+
+    let correctAnswersArg = questionData.correctAnswers.map((id)=>{
+      return answersArg[id].answerText;
+    });
+  }
+
 
   static GetRemainingAnswers(userAnswered, correctAnswers){
 
@@ -238,6 +256,67 @@ export class ScoreLib {
 
   static UpdateEnteredAnswerObjs(questionId, instanceId, answer, refUserAnswers, refUserAnswersMapQuizInstance, isCorrect,score){
 
+    var arrayIsEqual = function (value, other) {
+      //https://gomakethings.com/check-if-two-arrays-or-objects-are-equal-with-javascript/
+    	// Get the value type
+    	var type = Object.prototype.toString.call(value);
+
+    	// If the two objects are not the same type, return false
+    	if (type !== Object.prototype.toString.call(other)) return false;
+
+    	// If items are not an object or array, return false
+    	if (['[object Array]', '[object Object]'].indexOf(type) < 0) return false;
+
+    	// Compare the length of the length of the two items
+    	var valueLen = type === '[object Array]' ? value.length : Object.keys(value).length;
+    	var otherLen = type === '[object Array]' ? other.length : Object.keys(other).length;
+    	if (valueLen !== otherLen) return false;
+
+    	// Compare two items
+    	var compare = function (item1, item2) {
+
+    		// Get the object type
+    		var itemType = Object.prototype.toString.call(item1);
+
+    		// If an object or array, compare recursively
+    		if (['[object Array]', '[object Object]'].indexOf(itemType) >= 0) {
+    			if (!isEqual(item1, item2)) return false;
+    		}
+
+    		// Otherwise, do a simple comparison
+    		else {
+
+    			// If the two items are not the same type, return false
+    			if (itemType !== Object.prototype.toString.call(item2)) return false;
+
+    			// Else if it's a function, convert to a string and compare
+    			// Otherwise, just compare
+    			if (itemType === '[object Function]') {
+    				if (item1.toString() !== item2.toString()) return false;
+    			} else {
+    				if (item1 !== item2) return false;
+    			}
+
+    		}
+    	};
+
+    	// Compare properties
+    	if (type === '[object Array]') {
+    		for (var i = 0; i < valueLen; i++) {
+    			if (compare(value[i], other[i]) === false) return false;
+    		}
+    	} else {
+    		for (var key in value) {
+    			if (value.hasOwnProperty(key)) {
+    				if (compare(value[key], other[key]) === false) return false;
+    			}
+    		}
+    	}
+
+    	// If nothing failed, return true
+    	return true;
+
+    };
 
     const initObjectsIfReq = () => {
         if(!refUserAnswers){
@@ -258,7 +337,12 @@ export class ScoreLib {
 
     const storeUserAnswerIfReq =() =>{
       let existingAnswer = refUserAnswers.index.filter((idx)=>{
-        return refUserAnswers[idx].answer == answer;
+        if(!Array.isArray(refUserAnswers[idx].answer) && !Array.isArray(answer)) return refUserAnswers[idx].answer == answer;
+        if(Array.isArray(refUserAnswers[idx].answer) && !Array.isArray(answer)) return false;
+        if(!Array.isArray(refUserAnswers[idx].answer) && Array.isArray(answer)) return false;
+        if(Array.isArray(refUserAnswers[idx].answer) && Array.isArray(answer)) {
+          return arrayIsEqual(refUserAnswers[idx].answer,answer );
+        }
       });
 
 
@@ -309,13 +393,17 @@ export class ScoreLib {
 
     if(refUserAnswersMapQuizInstance[compositeKey] ){
       if(isCorrect){
-        if(!mappingContainsCorrectAnswer())
+        if(!mappingContainsCorrectAnswer()){
           refUserAnswersMapQuizInstance[compositeKey].answer.push(userAnswerKey);
           refUserAnswersMapQuizInstance[compositeKey].score = score;
+        }
       }
       else{
-        if(!mappingContainsWrongAnswer())
+        if(!mappingContainsWrongAnswer()){
           refUserAnswersMapQuizInstance[compositeKey].wrongAnswer.push(userAnswerKey);
+
+        }
+        refUserAnswersMapQuizInstance[compositeKey].score = score;
       }
     }
     else{

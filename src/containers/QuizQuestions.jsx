@@ -38,7 +38,7 @@ class QuizQuestions extends Component {
    }
 
    componentDidMount() {
-     console.log('componentDidMount: '  );
+  //   console.log('componentDidMount: '  );
     //init question object
     const { selectQuizCat} = this.props;
 
@@ -71,7 +71,7 @@ class QuizQuestions extends Component {
 
     let score = 'Score: '+ScoreLib.GetScoreForTest(userAnswersMapQuizInstance,currentTest,quizQuestions.index.length)+ '%';
 
-    console.log('state changed');
+  //  console.log('state changed');
 
       return (
         <div>

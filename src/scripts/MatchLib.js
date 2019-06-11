@@ -1,17 +1,8 @@
 export class MatchLib {
 
 
-  static Match(answer, solution, type, callback){
-    switch(type){
-        case 1:
-            MatchLib._basicMatch(answer,solution,callback);
-            break;
-        case 2:
-            MatchLib._multiAnswer(answer,solution,callback);
-            break;
-        default:
-            MatchLib._basicMatch(answer,solution,callback);
-    }
+  static Match(answer, solution){
+    return MatchLib._multiAnswer(answer,solution);
   }
 
 
@@ -122,7 +113,7 @@ export class MatchLib {
   }
 
 
-  static _multiAnswer(answer,solution,callback){
+  static _multiAnswer(answer,solution){
 
       var remainingAnswers = [];
       var correctAnswers = [];
@@ -143,12 +134,11 @@ export class MatchLib {
 
         var idx = 0;
         while (idx < answer.length) {
-
-            if (MatchLib._arrayEqual(answer[idx], solution, charCount)) {
-                correctAnswers.push(formatAnswer(answer[idx], solution));
-            } else {
-                remainingAnswers.push(answer[idx]);
-            }
+              if (MatchLib._arrayEqual(answer[idx], solution, charCount)) {
+                  correctAnswers.push(formatAnswer(answer[idx], solution));
+              } else {
+                  remainingAnswers.push(answer[idx]);
+              }
             idx++;
         }
       };
@@ -164,9 +154,58 @@ export class MatchLib {
           charCount++;
       }
 
-
-      callback(correctAnswers,remainingAnswers);
+      return {
+        correctAnswers,
+        remainingAnswers
+      };
   }
+
+
+
+
+  static MatchArray(answer, solution, numberOfCorrectAnswers){
+
+    if(!Array.isArray(answer)) return 0;
+
+    if(!Array.isArray(solution)) return 0;
+
+    if(answer.length != solution.length) return 0;
+
+
+    let idx =0;
+    let numberPosMatches =0;
+    let numberNegMatches =0;
+
+    while(idx < answer.length){
+      if(solution[idx] == "-1"){
+        if(answer[idx] == solution[idx]){
+          numberNegMatches++;
+        }
+      }
+      else{
+        if(answer[idx] == solution[idx]){
+          numberPosMatches++;
+        }
+      }
+
+      idx++;
+    }
+
+    let countNegsEntries = solution.length - numberOfCorrectAnswers;
+
+    let negScore = Math.floor((100 / countNegsEntries) * numberNegMatches);
+
+    let posScore =  Math.floor((100 / numberOfCorrectAnswers) * numberPosMatches);
+
+    if(posScore == 0) return 0;
+
+    if(negScore ==100) return posScore;
+
+    return posScore - negScore;
+
+  }
+
+
 
 
 }

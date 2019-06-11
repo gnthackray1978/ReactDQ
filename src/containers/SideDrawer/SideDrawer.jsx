@@ -150,7 +150,7 @@ function QuizItemCats(props) {
 
 
     const quizClick = (key => {
-        console.log('selected quiz :' + key.quiz + ' ' + key.key);
+      //  console.log('selected quiz :' + key.quiz + ' ' + key.key);
         setQuizName(key);
         catSelection.forEach((selection)=>{
          if(selection.quiz == key.key){
@@ -163,7 +163,7 @@ function QuizItemCats(props) {
      });
 
      const catClick = (key => {
-         console.log('selected cat :' + key);
+      //   console.log('selected cat :' + key);
          setQuizCat(key);
 
       });
@@ -197,7 +197,7 @@ function QuizItemCats(props) {
              </AppBar>
              <List>
                {this.props.quizMetaData.map(function(item, index){
-                    return <div><QuizItem label ={item.quiz}  id = {item.key} onClick = {quizClick}></QuizItem>
+                    return <div key= {index}><QuizItem label ={item.quiz}  id = {item.key} onClick = {quizClick}></QuizItem>
                        <QuizItemCats names = {item.cats}  id = {index} onClick = {catClick}  isVisible ={isVisible(item.key)}></QuizItemCats> </div>;
                })}
              </List>

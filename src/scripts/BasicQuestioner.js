@@ -118,7 +118,7 @@ export class BasicQuestioner {
 
 
    static CreateQuestionSetN(rawCSVData, selectedcategory, questionType) {
-       console.log('creating question set');
+      // console.log('creating question set');
 
        var csvData = rawCSVData;
 
