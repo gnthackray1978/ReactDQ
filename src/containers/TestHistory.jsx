@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
-
+import VisualisationHandler from "./VisualisationHandler.jsx";
 import TextField from '@material-ui/core/TextField';
 import InputBase from '@material-ui/core/InputBase';
 import DirectionsIcon from '@material-ui/icons/Directions';
@@ -113,6 +113,7 @@ function TestHistory(props) {
 
   return (
     <Paper className={classes.answerContainer}>
+      <VisualisationHandler></VisualisationHandler>
        <Grid container spacing={16}>
          <Grid item xs={8}  className={classes.toprow} >
          <Typography className={classes.gridheader} >
