@@ -35,6 +35,9 @@ RenderingHandler.prototype = {
 
             that._channel.emit( "nodecount", { value: that.layout._cameraView.countOnscreenNodes() } );
 
+            let map = that.layout._cameraView;
+
+            map.adjustPosition();
 
             that.layout.applyCoulombsLaw();
             that.layout.applyHookesLaw();
@@ -43,7 +46,9 @@ RenderingHandler.prototype = {
             that.layout.updatePosition(0.01);
 
 
-            let map = that.layout._cameraView;
+
+
+
 
             // render
             that.layout.eachEdge(function(edge, spring) {
@@ -57,6 +62,7 @@ RenderingHandler.prototype = {
             energyCount += that.layout.totalEnergy();
 
             that._channel.emit( "energy",  {value: energyCount.toFixed(2) });
+
 
 
             // stop simulation when energy of the system goes below a threshold
@@ -87,6 +93,9 @@ RenderingHandler.prototype = {
                 requestAnimationFrame(step);
 
             }
+
+
+
         });
 
     },

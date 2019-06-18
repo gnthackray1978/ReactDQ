@@ -229,9 +229,7 @@ FDLayout.prototype = {
         if (e.currentTarget.localName == "canvas") {
             this.mouseup = false;
 
-    //        var pos = $(this.canvasId).offset();
-
-    var pos = {
+            var pos = {
             top: e.currentTarget.offsetTop,
             left:e.currentTarget.offsetLeft
 
@@ -355,7 +353,8 @@ FDLayout.prototype = {
     //formerly mousemove
     checkForHighLights: function (e) {
 
-    //    console.log('mouseMove_');
+    //  if(!this.mouseup)
+    //    console.log('mouseMove: ' + this.selected.node.id + ' ' + this.dragged.node.id);
 
       //  var pos = $(this.canvasId).offset();
 
@@ -374,6 +373,7 @@ FDLayout.prototype = {
 
         if (!this.mouseup && this.selected.node.id !== -1 && this.dragged.node.id == -1) {
             this._cameraView.addToMouseQueue(e.clientX, e.clientY);
+        //    console.log('mouseMove: ' + this.selected.node.id + ' ' + this.dragged.node.id);
         }
 
         var newNearest = this.nearestPoint(p);
