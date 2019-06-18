@@ -92,9 +92,9 @@ class VisualisationHandler extends Component {
 
       this.props.toggleGraphRunning(true);
       this.props.context.canvas.style.top=0;
-      this.props.context.canvas.style.left=100;
+      this.props.context.canvas.style.left=0;
 
-      this.props.context.canvas.width = window.innerWidth-200;
+      this.props.context.canvas.width = window.innerWidth;
       this.props.context.canvas.height = window.innerHeight;
 
       let settings = {...this.props.fdSettings};
@@ -102,19 +102,14 @@ class VisualisationHandler extends Component {
       settings.repulsion =0.5;
       settings.damping =0.955;
 
-      settings.width = window.innerWidth-200;
+      settings.width = window.innerWidth;
       settings.height = window.innerHeight;
 
-      let dataSource =null;
+      let dataSource =this.props.dataSource;
 
-      this._forceDirect = new ForceDirect(settings,dataSource,this.props.context,(name,value)=>{
+      this._forceDirect = new ForceDirect(settings,dataSource,this.props.context,(name,value)=>{ });
 
-       });
-
-      this._forceDirect.run();
-
-
-
+      this._forceDirect.run(this.props.populateGraph, dataSource);
 
     }
 

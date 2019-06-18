@@ -285,6 +285,14 @@ FDLayout.prototype = {
                     if (!found) {
                         this.dragList.push({ id: this.dragged.node.id, m: this.dragged.point.m });
                         this.dragged.point.m = 10000;
+
+                        let user=  this.graph.newNode({ label: 'Test To Add',
+                                               RecordLink: {currentDescendantCount :0, Label: 'Test To Add'},
+                                               RecordId : 100,
+                                               type: 'normal' });
+
+                        this.graph.newEdge(user ,this.dragged.node, { type: 'userlink' });
+
                     }
 
 
@@ -431,7 +439,9 @@ FDLayout.prototype = {
         var min = { node: null, point: null, distance: this.nearestPointDistance};
         var t = this;
         this.graph.nodes.forEach(function (n) {
-            if (n.data.type == 'normal') {
+            if (n.data.type == 'normal'
+              || n.data.type == 'testNode'
+            || n.data.type == 'catNode') {
                 var point = t.point(n);
                 var distance = point.p.subtract(pos).magnitude();
             //    console.log(n.data.RecordLink.Label + ' ' + distance);

@@ -220,7 +220,7 @@ CameraView.prototype = {
 
         var p = utils.fromScreen({ x: (e.pageX - this.centrePoint) - pos.left, y: (e.pageY - this.centreVerticalPoint) - pos.top });
 
-        console.log('current screen pos: '+this.graph_width + ' ' + this.centrePoint + ' ' + e.pageX  + ' ' + pos.left + ' ' + p.x);
+        //console.log('current screen pos: '+this.graph_width + ' ' + this.centrePoint + ' ' + e.pageX  + ' ' + pos.left + ' ' + p.x);
         return p;
     },
 

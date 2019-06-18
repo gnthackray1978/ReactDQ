@@ -11,6 +11,31 @@ export class RenderLib{
       this.ctx.clearRect(0, 0, cameraView.graph_width, cameraView.graph_height);
   }
 
+  drawLabel( ctx, text, p1, p2, alignment, padding ){
+    if (!alignment) alignment = 'center';
+    if (!padding) padding = 5;
+
+    var dx = p2.x - p1.x;
+    var dy = p2.y - p1.y;
+    var p, pad;
+    if (alignment=='center'){
+      p = p1;
+      pad = 1/2;
+    } else {
+      var left = alignment=='left';
+      p = left ? p1 : p2;
+      pad = padding / Math.sqrt(dx*dx+dy*dy) * (left ? 1 : -1);
+    }
+
+    ctx.save();
+    ctx.textAlign = alignment;
+    ctx.font = "16px Verdana, sans-serif";
+    ctx.translate(p.x+dx*pad,p.y+dy*pad);
+    ctx.rotate(Math.atan2(dy,dx));
+    ctx.fillText(text,0,0);
+    ctx.restore();
+  }
+
   drawEdges(map, edge, p1, p2) {
 
       var _utils = new Utils(map.currentBB, map.graph_width, map.graph_height);
@@ -76,13 +101,15 @@ export class RenderLib{
       arrowLength = 10;
 
 
-      var stroke = '';
-      if (edge.data.type == 'data') {
-          stroke = map.colourScheme.infoLineColour;
-      } else {
-          var averagedesc = (edge.source.data.RecordLink.currentDescendantCount + edge.target.data.RecordLink.currentDescendantCount) / 2;
-          stroke = _utils.getLevel(300, averagedesc, map.colourScheme.normalLineGradient);
-      }
+      var stroke = 'gray';
+
+      if (edge.data.type == 'userlink') stroke = 'white';
+      // if (edge.data.type == 'data') {
+      //     stroke = map.colourScheme.infoLineColour;
+      // } else {
+      //     var averagedesc = (edge.source.data.RecordLink.currentDescendantCount + edge.target.data.RecordLink.currentDescendantCount) / 2;
+      //     stroke = _utils.getLevel(300, averagedesc, map.colourScheme.normalLineGradient);
+      // }
 
       this.ctx.strokeStyle = stroke;
       this.ctx.beginPath();
@@ -90,25 +117,30 @@ export class RenderLib{
       this.ctx.lineTo(s2.x, s2.y);
       this.ctx.stroke();
 
+
+    //  console.log('drawlabel');
+      if(edge.data.Label )
+        this.drawLabel(this.ctx,edge.data.Label, s1, s2,'center',0);
+
       // arrow
-      var distance = s1.distance(s2);
-      var directional = typeof(edge.data.directional) !== 'undefined' ? edge.data.directional : true;
-      if (directional && distance > 75) {
-          this.ctx.save();
-          this.ctx.fillStyle = stroke;
-
-          this.ctx.translate((intersection.x + s1.x) / 2, (intersection.y + s1.y) / 2);
-
-          this.ctx.rotate(Math.atan2(y2 - y1, x2 - x1));
-          this.ctx.beginPath();
-          this.ctx.moveTo(-arrowLength, arrowWidth);
-          this.ctx.lineTo(0, 0);
-          this.ctx.lineTo(-arrowLength, -arrowWidth);
-          this.ctx.lineTo(-arrowLength * 0.8, -0);
-          this.ctx.closePath();
-          this.ctx.fill();
-          this.ctx.restore();
-      }
+      // var distance = s1.distance(s2);
+      // var directional = typeof(edge.data.directional) !== 'undefined' ? edge.data.directional : true;
+      // if (directional && distance > 75) {
+      //     this.ctx.save();
+      //     this.ctx.fillStyle = stroke;
+      //
+      //     this.ctx.translate((intersection.x + s1.x) / 2, (intersection.y + s1.y) / 2);
+      //
+      //     this.ctx.rotate(Math.atan2(y2 - y1, x2 - x1));
+      //     this.ctx.beginPath();
+      //     this.ctx.moveTo(-arrowLength, arrowWidth);
+      //     this.ctx.lineTo(0, 0);
+      //     this.ctx.lineTo(-arrowLength, -arrowWidth);
+      //     this.ctx.lineTo(-arrowLength * 0.8, -0);
+      //     this.ctx.closePath();
+      //     this.ctx.fill();
+      //     this.ctx.restore();
+      // }
 
 
   }
@@ -130,7 +162,7 @@ export class RenderLib{
       var x1 = map.mapOffset(_utils.toScreen(p)).x;
       var y1 = map.mapOffset(_utils.toScreen(p)).y;
 
-    //  console.log('map offset: ' + x1 + ' ' + y1);
+  //   console.log('drawNodes');
 
     //  if (!map.validToDraw(x1, y1)) return;
 
@@ -141,22 +173,22 @@ export class RenderLib{
       //2 = nearest
       var selectionId = layout.getSelection(node);
 
-          if (map.layout.nodePoints[node.id].m==1)
-              _utils.star(map, this.ctx, s.x, s.y, 12, 5, 0.4, false, node.data.type, selectionId);
-          else
-              _utils.star(map, this.ctx, s.x, s.y, 12, 3, 0.4, false, node.data.type, selectionId);
+      if (node.data.type == 'testNode')
+      {
+         _utils.drawBorderdText(map, this.ctx, s.x, s.y, node.data.RecordLink.Label, node.data.type, selectionId);
+      }
 
 
-          if (node.data.RecordLink != undefined) {
-              var name = node.data.RecordLink.Label;
+      if (node.data.type == 'catNode')
+      {
+        _utils.circle(map, this.ctx, s.x, s.y, 12, false, node.data.type, selectionId);
 
-              var m = map.layout.nodePoints[node.id].m;
-              _utils.drawText(map, this.ctx, s.x, s.y, name + ' ' + m , node.data.type, selectionId);
-
-
-          }
-
-  //    }
+        // if (node.data.RecordLink != undefined) {
+        //     let name = node.data.RecordLink.Label;
+        //     let m = map.layout.nodePoints[node.id].m;
+        //     _utils.drawText(map, this.ctx, s.x, s.y, name, node.data.type, selectionId);
+        // }
+      }
 
       this.ctx.restore();
   }

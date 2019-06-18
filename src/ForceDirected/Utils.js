@@ -87,6 +87,19 @@ Utils.prototype = {
         return (dob >= min && dob <= max) ? true : false;
     },
 
+    circle: function (map, ctx, x, y, r, filled, type, state) {
+
+      ctx.beginPath();
+
+      ctx.arc(x, y, r, 0, 2 * Math.PI);
+
+      ctx.fillStyle = 'green';
+      ctx.fill();
+
+      ctx.stroke();
+
+    },
+
     star: function (map, ctx, x, y, r, p, m, filled, type, state) {
 
         //var radgrad = ctx.createRadialGradient(s.x + 2, s.y + 3, 1, s.x + 5, s.y + 5, 5);
@@ -167,6 +180,25 @@ Utils.prototype = {
 
 
         ctx.fillText(text,x,y);// x - boxWidth / 2 + 5, y - 8);
+    },
+
+    drawBorderdText: function(map, ctx, x, y, text, type, state){
+      var fontsize = 14;
+      var fontface = 'verdana';
+      var lineHeight = (fontsize * 1.286)+2;
+      //var text = text;
+
+      ctx.font = fontsize + 'px ' + fontface;
+      var textWidth = ctx.measureText(text).width+4;
+
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+
+      ctx.fillStyle = 'white';
+      ctx.fillRect(x, y, textWidth, lineHeight);
+      ctx.fillStyle = 'black';
+      ctx.fillText(text, x+2, y+2);
+      ctx.strokeRect(x, y, textWidth, lineHeight);
     }
 
 };

@@ -97,55 +97,9 @@ ForceDirect.prototype = {
             clearInterval(this.yearTimer);
     },
 
-    populateGraph: function (graph) {
-
-        var mygraph = graph;
 
 
-
-        let user=  mygraph.newNode({ label: 'George',
-                               RecordLink: {currentDescendantCount :0, Label: 'George'},
-                               RecordId : 1,
-                               type: 'normal' });
-
-        let oop=   mygraph.newNode({ label: 'OOP',
-                              RecordLink:  {currentDescendantCount :0, Label: 'OOP'},
-                              RecordId : 2,
-                              type: 'normal' });
-
-        let soa =   mygraph.newNode({ label: 'SOA',
-                               RecordLink: {currentDescendantCount :0, Label: 'SOA'},
-                               RecordId : 3,
-                               type: 'normal' });
-
-       let patterns =   mygraph.newNode({ label: 'Patterns',
-                              RecordLink: {currentDescendantCount :0, Label: 'Patterns'},
-                              RecordId : 4,
-                              type: 'normal' });
-
-       let a =   mygraph.newNode({ label: 'r1', RecordLink: {currentDescendantCount :0, Label: '13%'}, RecordId : 5, type: 'score' });
-       let b =   mygraph.newNode({ label: 'r2', RecordLink: {currentDescendantCount :0, Label: '23%'}, RecordId : 6, type: 'score' });
-       let c =   mygraph.newNode({ label: 'r3', RecordLink: {currentDescendantCount :0, Label: '45%'}, RecordId : 6, type: 'score' });
-       let d =   mygraph.newNode({ label: 'r4', RecordLink: {currentDescendantCount :0, Label: '56%'}, RecordId : 6, type: 'score' });
-       let e =   mygraph.newNode({ label: 'r5', RecordLink: {currentDescendantCount :0, Label: '100%'}, RecordId : 6, type: 'score' });
-
-
-       mygraph.newEdge(user ,oop, { type: 'userlink' });
-
-        mygraph.newEdge(user,soa, { type: 'userlink' });
-
-      mygraph.newEdge(user,patterns, { type: 'userlink' });
-
-      mygraph.newEdge(patterns,a, { type: 'scorelink' });
-      mygraph.newEdge(patterns,b, { type: 'scorelink' });
-      mygraph.newEdge(patterns,c, { type: 'scorelink' });
-
-      mygraph.newEdge(soa,d, { type: 'scorelink' });
-      mygraph.newEdge(soa,e, { type: 'scorelink' });
-
-    },
-
-    run: function(data) {
+    run: function( populateGraph, dataSource) {
 
 
         var that = this;
@@ -156,7 +110,7 @@ ForceDirect.prototype = {
             new CameraView(that.channel, that.settings.colourScheme, that.settings.width, that.settings.height),
             that.settings);
 
-        this.populateGraph(graph);
+        populateGraph(graph,dataSource);
 
         that.renderingHandler = new RenderingHandler(that.channel, this.layout, new RenderLib(graph, that._context));
 

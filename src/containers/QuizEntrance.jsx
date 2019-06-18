@@ -65,9 +65,11 @@ class QuizEntrance extends Component {
 
       return (
         <div >
+          <TestHistory></TestHistory>
           <TopButtons  isData = {true} modeChanged = { this.handleInput }/>
           <SideDrawer onOpenClick = {click => this.dataClick = click} />
-          <TestHistory></TestHistory>
+
+
         </div>
       );
     }
