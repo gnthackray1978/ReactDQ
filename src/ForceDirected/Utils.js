@@ -100,6 +100,30 @@ Utils.prototype = {
 
     },
 
+    circleBorder: function (map, ctx, x, y, r, filled, type, state) {
+
+      ctx.beginPath();
+
+      ctx.arc(x, y, r+3, 0, 2 * Math.PI);
+
+      ctx.fillStyle = 'red';
+      ctx.fill();
+
+      ctx.stroke();
+
+
+      ctx.beginPath();
+
+      ctx.arc(x, y, r, 0, 2 * Math.PI);
+
+      ctx.fillStyle = 'green';
+      ctx.fill();
+
+      ctx.stroke();
+
+
+    },
+
     star: function (map, ctx, x, y, r, p, m, filled, type, state) {
 
         //var radgrad = ctx.createRadialGradient(s.x + 2, s.y + 3, 1, s.x + 5, s.y + 5, 5);

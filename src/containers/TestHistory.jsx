@@ -125,11 +125,11 @@ function TestHistory(props) {
 
              let idx =0;
              let catIdx =0;
-
+             let nodeIdx =0;
              while(idx < quizMetaData.length){
                let test=   mygraph.newNode({ label: quizMetaData[idx].quiz,
                                      RecordLink:  {currentDescendantCount :0, Label: quizMetaData[idx].quiz},
-                                     RecordId : idx,
+                                     RecordId : nodeIdx,
                                      type: 'testNode' });
 
                mygraph.newEdge(user ,test, { type: 'userlink' });
@@ -137,12 +137,13 @@ function TestHistory(props) {
                catIdx =0;
 
                while(catIdx < quizMetaData[idx].cats.length){
+                 nodeIdx++;
 
                  let catResults = [...history.filter(f=>f.quizCat == quizMetaData[idx].cats[catIdx])];
 
                  let catNode=   mygraph.newNode({ label: quizMetaData[idx].cats[catIdx],
                                        RecordLink:  {currentDescendantCount :0, Label: quizMetaData[idx].cats[catIdx], children : catResults},
-                                       RecordId : idx,
+                                       RecordId : nodeIdx,
                                        type: 'catNode' });
 
                  mygraph.newEdge(test ,catNode, { type: 'nodelink', Label: quizMetaData[idx].cats[catIdx] });
@@ -156,47 +157,6 @@ function TestHistory(props) {
 
                idx++;
              }
-
-
-
-
-           //
-           //
-           //
-           //   let oop=   mygraph.newNode({ label: 'OOP',
-           //                         RecordLink:  {currentDescendantCount :0, Label: 'OOP'},
-           //                         RecordId : 2,
-           //                         type: 'normal' });
-           //
-           //   let soa =   mygraph.newNode({ label: 'SOA',
-           //                          RecordLink: {currentDescendantCount :0, Label: 'SOA'},
-           //                          RecordId : 3,
-           //                          type: 'normal' });
-           //
-           //  let patterns =   mygraph.newNode({ label: 'Patterns',
-           //                         RecordLink: {currentDescendantCount :0, Label: 'Patterns'},
-           //                         RecordId : 4,
-           //                         type: 'normal' });
-           //
-           //  let a =   mygraph.newNode({ label: 'r1', RecordLink: {currentDescendantCount :0, Label: '13%'}, RecordId : 5, type: 'score' });
-           //  let b =   mygraph.newNode({ label: 'r2', RecordLink: {currentDescendantCount :0, Label: '23%'}, RecordId : 6, type: 'score' });
-           //  let c =   mygraph.newNode({ label: 'r3', RecordLink: {currentDescendantCount :0, Label: '45%'}, RecordId : 6, type: 'score' });
-           //  let d =   mygraph.newNode({ label: 'r4', RecordLink: {currentDescendantCount :0, Label: '56%'}, RecordId : 6, type: 'score' });
-           //  let e =   mygraph.newNode({ label: 'r5', RecordLink: {currentDescendantCount :0, Label: '100%'}, RecordId : 6, type: 'score' });
-           //
-           //
-           //  mygraph.newEdge(user ,oop, { type: 'userlink' });
-           //
-           //   mygraph.newEdge(user,soa, { type: 'userlink' });
-           //
-           // mygraph.newEdge(user,patterns, { type: 'userlink' });
-           //
-           // mygraph.newEdge(patterns,a, { type: 'scorelink' });
-           // mygraph.newEdge(patterns,b, { type: 'scorelink' });
-           // mygraph.newEdge(patterns,c, { type: 'scorelink' });
-           //
-           // mygraph.newEdge(soa,d, { type: 'scorelink' });
-           // mygraph.newEdge(soa,e, { type: 'scorelink' });
 
          };
 

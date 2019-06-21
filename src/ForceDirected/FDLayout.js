@@ -262,6 +262,10 @@ FDLayout.prototype = {
                     this.dragged = newNearest;
                 }
             }
+            else{
+              this.selected = {node: new Node(-1,null), point: new Point(new Vector(0,0),0), distance: -1 };;
+
+            }
 
             if (this.selected.node !== null) {
             //    this.selectionMass = this.dragged.point.m;
@@ -406,11 +410,11 @@ FDLayout.prototype = {
                 this.selected.node != undefined &&
                 this.selected.node.data != undefined &&
                 this.selected.node.data.RecordLink != undefined) {
-                  selectedPersonId = this.selected.node.data.RecordLink.PersonId;
+                  selectedPersonId = this.selected.node.data.RecordId;
             }
 
             if (node.data != undefined && node.data.RecordLink != undefined) {
-                nodePersonId = node.data.RecordLink.PersonId;
+                nodePersonId = node.data.RecordId;
             }
 
             if (selectedPersonId == nodePersonId && node.data.type != 'infonode') {
