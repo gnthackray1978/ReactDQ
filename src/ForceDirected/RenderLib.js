@@ -182,11 +182,13 @@ export class RenderLib{
       if (node.data.type == 'catNode')
       {
 
-        //console.log(selectionId);
-        if(selectionId != 3)
-          _utils.circle(map, this.ctx, s.x, s.y, 12, false, node.data.type, selectionId);
-        else
-          _utils.circleBorder(map, this.ctx, s.x, s.y, 12, false, node.data.type, selectionId);
+    //    console.log(selectionId);
+        if(selectionId == 3) _utils.circleBorder(map, this.ctx, s.x, s.y, 12, false, node.data.type, selectionId,node.data.RecordLink.score);
+
+        _utils.circle(map, this.ctx, s.x, s.y, 12, false, node.data.type, selectionId,node.data.RecordLink.score);
+
+
+
 
         // if (node.data.RecordLink != undefined) {
         //     let name = node.data.RecordLink.Label;

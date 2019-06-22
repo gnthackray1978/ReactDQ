@@ -114,6 +114,8 @@ function TestHistory(props) {
 
   const populateGraph = (graph, dataSource) =>{
 
+
+
              var mygraph = graph;
 
           //   console.log('populateGraph');
@@ -140,9 +142,24 @@ function TestHistory(props) {
                  nodeIdx++;
 
                  let catResults = [...history.filter(f=>f.quizCat == quizMetaData[idx].cats[catIdx])];
+                 let score =0;
+
+
+                 if(catResults.length >0)  {
+                    console.log("catResults object holds: " + quizMetaData[idx].cats[catIdx] + ' - '+ catResults.length);
+
+                    score = catResults.map(m=> m.score).reduce((total,num)=>{
+                      if(total < num)
+                        return num;
+                      else
+                        return total;
+                    });
+
+                //  console.log("catResults object holds: " +score);
+                 }
 
                  let catNode=   mygraph.newNode({ label: quizMetaData[idx].cats[catIdx],
-                                       RecordLink:  {currentDescendantCount :0, Label: quizMetaData[idx].cats[catIdx], children : catResults},
+                                       RecordLink:  {currentDescendantCount :0, Label: quizMetaData[idx].cats[catIdx], children : catResults, score :score },
                                        RecordId : nodeIdx,
                                        type: 'catNode' });
 

@@ -87,39 +87,73 @@ Utils.prototype = {
         return (dob >= min && dob <= max) ? true : false;
     },
 
-    circle: function (map, ctx, x, y, r, filled, type, state) {
+    circle: function (map, ctx, x, y, r, filled, type,selectionId,  score) {
+
+      let radians = 2 * Math.PI;
 
       ctx.beginPath();
 
-      ctx.arc(x, y, r, 0, 2 * Math.PI);
-
-      ctx.fillStyle = 'green';
-      ctx.fill();
-
-      ctx.stroke();
-
-    },
-
-    circleBorder: function (map, ctx, x, y, r, filled, type, state) {
-
-      ctx.beginPath();
-
-      ctx.arc(x, y, r+3, 0, 2 * Math.PI);
+      ctx.arc(x, y, r, 0, radians);
 
       ctx.fillStyle = 'red';
       ctx.fill();
 
-      ctx.stroke();
+  //    ctx.stroke();
+
+
+      if(score){
+         //console.log(score);
+        let angle = score * 3.6;
+        radians = angle * (Math.PI/180);
+
+        let startSegment = 0*Math.PI - 1.5;
+        let endSegment = radians - 1.5;
+
+        ctx.beginPath();
+
+        ctx.arc(x, y, r, startSegment, endSegment);
+        ctx.lineTo(x, y);
+
+        ctx.fillStyle = 'green';
+        ctx.fill();
+
+      //  ctx.stroke();
+
+      }
+
+    },
+
+    circleBorder: function (map, ctx, x, y, r, filled, type, selectionId, score) {
+
+      this.circle(map,ctx, x, y, r, filled, type, selectionId, score);
+
+
+      let radians = 2 * Math.PI;
 
 
       ctx.beginPath();
 
-      ctx.arc(x, y, r, 0, 2 * Math.PI);
+      ctx.arc(x, y, r+3, 0, radians);
 
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = 'blue';
       ctx.fill();
 
-      ctx.stroke();
+  //    ctx.stroke();
+
+
+
+
+
+
+
+      // ctx.beginPath();
+      //
+      // ctx.arc(x, y, r, 0, radians);
+      //
+      // ctx.fillStyle = 'green';
+      // ctx.fill();
+      //
+      // ctx.stroke();
 
 
     },
@@ -211,6 +245,7 @@ Utils.prototype = {
       var fontface = 'verdana';
       var lineHeight = (fontsize * 1.286)+2;
       //var text = text;
+      ctx.beginPath();
 
       ctx.font = fontsize + 'px ' + fontface;
       var textWidth = ctx.measureText(text).width+4;
@@ -222,7 +257,9 @@ Utils.prototype = {
       ctx.fillRect(x, y, textWidth, lineHeight);
       ctx.fillStyle = 'black';
       ctx.fillText(text, x+2, y+2);
+      ctx.strokeStyle =  'black';
       ctx.strokeRect(x, y, textWidth, lineHeight);
+
     }
 
 };
