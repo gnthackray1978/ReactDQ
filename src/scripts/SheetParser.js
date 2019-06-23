@@ -1,4 +1,4 @@
-export class BasicQuestioner {
+export class SheetParser {
 
 
 
@@ -131,7 +131,7 @@ export class BasicQuestioner {
        };
 
         questions.index =  csvData.filter(f=> Array.isArray(f) && f.length > 2 && f[2]==selectedcategory).map((cols,idx)=>{
-          questions[String(idx)] = BasicQuestioner.QuestionFactory(cols[4])(answers,cols[4],cols,idx);
+          questions[String(idx)] = SheetParser.QuestionFactory(cols[4])(answers,cols[4],cols,idx);
 
           return String(idx);
 

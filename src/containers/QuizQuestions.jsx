@@ -11,7 +11,7 @@ import {ScoreLib} from "../scripts/ScoreLib.js";
 
 import { connect } from "react-redux";
 import {setEndTestBatch,setQuizQuestionData, setCombinedQuizData} from "../actions/creators.jsx";
-import {BasicQuestioner} from "../scripts/BasicQuestioner.js";
+import {SheetParser} from "../scripts/SheetParser.js";
 import {GoogleLib} from "../scripts/GoogleLib.js";
 import QuestionList from "./Questions/QuestionList.jsx";
 
@@ -45,10 +45,10 @@ class QuizQuestions extends Component {
     const setQuizQuestionData = this.props.setQuizQuestionData;
     const setCombinedQuizData = this.props.setCombinedQuizData;
 
-    //BasicQuestioner.
+    //SheetParser.
     GoogleLib.ReadSheet(window.gapi, this.props.ScriptId,this.props.selectedQuiz.quiz,  (arg)=>{
 
-         var questionSet = BasicQuestioner.CreateQuestionSetN(arg, selectQuizCat);
+         var questionSet = SheetParser.CreateQuestionSetN(arg, selectQuizCat);
 
          setCombinedQuizData(questionSet);
 
