@@ -1,33 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Component from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
-import AddIcon from '@material-ui/icons/Add';
-import Switch from '@material-ui/core/Switch';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import StarIcon from '@material-ui/icons/Star';
 import InputBase from '@material-ui/core/InputBase';
 import { connect } from "react-redux";
-import { switchControlVisbility,setQuizMetaData,setSideDrawerLoaderVisible,setCatSelection,setQuizName,setQuizCat,
-  setAddQuizMode,setDeleteQuizMode,setEditQuizMode,setEditNameQuizMode, setAddQuizName, setEditQuizName} from "../../actions/creators.jsx";
+import {setAddQuizMode,setAddQuizName} from "../../actions/creators.jsx";
 
 import './SideDrawer.css';
-
-
 
 const styles = theme => ({
 
@@ -81,7 +61,7 @@ class AddQuiz extends Component {
 
   render() {
 
-    const {classes,quizAddName,quizAddMode} = this.props;
+    const {classes,quizAddMode} = this.props;
 
     const startClick = ()=>{
       this.props.setAddQuizMode(true);
@@ -90,15 +70,14 @@ class AddQuiz extends Component {
       this.props.setAddQuizMode(false);
     };
 
-    const addClick = (param)=>{
+    const addClick = ()=>{
       this.props.onAdd(this.state.answerInput);
     };
 
     const handleOnChange = (event)=>{
-    //  console.log('setting :' + event.target.value);
       this.setState({ answerInput: event.target.value });
     };
-
+//
 
 
     startClick.bind(this);
@@ -108,24 +87,27 @@ class AddQuiz extends Component {
     let layout;
 
     if(quizAddMode){
-      layout = <div><InputBase placeholder="Quiz Name…" className = {classes.input}
-         onChange={handleOnChange}/><Button color="inherit" onClick = {addClick}>Add</Button><Button color="inherit" onClick = {cancelClick}>Cancel</Button></div>
+      layout = (<div><InputBase placeholder = "Quiz Name" className = {classes.input} onChange={handleOnChange}/>
+          <Button color="inherit" onClick = {addClick}>Add</Button><Button color="inherit" onClick = {cancelClick}>Cancel</Button></div>);
     }
     else{
       layout = <Button color="inherit" onClick = {startClick}>Create New</Button>
     }
 
     return (
-      <div>{layout}</div>
+        <div>{layout}</div>
     );
 
   }
 
-
-
-
-
 }
+
+AddQuiz.propTypes = {
+  classes: PropTypes.object,
+  quizAddMode : PropTypes.bool,
+  setAddQuizMode : PropTypes.func,
+  onAdd : PropTypes.func,
+};
 
 
 const mapStateToProps = state => {
@@ -144,36 +126,13 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-
   return {
-
-    setCatSelection :data =>{
-      dispatch(setCatSelection(data))
-    },
-    setQuizName :selectedQuiz =>{
-      dispatch(setQuizName(selectedQuiz))
-    },
-    setQuizCat :selectQuizCat =>{
-      dispatch(setQuizCat(selectQuizCat))
-    },
     setAddQuizMode :addMode =>{
       dispatch(setAddQuizMode(addMode))
-    },
-    setDeleteQuizMode :deleteMode =>{
-      dispatch(setDeleteQuizMode(deleteMode))
-    },
-    setEditQuizMode : quizEditMode =>{
-      dispatch(setEditQuizMode(quizEditMode))
-    },
-    setEditNameQuizMode : quizEditNameMode =>{
-      dispatch(setEditNameQuizMode(quizEditNameMode))
     },
     setAddQuizName : quizAddName =>{
       dispatch(setAddQuizName(quizAddName))
     },
-    setEditQuizName : quizEditName =>{
-      dispatch(setEditQuizName(quizEditName))
-    }
   };
 };
 

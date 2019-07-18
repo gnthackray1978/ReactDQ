@@ -26,6 +26,7 @@ import {GoogleLib} from "../../scripts/GoogleLib.js";
 import QuizItemCats from "./QuizItemCats.jsx";
 import AddQuiz from "./AddQuiz.jsx";
 import SelectionToolBar from "./SelectionToolBar.jsx";
+//testuuoi
 
 import './SideDrawer.css';
 
@@ -104,6 +105,8 @@ class SideDrawer extends Component {
    render() {
 
   //   console.log("quiz data length: "+this.props.quizData.length);
+let test ;
+
 
     const { classes ,SideDrawerLoaderVisible, catSelection} = this.props;
 
@@ -142,7 +145,7 @@ class SideDrawer extends Component {
 
     return (
       <div>
-        <Drawer open={this.state.modalShow} >
+        <Drawer open = {this.state.modalShow} >
             <div className = "inner">
               <AppBar position="static">
                <Toolbar>

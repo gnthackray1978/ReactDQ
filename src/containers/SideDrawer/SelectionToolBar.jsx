@@ -35,6 +35,7 @@ import { switchControlVisbility,setQuizMetaData,setSideDrawerLoaderVisible,setCa
   setAddQuizMode,setDeleteQuizMode,setEditQuizMode,setEditNameQuizMode} from "../../actions/creators.jsx";
 
 
+//
 
 const styles = theme => ({
 
@@ -99,8 +100,6 @@ class SelectionToolBar extends Component {
 
 
 
-    let bottomToolbar ;
-
 
     const showDeleteOptions = function(){
       return selectQuizCat != '' && !quizAddMode && !quizEditNameMode && !quizEditMode ;
@@ -119,11 +118,11 @@ class SelectionToolBar extends Component {
     };
 
 
-    bottomToolbar =[];
+    let bottomToolbar =[];
 
 
     if(showCreate())
-      bottomToolbar.push(<AddQuiz  key="1" onAdd = {addClick} classes = {classes}></AddQuiz>);
+      bottomToolbar.push(<AddQuiz  key="1" onAdd = {addClick} ></AddQuiz>);
 
     if(showDeleteOptions())
       bottomToolbar.push(<DeleteQuiz key="2" ></DeleteQuiz>);
