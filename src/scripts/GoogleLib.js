@@ -191,6 +191,43 @@ export class GoogleLib {
 
   }
 
+
+  static DeleteFile(name,callback){
+     console.log(name);
+     callback();
+
+  //     var that =this;
+  //
+  //     var request = {
+  //         'function': 'createQuiz',
+  //         "parameters": [name]
+  //     };
+  //
+  //     that.RunScript(request, function(resp){
+  //         if(resp)
+  //             that._channel.publish( "FileCreated", { value: name} );
+  //         //do something else if failed
+  //     })
+  }
+
+   static CreateFile(gapi, scriptId, name,callback){
+      console.log('CreateFile: ' +name);
+  //    callback();
+
+      var that =this;
+
+      var request = {
+          'function': 'createQuiz',
+          "parameters": [name]
+      };
+
+      GoogleLib.RunScript(gapi, scriptId,request, function(resp){
+          if(resp)
+           callback();
+      });
+  }
+
+
 }
 
 // /*global gapi*/
@@ -332,21 +369,8 @@ export class GoogleLib {
 //
 // };
 //
-// GoogleLib.prototype.CreateFile = function(name,callback){
-//     console.log(name);
-//     var that =this;
-//
-//     var request = {
-//         'function': 'createQuiz',
-//         "parameters": [name]
-//     };
-//
-//     that.RunScript(request, function(resp){
-//         if(resp)
-//             that._channel.publish( "FileCreated", { value: name} );
-//         //do something else if failed
-//     })
-// };
+
+
 //
 // GoogleLib.prototype.OpenFile = function(name){
 //     console.log(name);

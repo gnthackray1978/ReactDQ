@@ -41,6 +41,61 @@ export const setProfileObj= profileObj =>{
     });
   };
 }
+ 
+export const setAddQuizName= (quizAddName) =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_ADDQUIZNAME",
+      quizAddName : quizAddName
+    });
+  };
+}
+
+export const setEditQuizName= (quizEditName) =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_EDITQUIZNAME",
+      quizEditName : quizEditName
+    });
+  };
+}
+
+export const setAddQuizMode= (quizAddMode) =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_ADDQUIZ",
+      quizAddMode : quizAddMode
+    });
+  };
+}
+
+export const setDeleteQuizMode= (quizDeleteMode) =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_DELETEQUIZ",
+      quizDeleteMode : quizDeleteMode
+    });
+  };
+}
+
+export const setEditQuizMode= (quizEditMode) =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_EDITQUIZ",
+      quizEditMode : quizEditMode
+    });
+  };
+}
+
+export const setEditNameQuizMode= (quizEditNameMode) =>{
+  return async dispatch  => {
+    dispatch({
+      type: "SET_EDITNAMEQUIZ",
+      quizEditNameMode : quizEditNameMode
+    });
+  };
+}
+
 
 
 

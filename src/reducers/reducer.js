@@ -1,3 +1,4 @@
+
 export default (state = {}, action) => {
   switch (action.type) {
 
@@ -7,6 +8,43 @@ export default (state = {}, action) => {
       SideDrawerLoaderVisible : action.visible,
     };
 
+
+    case "SET_ADDQUIZ":
+      return {
+      ...state,
+      quizAddMode : action.quizAddMode,
+    };
+
+    case "SET_ADDQUIZNAME":
+      return {
+      ...state,
+      quizAddName : action.quizAddName,
+    };
+
+    case "SET_EDITQUIZNAME":
+      return {
+      ...state,
+      quizEditName : action.quizEditName,
+    };
+
+
+    case "SET_DELETEQUIZ":
+      return {
+      ...state,
+      quizDeleteMode : action.quizDeleteMode,
+    };
+
+    case "SET_EDITQUIZ":
+      return {
+      ...state,
+      quizEditMode : action.quizEditMode,
+    };
+
+    case "SET_EDITNAMEQUIZ":
+      return {
+      ...state,
+      quizEditNameMode : action.quizEditNameMode,
+    };
 
     case "SET_LOGINLOADVISIBLE":
       return {

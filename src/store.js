@@ -62,6 +62,12 @@ const store = createStore(
     currentTest : undefined,
 
     testActive: false,
+    quizAddMode :false,
+    quizDeleteMode :false,
+    quizEditMode :false,
+    quizEditNameMode :false,
+    quizAddName : '',
+    quizEditName : '',
 
     quizQuestions : {
       index :[]
