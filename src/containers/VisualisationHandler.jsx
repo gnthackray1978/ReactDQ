@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import { connect } from "react-redux";
-import {setLayout,setContext,toggleGraphRunning} from "../actions/creators.jsx";
+import {setContext,toggleGraphRunning} from "../actions/creators.jsx";
 import {GraphEventConnector} from "../ForceDirected/GraphEventConnector.js";
 import {ForceDirect} from "../ForceDirected/ForceDirect.js";
 import GraphContainer from "./Canvas/GraphContainer.jsx";
@@ -28,33 +27,11 @@ class VisualisationHandler extends Component {
      this._tree =undefined;
      this._forceDirect = undefined;
 
-    // this.updateAnimationState = this.updateAnimationState.bind(this);
-
      this._graphEventConnnector = new GraphEventConnector();
 
    }
 
-   validTree(){
-     if(this._tree== undefined || this._tree == null) return false;
 
-     return true;
-   }
-   // validTree(){
-   //   if(this._tree== undefined || this._tree == null) return false;
-   //
-   //   return true;
-   // }
-
-   // updateAnimationState(_point) {
-   //
-   //
-   //   if(_point!=undefined)
-   //    this._tree.SetCentrePoint(_point.x, _point.y);
-   //   else
-   //    this._tree.SetCentrePoint();
-   //
-   //   this._tree.DrawTree();
-   // }
 
    componentDidUpdate(){
 
@@ -113,8 +90,14 @@ class VisualisationHandler extends Component {
 
     }
 
+
+    validTree(){
+      if(this._tree== undefined || this._tree == null) return false;
+
+      return true;
+    }
+
     contextCreated (ctx){
-     console.log('context created');
      this.props.setContext(ctx);
     }
 
@@ -128,22 +111,22 @@ class VisualisationHandler extends Component {
 const mapStateToProps = state => {
 
   return {
-    graphActive :state.graphActive,
-    graphActiveLayout: state.graphActiveLayout,
-    graphActiveSelection : state.graphActiveSelection,
-    persons: state.persons,
-    families: state.families,
-    context :state.context,
-    zoomin : state.zoomin,
-    zoomout: state.zoomout,
-    mapleft: state.mapleft,
-    mapright: state.mapright,
-    mapup: state.mapup,
-    mapdown:state.mapdown,
-    status: state.status,
-    graphRunning : state.graphRunning,
-    staticSettings :state.staticSettings,
-    fdSettings: state.fdSettings
+    graphActive :state.graph.graphActive,
+    graphActiveLayout: state.graph.graphActiveLayout,
+    graphActiveSelection : state.graph.graphActiveSelection,
+    persons: state.graph.persons,
+    families: state.graph.families,
+    context :state.graph.context,
+    zoomin : state.graph.zoomin,
+    zoomout: state.graph.zoomout,
+    mapleft: state.graph.mapleft,
+    mapright: state.graph.mapright,
+    mapup: state.graph.mapup,
+    mapdown:state.graph.mapdown,
+    status: state.graph.status,
+    graphRunning : state.graph.graphRunning,
+    staticSettings :state.graph.staticSettings,
+    fdSettings: state.graph.fdSettings
   };
 };
 

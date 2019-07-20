@@ -1,15 +1,28 @@
-import { createStore, applyMiddleware,compose  } from "redux";
+import {combineReducers, createStore, applyMiddleware,compose  } from "redux";
 import thunk from "redux-thunk";
 
 import reducer from "./reducers/reducer.js";
+//import graphReducers from "./reducers/graphReducers.js";
+
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+// const rootReducer = combineReducers({
+//   reducer, // key name same as the carefully renamed default export
+//   graphReducers
+// });
+//
+
+
 
 const store = createStore(
   reducer,
   {
+
+
     SideDrawerLoaderVisible : true,
     LogInDetailsVisible : false,
+
     GoogleApiParams : {
       scriptId : "MQ9uI5jQzqKm4wt01EV3l5pIG0z7T6jhI",
       clientId : '183174195107-spa00qp12u40nj4kb8od7nudc149l74q.apps.googleusercontent.com',
@@ -98,129 +111,130 @@ const store = createStore(
       TimeStamp : 0 //timestamp
     },
 
+    graph :{
 
-    term: "",
-    status: "initial",
-    order : 'asc',
-    orderBy : 'date',
-    selection : [],
-    rawData : [],
-    persons :[],
-    families :[],
-    gedDataRange: {s:0, e:2000},
-    page : 0,
-    rowsPerPage : 8,
-    layout : 'descendents',
-    gedLoaded :true,
-    gedError :'',
-    gedLoadingMessage : '',
-    gedLoadingMessagesDisplayed : false,
-    gedPersonListFilter : '',
-    graphRunning : false,
-    graphActive : false,
-    graphActiveLayout  : 'descendents',
-    graphActiveSelection :[],
-    context : null,
-    zoomin:false,
-    zoomout:false,
-    mapup:false,
-    mapdown: false,
-    mapleft :false,
-    mapright :false,
+      status: "initial",
+      order : 'asc',
+      orderBy : 'date',
+      selection : [],
+      rawData : [],
+      persons :[],
+      families :[],
+      gedDataRange: {s:0, e:2000},
+      page : 0,
+      rowsPerPage : 8,
+      layout : 'descendents',
+      gedLoaded :true,
+      gedError :'',
+      gedLoadingMessage : '',
+      gedLoadingMessagesDisplayed : false,
+      gedPersonListFilter : '',//
+      graphRunning : false,
+      graphActive : false,
+      graphActiveLayout  : 'descendents',
+      graphActiveSelection :[],
+
+      context : null,
+      zoomin:false,
+      zoomout:false,
+      mapup:false,
+      mapdown: false,
+      mapleft :false,
+      mapright :false,
+      staticSettings : {
+        layoutDefaults :{
+          topSpan :20.0,
+          middleSpan :40.0,
+          lowerSpan :20.0,
+          distancesbetfam :100.0,
+          boxHeight :70.0,
+          boxWidth :70.0,
+          distanceBetweenGens :170.0,
+          distanceBetweenBoxs :30.0,
+          zoomLevel :Number(100),
+          zoomPercentage : 100.0,
+          halfBoxWidth : 35.0,
+          halfBoxHeight :35.0
+        },
+        colourScheme:{
+          ancestor :{
+            backgroundcolour : 'white',
+            linecolour : 'black',
+            textcolour : 'black',
+            spousecolour : 'slateblue',
+            globalAlpha : 0.5,
+            lineWidth :2,
+            heavyLineWidth :7,
+            strokeStyle : '#99003A',
+            defaultFont :'8pt Calibri'
+          },
+          descendent :{
+            backgroundcolour : 'black',
+            linecolour : '#99CCFF',
+            textcolour : 'black',
+            spousecolour : 'slateblue',
+            globalAlpha : 0.5,
+            lineWidth :2,
+            heavyLineWidth :7,
+            checkedOpenColour: 'red',
+            checkedClosedColour: 'black',
+            strokeStyle : '#99003A',
+            defaultFont :'8pt Calibri'
+          },
+        }
+      },
+      fdSettings :{
+        stiffness :400.0,
+        repulsion :500.0,
+        attractToCentreRepulsion :100.0,
+        damping : 0.5,
+        nearestPointDistance : 0.3,
+
+        colourScheme : {
+            mapbackgroundColour: 'white',//'#0A0A33',
+
+            normalMainLabelColour: 'black',
+            normalMainLabelBackground: 'white',
+            normalMainShapeBackground: 'black',
+
+            selectedMainLabelColour: 'purple',
+            selectedMainLabelBackground: 'white',
+            selectedMainShapeBackground: 'black',
+
+            nearestMainLabelColour: 'blue',
+            nearestMainLabelBackground: 'white',
+            nearestMainShapeBackground: 'blue',
 
 
-    //SideDrawerLoaderVisible : true,
+            normalInfoLabelColour: 'black',
+            normalInfoLabelBackground: 'white',
+
+            selectedInfoLabelColour: 'black',
+            selectedInfoLabelBackground: 'white',
+
+            nearestInfoLabelColour: 'white',
+            nearestInfoLabelBackground: '#0A0A33',
+
+
+            infoLineColour: '#0A0A33',
+            normalLineGradient: ['#0066FF', '#1975FF', '#3385FF', '#4D94FF', '#66A3FF', '#80B2FF', '#99C2FF', '#CCE0FF', '#E6F0FF'],
+
+            shadowColour: 'black',
+           // maleColour: 'purple',
+        //    femaleColour: 'purple'
+        },
+          speed :500,
+          increment :5,
+          year : 1670,
+          sublayoutZoom:8500,
+          sublayoutNodeThreshold : 20
+        }
+    },
+
     SideDrawerLayoutOptionsVisible :false,
     SideDrawerOptionsVisible :false,
 
-    staticSettings : {
-      layoutDefaults :{
-        topSpan :20.0,
-        middleSpan :40.0,
-        lowerSpan :20.0,
-        distancesbetfam :100.0,
-        boxHeight :70.0,
-        boxWidth :70.0,
-        distanceBetweenGens :170.0,
-        distanceBetweenBoxs :30.0,
-        zoomLevel :Number(100),
-        zoomPercentage : 100.0,
-        halfBoxWidth : 35.0,
-        halfBoxHeight :35.0
-      },
-      colourScheme:{
-        ancestor :{
-          backgroundcolour : 'white',
-          linecolour : 'black',
-          textcolour : 'black',
-          spousecolour : 'slateblue',
-          globalAlpha : 0.5,
-          lineWidth :2,
-          heavyLineWidth :7,
-          strokeStyle : '#99003A',
-          defaultFont :'8pt Calibri'
-        },
-        descendent :{
-          backgroundcolour : 'black',
-          linecolour : '#99CCFF',
-          textcolour : 'black',
-          spousecolour : 'slateblue',
-          globalAlpha : 0.5,
-          lineWidth :2,
-          heavyLineWidth :7,
-          checkedOpenColour: 'red',
-          checkedClosedColour: 'black',
-          strokeStyle : '#99003A',
-          defaultFont :'8pt Calibri'
-        },
-      }
-    },
-    fdSettings :{
-      stiffness :400.0,
-      repulsion :500.0,
-      attractToCentreRepulsion :100.0,
-      damping : 0.5,
-      nearestPointDistance : 0.3,
 
-      colourScheme : {
-          mapbackgroundColour: 'white',//'#0A0A33',
-
-          normalMainLabelColour: 'black',
-          normalMainLabelBackground: 'white',
-          normalMainShapeBackground: 'black',
-
-          selectedMainLabelColour: 'purple',
-          selectedMainLabelBackground: 'white',
-          selectedMainShapeBackground: 'black',
-
-          nearestMainLabelColour: 'blue',
-          nearestMainLabelBackground: 'white',
-          nearestMainShapeBackground: 'blue',
-
-
-          normalInfoLabelColour: 'black',
-          normalInfoLabelBackground: 'white',
-
-          selectedInfoLabelColour: 'black',
-          selectedInfoLabelBackground: 'white',
-
-          nearestInfoLabelColour: 'white',
-          nearestInfoLabelBackground: '#0A0A33',
-
-
-          infoLineColour: '#0A0A33',
-          normalLineGradient: ['#0066FF', '#1975FF', '#3385FF', '#4D94FF', '#66A3FF', '#80B2FF', '#99C2FF', '#CCE0FF', '#E6F0FF'],
-
-          shadowColour: 'black',
-         // maleColour: 'purple',
-      //    femaleColour: 'purple'
-    },
-      speed :500,
-      increment :5,
-      year : 1670,
-      sublayoutZoom:8500,
-      sublayoutNodeThreshold : 20
-    }
 
   },
   composeEnhancers(

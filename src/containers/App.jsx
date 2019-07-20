@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { beginSearch } from "../actions/creators.jsx";
 
 import { withStyles } from '@material-ui/core/styles';
-import SideDrawer from './SideDrawer/SideDrawer.jsx';
-import TopButtons from './ButtonBar/TopButtons.jsx';
+
 import QuizEntrance from './QuizEntrance.jsx';
 import QuizQuestions from './QuizQuestions.jsx';
 
@@ -38,22 +36,11 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    testActive :state.testActive
-  };
-};
+const mapStateToProps = state => { return { testActive :state.testActive }; };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = dispatch => {return {}; };
 
-  return {
-    setSideDrawerLoaderVisible :visible =>{
-      dispatch(setSideDrawerLoaderVisible(visible))
-    }
 
-  };
-};
 
 //export default connect(mapStateToProps, mapDispatchToProps)(App);
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(App));

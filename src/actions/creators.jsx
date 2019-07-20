@@ -41,7 +41,7 @@ export const setProfileObj= profileObj =>{
     });
   };
 }
- 
+
 export const setAddQuizName= (quizAddName) =>{
   return async dispatch  => {
     dispatch({
@@ -234,23 +234,6 @@ export const setCatSelection = data =>{
   };
 }
 
-
-
-
-
-
-export const beginSearch = term => {
-
-  return async dispatch  => {
-    dispatch({
-      type: "BEGIN_SEARCH",
-      term
-    });
-
-  };
-
-};
-
 export const setNameFilter = filter =>{
   return async dispatch  => {
     dispatch({
@@ -342,33 +325,9 @@ export const gedLoadFailed = (message) => {
   };
 };
 
-export const setRowsPerPage = rowsPerPage =>{
-  return async dispatch  => {
 
-    if(rowsPerPage){
-      dispatch({
-        type: "SET_ROWSPERPAGE",
-        rowsPerPage : rowsPerPage,
 
-      });
-    }
-    else{
-      dispatch({
-        type: "SET_ROWSPERPAGE",
-        rowsPerPage : Math.round(window.innerHeight /82),
 
-      });
-    }
-  };
-}
-// export const setSideDrawerLoaderVisible = visible =>{
-//   return async dispatch  => {
-//     dispatch({
-//       type: "SET_SDLOADVISIBLE",
-//       visible :visible
-//     });
-//   };
-// }
 export const setSideDrawerLayoutOptionsVisible = visible =>{
   return async dispatch  => {
     dispatch({
@@ -388,42 +347,6 @@ export const setSideDrawerOptionsVisible = visible =>{
 
 
 
-export const setPage = page =>{
-  return async dispatch  => {
-    dispatch({
-      type: "SET_PAGE",
-      page :page
-    });
-  };
-}
-
-export const setSelected = selection =>{
-  return async dispatch  => {
-    dispatch({
-      type: "SET_SELECTED",
-      selection :selection
-    });
-  };
-}
-
-export const setOrder = (order,orderBy) =>{
-  return async dispatch  => {
-    dispatch({
-      type: "SET_ORDER",
-      order :order,
-      orderBy : orderBy
-    });
-  };
-}
-
-export const setLayout = (layout) =>{
-  return async dispatch  => {
-    dispatch({
-      type: "SET_LAYOUT",
-      layout : layout
-    });
-  };
-}
 
 export const activateLayout = (isActive,graphActiveLayout,graphActiveSelection) =>{
   return async dispatch  => {
@@ -511,36 +434,3 @@ export const toggleGraphRunning = (isSet) =>{
     });
   };
 }
-
-export const setLayoutDefaults = (defaults) =>{
-  return async dispatch =>{
-    dispatch({
-      type: "SET_LAYOUTDEFAULT",
-      layoutDefaults : defaults
-    });
-  };
-}
-
-
-export const reset = term => {
-
-  if(term =="rubbish"){
-    return async dispatch  => {
-      dispatch({
-        type: "RUBBISH_SEARCH",
-        term
-      });
-
-    };
-  }else {
-    return async dispatch  => {
-      dispatch({
-        type: "DONE_SEARCH",
-        term
-      });
-
-    };
-  }
-
-
-};

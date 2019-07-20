@@ -1,32 +1,8 @@
-import AddIcon from '@material-ui/icons/Add';
 
-import AppBar from '@material-ui/core/AppBar';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import ControlIcon from '@material-ui/icons/OpenWith';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Fab from '@material-ui/core/Fab';
-import Icon from '@material-ui/core/Icon';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/FeedBack';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuIcon from '@material-ui/icons/Menu';
-import Nav from 'react-bootstrap/Nav';
-import NavItem from 'react-bootstrap/NavItem';
-import Navbar from 'react-bootstrap/Navbar';
-import NavigationIcon from '@material-ui/icons/Navigation';
-import PersonIcon from '@material-ui/icons/Person';
 
 import React, { Component } from 'react';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+
 import blue from '@material-ui/core/colors/blue';
 import loadScript from './load-script.js';
 import { connect } from "react-redux";
@@ -34,7 +10,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import {GoogleLib} from "../../scripts/GoogleLib.js";
 import {PropTypes,func} from 'prop-types';
-import {setProfileObj ,setGoogleApiActive,setQuizMetaData,setPage,setGoogleToken,setLoginDetailsVisible,setCatSelection } from "../../actions/creators.jsx";
+import {setProfileObj ,setGoogleApiActive,setQuizMetaData,setGoogleToken,setLoginDetailsVisible,setCatSelection } from "../../actions/creators.jsx";
 import ImageButton from "./ImageButton.jsx";
 import GooglePopup from "./GooglePopup.jsx";
 import GoogleButton from "./GoogleButton.jsx";
@@ -152,7 +128,7 @@ class GoogleConnect extends Component {
       }
       if (!this.props.GoogleApiLoggedIn) {
 
-        const { onSuccess, onFailure, prompt, responseType } = this.props;
+        const { responseType } = this.props;
 
         const params = {
           prompt,
@@ -161,7 +137,7 @@ class GoogleConnect extends Component {
 
         GoogleLib.SignIn(window.gapi, params, (res)=>{
           this.handleSigninSuccess(res);
-        }, (error)=>{
+        }, ()=>{
 
         });
 
