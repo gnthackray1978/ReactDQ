@@ -1,39 +1,11 @@
-import AddIcon from '@material-ui/icons/Add';
-import AppBar from '@material-ui/core/AppBar';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
 import ButtonContent from './button-content'
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import ControlIcon from '@material-ui/icons/OpenWith';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Fab from '@material-ui/core/Fab';
-import Icon from '@material-ui/core/Icon';
 import IconGoogle from './icon';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/FeedBack';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuIcon from '@material-ui/icons/Menu';
-import Nav from 'react-bootstrap/Nav';
-import NavItem from 'react-bootstrap/NavItem';
-import Navbar from 'react-bootstrap/Navbar';
-import NavigationIcon from '@material-ui/icons/Navigation';
-import PersonIcon from '@material-ui/icons/Person';
 import React, { Component } from 'react';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import blue from '@material-ui/core/colors/blue';
-import loadScript from './load-script.js';
 import { connect } from "react-redux";
 import { withStyles } from '@material-ui/core/styles';
 import {GoogleLib} from "../../scripts/GoogleLib.js";
 import {PropTypes,func} from 'prop-types';
-import ImageButton from "./ImageButton.jsx";
-
 
 
 const styles = theme => ({
@@ -179,18 +151,18 @@ class GoogleButton extends React.Component{
 
     if(this.props.mode == 'cancel'){
       content = [
-        <ButtonContent>
-          {this.props.label}
-        </ButtonContent>
+          <ButtonContent key ="1">
+              {this.props.label}
+          </ButtonContent>
       ];
     }
 
     if(this.props.mode == 'login' || this.props.mode == 'logout'){
       content = [
         icon && <IconGoogle key={1} active={this.state.active} />,
-        <ButtonContent icon={icon} key={2}>
-          {this.props.label}
-        </ButtonContent>
+          <ButtonContent icon={icon} key={2}>
+            {this.props.label}
+          </ButtonContent>
       ];
     }
 
@@ -204,36 +176,25 @@ class GoogleButton extends React.Component{
 const mapStateToProps = state => {
 
   return {
-    SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    LogInDetailsVisible : state.LogInDetailsVisible,
-    ClientId : state.GoogleApiParams.clientId,
-    Scope : state.GoogleApiParams.scopes,
-    cookiePolicy: state.GoogleApiParams.cookie_policy,
-    LoginHint: state.GoogleApiParams.login_hint,
-    FetchBasicProfile : state.GoogleApiParams.fetch_basic_profile,
-    UxMode: state.GoogleApiParams.uxMode,
-    AccessType: state.GoogleApiParams.accessType,
-    type: state.GoogleApiParams.type,
-    tag: state.GoogleApiParams.tag,
-    buttonText: state.GoogleApiParams.buttonText,
-    prompt: state.GoogleApiParams.prompt,
-    disabledStyle: state.GoogleApiParams.disabledStyle,
-    icon: state.GoogleApiParams.icon,
-    theme: state.GoogleApiParams.theme,
-    jsSrc: state.GoogleApiParams.jsSrc,
-
-    QuizMetaData : state.quizMetaData,
-    DisplayName : state.displayName,
-    GoogleApiLoggedIn : state.googleApiLoggedIn,
-    ProfileObj : state.profileObj
+    ClientId : state.google.GoogleApiParams.clientId,
+    Scope : state.google.GoogleApiParams.scopes,
+    cookiePolicy: state.google.GoogleApiParams.cookie_policy,
+    LoginHint: state.google.GoogleApiParams.login_hint,
+    FetchBasicProfile : state.google.GoogleApiParams.fetch_basic_profile,
+    UxMode: state.google.GoogleApiParams.uxMode,
+    AccessType: state.google.GoogleApiParams.accessType,
+    type: state.google.GoogleApiParams.type,
+    tag: state.google.GoogleApiParams.tag,
+    buttonText: state.google.GoogleApiParams.buttonText,
+    prompt: state.google.GoogleApiParams.prompt,
+    disabledStyle: state.google.GoogleApiParams.disabledStyle,
+    icon: state.google.GoogleApiParams.icon,
+    theme: state.google.GoogleApiParams.theme,
+    jsSrc: state.google.GoogleApiParams.jsSrc,
+    GoogleApiLoggedIn : state.google.googleApiLoggedIn,
+    ProfileObj : state.google.profileObj
   };
 };
 
-const mapDispatchToProps = dispatch => {
 
-  return {
-
-  };
-};
-
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(GoogleButton));
+export default withStyles(styles)(connect(mapStateToProps, ()=>{})(GoogleButton));

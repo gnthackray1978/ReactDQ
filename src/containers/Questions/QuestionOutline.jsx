@@ -140,12 +140,12 @@ function QuestionOutline(props) {
 const mapStateToProps = state => {
   return {
 
-    quizMetaData : state.quizMetaData,
-    catSelection : state.catSelection,
-    selectQuizCat : state.selectQuizCat,
-    selectedQuiz : state.selectedQuiz,
-    questionVisibility :state.questionVisibility,
-    serverAnswers : state.serverAnswers
+    quizMetaData : state.db.quizMetaData,
+    catSelection : state.applicationState.catSelection,
+    selectQuizCat : state.applicationState.selectQuizCat,
+    selectedQuiz : state.applicationState.selectedQuiz,
+    questionVisibility :state.applicationState.questionVisibility,
+    serverAnswers : state.db.serverAnswers
   };
 };
 

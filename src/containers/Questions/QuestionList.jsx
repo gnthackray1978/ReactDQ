@@ -3,19 +3,14 @@ import { connect } from "react-redux";
 import {setQuizQuestionData} from "../../actions/creators.jsx";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Grid';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Icon from "@material-ui/core/Icon";
-import IconButton from "@material-ui/core/IconButton";
 import SingleAnswer from "./SingleAnswer.jsx";
 import MultiAnswer from "./MultiAnswer.jsx";
-import ChoiceAnswer from "./ChoiceAnswer.jsx";
 import BooleanAnswer from "./BooleanAnswer.jsx";
 import MultiChoiceAnswer from "./MultiChoiceAnswer.jsx";
 
 
-const styles = theme => ({
+const styles = () => ({
   root: {
     flexGrow: 1,
     border: '2px solid black',
@@ -45,65 +40,54 @@ class QuestionList extends React.Component {
 
 
   render() {
+      const { classes,quizQuestions } = this.props;
 
-    const { classes,quizQuestions } = this.props;
+      const getQuestionType =(value)=>{
+        const questionType = quizQuestions[value].type;
 
-    const getQuestionType =(value)=>{
-      if(quizQuestions[value].type == 'SN')
-        return <SingleAnswer questionData = { quizQuestions[value]}></SingleAnswer>
+        if(questionType == 'SN')
+          return <SingleAnswer questionData = {quizQuestions[value]}/>
 
-      if(quizQuestions[value].type == 'MA')
-        return <MultiAnswer questionData = { quizQuestions[value]}></MultiAnswer>
+        if(questionType == 'MA')
+          return <MultiAnswer questionData = {quizQuestions[value]}/>
 
-      if(quizQuestions[value].type == 'SN')
-        return <SingleAnswer questionData = { quizQuestions[value]}></SingleAnswer>
+        if(questionType == 'SN')
+          return <SingleAnswer questionData = {quizQuestions[value]}/>
 
-      if(quizQuestions[value].type == 'BO')
-        return <BooleanAnswer questionData = { quizQuestions[value]}></BooleanAnswer>
+        if(questionType == 'BO')
+          return <BooleanAnswer questionData = {quizQuestions[value]}/>
 
-      if(quizQuestions[value].type == 'MC')
-        return <MultiChoiceAnswer questionData = { quizQuestions[value]}></MultiChoiceAnswer>
-    };
+        if(questionType == 'MC')
+          return <MultiChoiceAnswer questionData = {quizQuestions[value]}/>
+      };
 
     return (
-      <Grid container className={classes.root} spacing={16}>
-         {quizQuestions.index.map(value => (
-              getQuestionType(value)
+        <Grid container className={classes.root} spacing={16}>
+            {quizQuestions.index.map(value => (
+               getQuestionType(value)
             ))}
-
-      </Grid>
+        </Grid>
     );
   }
 }
 
 QuestionList.propTypes = {
   classes: PropTypes.object.isRequired,
+  quizQuestions : PropTypes.array
 };
 
 const mapStateToProps = state => {
   return {
-    SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    TestState : state.TestState,
-    selectQuizCat : state.selectQuizCat,
-    selectedQuiz : state.selectedQuiz,
-    ClientId : state.GoogleApiParams.clientId,
-    ScriptId : state.GoogleApiParams.scriptId,
-    quizQuestions :state.quizQuestions
+    quizQuestions :state.db.quizQuestions
   };
 };
 
 const mapDispatchToProps = dispatch => {
 
   return {
-    setSideDrawerLoaderVisible :visible =>{
-      dispatch(setSideDrawerLoaderVisible(visible))
-    },
-
     setQuizQuestionData :data =>{
       dispatch(setQuizQuestionData(data))
     }
-
-
   };
 };
 

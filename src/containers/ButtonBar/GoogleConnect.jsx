@@ -246,29 +246,29 @@ const mapStateToProps = state => {
   //console.log('mapStateToProps');
 
   return {
-    SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    LogInDetailsVisible : state.LogInDetailsVisible,
-    ClientId : state.GoogleApiParams.clientId,
-    ScriptId : state.GoogleApiParams.scriptId,
-    Scope : state.GoogleApiParams.scopes,
-    cookiePolicy: state.GoogleApiParams.cookie_policy,
-    LoginHint: state.GoogleApiParams.login_hint,
-    FetchBasicProfile : state.GoogleApiParams.fetch_basic_profile,
-    UxMode: state.GoogleApiParams.uxMode,
-    AccessType: state.GoogleApiParams.accessType,
-    type: state.GoogleApiParams.type,
-    tag: state.GoogleApiParams.tag,
-    buttonText: state.GoogleApiParams.buttonText,
-    prompt: state.GoogleApiParams.prompt,
-    disabledStyle: state.GoogleApiParams.disabledStyle,
-    icon: state.GoogleApiParams.icon,
-    theme: state.GoogleApiParams.theme,
-    jsSrc: state.GoogleApiParams.jsSrc,
+    SideDrawerLoaderVisible : state.uxState.SideDrawerLoaderVisible,
+    LogInDetailsVisible : state.uxState.LogInDetailsVisible,
+    ClientId : state.google.GoogleApiParams.clientId,
+    ScriptId : state.google.GoogleApiParams.scriptId,
+    Scope : state.google.GoogleApiParams.scopes,
+    cookiePolicy: state.google.GoogleApiParams.cookie_policy,
+    LoginHint: state.google.GoogleApiParams.login_hint,
+    FetchBasicProfile : state.google.GoogleApiParams.fetch_basic_profile,
+    UxMode: state.google.GoogleApiParams.uxMode,
+    AccessType: state.google.GoogleApiParams.accessType,
+    type: state.google.GoogleApiParams.type,
+    tag: state.google.GoogleApiParams.tag,
+    buttonText: state.google.GoogleApiParams.buttonText,
+    prompt: state.google.GoogleApiParams.prompt,
+    disabledStyle: state.google.GoogleApiParams.disabledStyle,
+    icon: state.google.GoogleApiParams.icon,
+    theme: state.google.GoogleApiParams.theme,
+    jsSrc: state.google.GoogleApiParams.jsSrc,
 
-    QuizMetaData : state.quizMetaData,
+    QuizMetaData : state.db.quizMetaData,
     DisplayName : state.displayName,
-    GoogleApiLoggedIn : state.googleApiLoggedIn,
-    ProfileObj : state.profileObj
+    GoogleApiLoggedIn : state.google.googleApiLoggedIn,
+    ProfileObj : state.google.profileObj
   };
 };
 

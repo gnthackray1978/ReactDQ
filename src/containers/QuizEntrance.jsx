@@ -7,7 +7,7 @@ import SideDrawer from './SideDrawer/SideDrawer.jsx';
 import TopButtons from './ButtonBar/TopButtons.jsx';
 import TestHistory from './TestHistory.jsx';
 
-const styles = theme => ({
+const styles = () => ({
 
 });
 
@@ -35,14 +35,13 @@ class QuizEntrance extends Component {
 
 const mapStateToProps = state => {
   return {
-    SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    TestState : state.TestState,
-    selectQuizCat : state.selectQuizCat,
-    selectedQuiz : state.selectedQuiz,
-    currentTest : state.currentTest,
-    testList : state.testList,
-    testActive :state.testActive,
-    userAnswersMapQuizInstance: state.userAnswersMapQuizInstance
+    SideDrawerLoaderVisible : state.uxState.SideDrawerLoaderVisible,
+    selectQuizCat : state.applicationState.selectQuizCat,
+    selectedQuiz : state.applicationState.selectedQuiz,
+    currentTest : state.db.currentTest,
+    testList : state.db.testList,
+    testActive :state.db.testActive,
+    userAnswersMapQuizInstance: state.db.userAnswersMapQuizInstance
   };
 };
 

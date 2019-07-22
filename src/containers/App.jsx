@@ -36,7 +36,7 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => { return { testActive :state.testActive }; };
+const mapStateToProps = state => { return { testActive :state.db.testActive }; };
 
 const mapDispatchToProps = dispatch => {return {}; };
 

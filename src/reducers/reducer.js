@@ -122,28 +122,42 @@ export default (state = {}, action) => {
     case "SET_QUIZMETADATA":
       return {
       ...state,
-      quizMetaData : [...action.quizMetaData],
+      db : {
+        ...state.db,
+        quizMetaData : [...action.quizMetaData]
+      }
     };
 
     case "SET_QUIZQUESTIONDATA":
       return {
       ...state,
-      quizQuestions : action.quizQuestions,
+      db : {
+        ...state.db,
+        quizQuestions : action.quizQuestions,
+      }
     };
 
     case "SET_COMBINEDDATA":
       return {
       ...state,
-      serverAnswers : {...action.data.answers},
-      quizQuestions : {...action.data.questions},
+      db : {
+        ...state.db,
+        serverAnswers : {...action.data.answers},
+        quizQuestions : {...action.data.questions},
+      }
     };
 
     case "SET_RELATEDUSERANSWERS":
       return {
       ...state,
-      userAnswers : {...action.data.userAnswers},
-      userAnswersMapQuizInstance : {...action.data.userAnswersMapQuizInstance},
+      db : {
+        ...state.db,
+        userAnswers : {...action.data.userAnswers},
+        userAnswersMapQuizInstance : {...action.data.userAnswersMapQuizInstance},
+      }
     };
+
+
 
     case "SET_CATSELECTION":
       return {

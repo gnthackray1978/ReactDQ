@@ -191,14 +191,14 @@ SideDrawer.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    quizMetaData : state.quizMetaData,
-    catSelection : state.catSelection,
-    selectQuizCat : state.selectQuizCat,
-    selectedQuiz : state.selectedQuiz,
-//    quizAddMode :state.quizAddMode,
-  //  quizDeleteMode :state.quizDeleteMode,
-    ScriptId : state.GoogleApiParams.scriptId
+    SideDrawerLoaderVisible : state.uxState.SideDrawerLoaderVisible,
+    quizMetaData : state.db.quizMetaData,
+    catSelection : state.applicationState.catSelection,
+    selectQuizCat : state.applicationState.selectQuizCat,
+    selectedQuiz : state.applicationState.selectedQuiz,
+//    quizAddMode :state.uxState.quizAddMode,
+  //  quizDeleteMode :state.uxState.quizDeleteMode,
+    ScriptId : state.google.GoogleApiParams.scriptId
   };
 };
 

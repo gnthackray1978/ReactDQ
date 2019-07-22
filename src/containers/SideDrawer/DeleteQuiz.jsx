@@ -51,7 +51,7 @@ const styles = theme => ({
 
 
 function DeleteQuiz(props) {
-  
+
   const handleClick = ()=>{
     props.setDeleteQuizMode(true);
   };
@@ -80,14 +80,16 @@ function DeleteQuiz(props) {
 
 const mapStateToProps = state => {
   return {
-    catSelection : state.catSelection,
-    selectQuizCat : state.selectQuizCat,
-    selectedQuiz : state.selectedQuiz,
-    quizAddMode :state.quizAddMode,
-    quizDeleteMode :state.quizDeleteMode,
-    quizEditNameMode :state.quizEditNameMode,
-    quizEditMode :state.quizEditMode,
-    ScriptId : state.GoogleApiParams.scriptId
+    catSelection : state.applicationState.catSelection,
+    selectQuizCat : state.applicationState.selectQuizCat,
+    selectedQuiz : state.applicationState.selectedQuiz,
+
+    quizAddMode :state.uxState.quizAddMode,
+    quizDeleteMode :state.uxState.quizDeleteMode,
+    quizEditNameMode :state.uxState.quizEditNameMode,
+    quizEditMode :state.uxState.quizEditMode,
+    
+    ScriptId : state.google.GoogleApiParams.scriptId
   };
 };
 

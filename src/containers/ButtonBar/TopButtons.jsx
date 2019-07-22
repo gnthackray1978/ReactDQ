@@ -62,7 +62,7 @@ class TopButtons extends Component {
 
   render() {
 
-    const { classes,selectedQuiz,selectQuizCat,TestState } = this.props;
+    const { classes,selectedQuiz,selectQuizCat} = this.props;
 
     let buttons;
 
@@ -132,12 +132,11 @@ class TopButtons extends Component {
 
 const mapStateToProps = state => {
   return {
-    SideDrawerLoaderVisible : state.SideDrawerLoaderVisible,
-    TestState : state.TestState,
-    selectedQuiz :state.selectedQuiz,
-    selectQuizCat : state.selectQuizCat,
-    testList : state.testList,
-    currentTest : state.currentTest
+    SideDrawerLoaderVisible : state.uxState.SideDrawerLoaderVisible,  
+    selectedQuiz :state.applicationState.selectedQuiz,
+    selectQuizCat : state.applicationState.selectQuizCat,
+    testList : state.db.testList,
+    currentTest : state.db.currentTest
   };
 };
 
