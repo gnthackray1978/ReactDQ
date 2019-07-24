@@ -1,29 +1,14 @@
 import React, { Component } from 'react';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import NavItem from 'react-bootstrap/NavItem';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import {PropTypes,func} from 'prop-types';
+import {PropTypes} from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import Icon from '@material-ui/core/Icon';
-import DeleteIcon from '@material-ui/icons/Delete';
-import NavigationIcon from '@material-ui/icons/Navigation';
 import Typography from '@material-ui/core/Typography';
-import ControlIcon from '@material-ui/icons/OpenWith';
-import InfoIcon from '@material-ui/icons/FeedBack';
-
 import { connect } from "react-redux";
-import {setTestBatch ,selectQuizName,selectQuizCat} from "../../actions/creators.jsx";
+import {setTestBatch} from "../../actions/appStateActions.jsx";
 import GoogleConnect  from "./GoogleConnect.jsx";
-
-import './TopButtons.css';
 
 const styles = theme => ({
   fab: {
@@ -52,87 +37,80 @@ class TopButtons extends Component {
 
   constructor(props) {
      super(props);
-
+     console.log('TopButtons');
    }
 
-   static defaultProps = {
-     isData: true
-   };
 
 
   render() {
 
-    const { classes,selectedQuiz,selectQuizCat} = this.props;
-
-    let buttons;
-
-    const responseGoogle = (response) => {
-      console.log(response);
-    }
+    const { classes,selectedQuiz,selectQuizCat,testList, setTestBatch, modeChanged} = this.props;
 
     let createNewTest = ()=>{
-
-
     //  console.log('selected quiz: ' +this.props.selectedQuiz.key + ' selected cat: ' + this.props.selectQuizCat);
-
-
-      if(this.props.selectedQuiz.key != ''){
+      if(selectedQuiz.key != ''){
         // add new test into the list of tests
-        let key = String(this.props.testList.index.length );
+        let key = String(testList.index.length);
 
-        this.props.testList[key] = {
+        testList[key] = {
           id: key,
-          quizName : this.props.selectedQuiz.quiz,
-          quizCat : this.props.selectQuizCat,
+          quizName : selectedQuiz.quiz,
+          quizCat : selectQuizCat,
           startedTime : new Date(),
           active : true
         };
 
-        this.props.testList.index.push(key);
+        testList.index.push(key);
 
         //update the list of tests to include the new one
         //set that we are now in a test
         //set what the current test is
-        this.props.setTestBatch(this.props.testList, key);
-
+        setTestBatch(testList, key);
       }
 
     };
 
+
      return (
-
-        <Toolbar>
-
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-            <MenuIcon  onClick={()=>{ this.props.modeChanged('data'); }}/>
-          </IconButton>
-
-          <Button color="inherit"  onClick={()=>createNewTest()}>
-            <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-              Start
-            </Typography>
-          </Button>
-
-          <Button color="inherit"  className={classes.grow}>
-            <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-              {selectedQuiz.quiz + ' ' + selectQuizCat}
-            </Typography>
-          </Button>
-
-          <GoogleConnect mode = "login"></GoogleConnect>
-
-        </Toolbar>
-
+         <Toolbar>
+             <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+                 <MenuIcon  onClick={()=>{ modeChanged('data'); }}/>
+             </IconButton>
+             <Button color="inherit"  onClick={()=>createNewTest()}>
+                 <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
+                  Start
+                 </Typography>
+             </Button>
+             <Button color="inherit"  className={classes.grow}>
+                 <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
+                     {selectedQuiz.quiz + ' ' + selectQuizCat}
+                 </Typography>
+             </Button>
+             <GoogleConnect mode = "login"/>
+         </Toolbar>
      )
    }
 
 }
 
+TopButtons.propTypes = {
+  classes: PropTypes.object.isRequired,
+  selectedQuiz :PropTypes.string,
+  selectQuizCat : PropTypes.string,
+  testList : PropTypes.object,
+  currentTest : PropTypes.string,
+  setTestBatch : PropTypes.func,
+  modeChanged : PropTypes.func
+};
+
+TopButtons.defaultProps  = {
+  isData: true
+};
 
 
 const mapStateToProps = state => {
   return {
-    SideDrawerLoaderVisible : state.uxState.SideDrawerLoaderVisible,  
+    SideDrawerLoaderVisible : state.uxState.SideDrawerLoaderVisible,
     selectedQuiz :state.applicationState.selectedQuiz,
     selectQuizCat : state.applicationState.selectQuizCat,
     testList : state.db.testList,
@@ -141,15 +119,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-
   return {
-    setSideDrawerLoaderVisible :visible =>{
-      dispatch(setSideDrawerLoaderVisible(visible))
-    },
     setTestBatch :(testList,currentTest) =>{
       dispatch(setTestBatch(testList,currentTest))
     }
-
   };
 };
 

@@ -1,12 +1,3 @@
-// quizAddName : '',
-// quizEditName : '',
-// questionVisibility :{
-// catSelection :[],
-// selectedQuiz : {
-// selectQuizCat : '',
-// TestState : {
-
-
 export default (state = {
   quizAddName : '',
   quizEditName : '',

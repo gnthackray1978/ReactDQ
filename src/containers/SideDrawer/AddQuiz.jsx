@@ -4,7 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import InputBase from '@material-ui/core/InputBase';
 import { connect } from "react-redux";
-import {setAddQuizMode,setAddQuizName} from "../../actions/creators.jsx";
+import {setAddQuizName} from "../../actions/appStateActions.jsx";
+import {setAddQuizMode} from "../../actions/uxActions.jsx";
 
 import './SideDrawer.css';
 
@@ -114,7 +115,7 @@ const mapStateToProps = state => {
     catSelection : state.applicationState.catSelection,
     selectQuizCat : state.applicationState.selectQuizCat,
     selectedQuiz : state.applicationState.selectedQuiz,
-    
+
     quizAddMode :state.uxState.quizAddMode,
     quizDeleteMode :state.uxState.quizDeleteMode,
     quizEditNameMode :state.uxState.quizEditNameMode,

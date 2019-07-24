@@ -73,6 +73,7 @@ class GooglePopup extends React.Component {
 
   constructor(props) {
     super(props)
+    console.log('GooglePopup');
   }
 
   handleClose = () => {

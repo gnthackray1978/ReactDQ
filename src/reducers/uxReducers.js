@@ -9,6 +9,12 @@ export default (state = {
 }, action) => {
   switch (action.type) {
 
+    case "SET_LOGINLOADVISIBLE":
+      return {
+        ...state,
+        LogInDetailsVisible : action.visible,
+      };
+
     case "SET_SDLOADVISIBLE":
       return {
       ...state,
@@ -51,7 +57,7 @@ export default (state = {
         SideDrawerOptionsVisible : action.visible,
     };
 
-  default:
-      return state;
+    default:
+        return state;
   }
 };

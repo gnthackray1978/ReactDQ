@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {setSideDrawerLoaderVisible } from "../actions/creators.jsx";
+import {setSideDrawerLoaderVisible } from "../actions/uxActions.jsx";
 
 import { withStyles } from '@material-ui/core/styles';
 import SideDrawer from './SideDrawer/SideDrawer.jsx';

@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import {ScoreLib} from "../scripts/ScoreLib.js";
 import { connect } from "react-redux";
-import {setEndTestBatch, setCombinedQuizData} from "../actions/creators.jsx";
+import {setEndTestBatch, setCombinedQuizData} from "../actions/appStateActions.jsx";
 import {SheetParser} from "../scripts/SheetParser.js";
 import {GoogleLib} from "../scripts/GoogleLib.js";
 import QuestionList from "./Questions/QuestionList.jsx";

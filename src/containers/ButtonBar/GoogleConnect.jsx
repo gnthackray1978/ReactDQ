@@ -10,7 +10,10 @@ import { withStyles } from '@material-ui/core/styles';
 
 import {GoogleLib} from "../../scripts/GoogleLib.js";
 import {PropTypes,func} from 'prop-types';
-import {setProfileObj ,setGoogleApiActive,setQuizMetaData,setGoogleToken,setLoginDetailsVisible,setCatSelection } from "../../actions/creators.jsx";
+
+import {setQuizMetaData,setCatSelection } from "../../actions/appStateActions.jsx";
+import {setLoginDetailsVisible } from "../../actions/uxActions.jsx";
+import {setProfileObj ,setGoogleApiActive,setGoogleToken} from "../../actions/googleActions.jsx";
 import ImageButton from "./ImageButton.jsx";
 import GooglePopup from "./GooglePopup.jsx";
 import GoogleButton from "./GoogleButton.jsx";
@@ -48,6 +51,7 @@ const styles = theme => ({
 class GoogleConnect extends Component {
 
   constructor(props) {
+
      super(props);
      this.handleSigninSuccess = this.handleSigninSuccess.bind(this);
      this.handleClose = this.handleClose.bind(this);
@@ -158,6 +162,7 @@ class GoogleConnect extends Component {
 
 
     handleClickOpen = () => {
+      console.log('handleClickOpen');
       this.props.setLoginDetailsVisible(true);
     }
 
@@ -275,9 +280,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
   return {
-    setSideDrawerLoaderVisible :visible =>{
-      dispatch(setSideDrawerLoaderVisible(visible))
-    },
+
     setLoginDetailsVisible :visible =>{
       dispatch(setLoginDetailsVisible(visible))
     },

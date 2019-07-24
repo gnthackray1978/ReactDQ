@@ -224,7 +224,7 @@ FDLayout.prototype = {
     //formerly mousedown
     processNewSelections: function (e) {
 
-    console.log('processNewSelections');
+    //console.log('processNewSelections');
 
         if (e.currentTarget.localName == "canvas") {
             this.mouseup = false;

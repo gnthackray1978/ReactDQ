@@ -7,7 +7,8 @@ import {GoogleLib} from "../../scripts/GoogleLib.js";
 
 import './SideDrawer.css';
 import { connect } from "react-redux";
-import {setCatSelection,setQuizName,setQuizCat,setAddQuizMode,setDeleteQuizMode,setEditQuizMode,setEditNameQuizMode} from "../../actions/creators.jsx";
+import {setCatSelection,setQuizName,setQuizCat} from "../../actions/appStateActions.jsx";
+import {setAddQuizMode,setDeleteQuizMode,setEditQuizMode,setEditNameQuizMode} from "../../actions/uxActions.jsx";
 
 const styles = theme => ({
 
@@ -92,7 +93,7 @@ const mapStateToProps = state => {
     quizDeleteMode :state.uxState.quizDeleteMode,
     quizEditNameMode :state.uxState.quizEditNameMode,
     quizEditMode :state.uxState.quizEditMode,
-    
+
     ScriptId : state.google.GoogleApiParams.scriptId
   };
 };

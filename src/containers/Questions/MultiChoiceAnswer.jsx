@@ -17,7 +17,7 @@ import {MatchLib} from "../../scripts/MatchLib.js"
 import {ScoreLib} from "../../scripts/ScoreLib.js"
 import { connect } from "react-redux";
 import {QuestionHelpers} from "./QuestionHelpers.js";
-import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility, setRelatedUserAnswers} from "../../actions/creators.jsx";
+import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility, setRelatedUserAnswers} from "../../actions/appStateActions.jsx";
 
 
 

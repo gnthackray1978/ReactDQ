@@ -116,13 +116,15 @@ class GoogleButton extends React.Component{
 
       if (this.state.active) {
         if (theme === 'dark') {
+          console.log('active dark');
           return Object.assign({}, initialStyle, activeStyle);
         }
-
+        console.log('active');
         return Object.assign({}, initialStyle, activeStyle);
       }
 
       if (this.state.hovered) {
+        console.log('hovered');
         return Object.assign({}, initialStyle, hoveredStyle);
       }
 
@@ -197,4 +199,4 @@ const mapStateToProps = state => {
 };
 
 
-export default withStyles(styles)(connect(mapStateToProps, ()=>{})(GoogleButton));
+export default withStyles(styles)(connect(mapStateToProps, ()=>  {return {};})(GoogleButton));

@@ -18,7 +18,7 @@ import {ScoreLib} from "../../scripts/ScoreLib.js"
 
 import { connect } from "react-redux";
 
-import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility, setRelatedUserAnswers} from "../../actions/creators.jsx";
+import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility, setRelatedUserAnswers} from "../../actions/appStateActions.jsx";
 
 
 const styles = theme => ({
