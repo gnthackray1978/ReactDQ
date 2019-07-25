@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import { connect } from "react-redux";
-import {setTestBatch} from "../../actions/appStateActions.jsx";
+import {setTestBatch} from "../../store/actions/appStateActions.jsx";
 import GoogleConnect  from "./GoogleConnect.jsx";
 
 const styles = theme => ({
@@ -73,8 +73,8 @@ class TopButtons extends Component {
 
      return (
          <Toolbar>
-             <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-                 <MenuIcon  onClick={()=>{ modeChanged('data'); }}/>
+             <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={()=>{ modeChanged('data'); }}>
+                 <MenuIcon />
              </IconButton>
              <Button color="inherit"  onClick={()=>createNewTest()}>
                  <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
@@ -95,7 +95,7 @@ class TopButtons extends Component {
 
 TopButtons.propTypes = {
   classes: PropTypes.object.isRequired,
-  selectedQuiz :PropTypes.string,
+  selectedQuiz :PropTypes.object,
   selectQuizCat : PropTypes.string,
   testList : PropTypes.object,
   currentTest : PropTypes.string,

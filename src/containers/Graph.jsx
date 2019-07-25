@@ -4,7 +4,7 @@ import { Row,Container} from 'react-bootstrap';
 import GraphControl from './MapControls/GraphControl.jsx';
 import TopButtons from './ButtonBar/TopButtons.jsx';
 import { connect } from "react-redux";
-import { switchControlVisbility} from "../actions/uxActions.jsx";
+import { switchControlVisbility} from "../store/actions/uxActions.jsx";
 import VisualisationHandler from "./VisualisationHandler.jsx";
 
 import './graph.css';

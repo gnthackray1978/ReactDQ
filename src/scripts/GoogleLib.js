@@ -65,7 +65,22 @@ export class GoogleLib {
     });
   }
 
-  static SignIn(gapi,options,onSuccess,onFailure) {
+  static SignIn(gapi,responseType,onSuccessParam,onFailureParam) {
+
+    const onSuccess = (res)=>{
+      if(onSuccessParam)
+        onSuccessParam(res);
+    };
+
+    const onFailure = (res)=>{
+      if(onFailureParam)
+        onFailureParam(res);
+    };
+
+    const options = {
+      prompt,
+      responseType : responseType
+    };
 
     if(!window.gapi)
       window.gapi = gapi;
@@ -75,7 +90,9 @@ export class GoogleLib {
     if (options.responseType === 'code') {
       auth2.grantOfflineAccess(options).then(res => onSuccess(res), err => onFailure(err));
     } else {
-      auth2.signIn(options).then(res => onSuccess(res), err => onFailure(err));
+      auth2.signIn(options).then(res => onSuccess(res),
+
+       err => onFailure(err));
     }
 
 

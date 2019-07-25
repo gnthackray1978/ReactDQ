@@ -4,8 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import InputBase from '@material-ui/core/InputBase';
 import { connect } from "react-redux";
-import {setAddQuizName} from "../../actions/appStateActions.jsx";
-import {setAddQuizMode} from "../../actions/uxActions.jsx";
+import {setAddQuizName} from "../../store/actions/appStateActions.jsx";
+import {setAddQuizMode} from "../../store/actions/uxActions.jsx";
 
 import './SideDrawer.css';
 

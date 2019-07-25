@@ -16,8 +16,23 @@ export class SheetParser {
        }
 
 
+       let qType = questionType;
 
        var tp = cols.slice(multiAnswerStartIdx).filter(line => String(line).trim() !== "").map(m=>{
+
+         let qType = questionType;
+
+         if(qType == 'BO' && m.toLowerCase() == 'yes'){
+           m = 'true';
+         }
+
+         if(qType == 'BO' && m.toLowerCase() == 'no'){
+           m = 'no';
+         }
+
+
+         //console.log('question factory: ' + qType);
+
          let idx = String(answers.index.length+1);
          answers[idx] = {
            id: idx,

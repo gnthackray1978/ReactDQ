@@ -52,6 +52,14 @@ export default (state = {
       catSelection : [...action.catSelection],
     };
 
+    case "SET_QZMETADATA_CATSELECTION_BATCH":
+      return {
+      ...state,
+      catSelection : action.catSelection,
+      quizMetaData : action.quizMetaData
+    };
+
+
 
 
 

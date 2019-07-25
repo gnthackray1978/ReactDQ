@@ -1,8 +1,5 @@
 
 
-
-
-
 export const setQuestionVisibility= data =>{
   return async dispatch  => {
     dispatch({
@@ -92,46 +89,16 @@ export const setQuizCat= selectQuizCat =>{
   };
 }
 
-export const setQuizMetaData = data =>{
-  return async dispatch  => {
-    dispatch({
-      type: "SET_QUIZMETADATA",
-      quizMetaData :data
-    });
-  };
-}
-
-export const setQuizQuestionData = data =>{
-  return async dispatch  => {
-    dispatch({
-      type: "SET_QUIZQUESTIONDATA",
-      quizQuestions :data
-    });
-  };
-}
-
-export const setCombinedQuizData = data =>{
-  return async dispatch  => {
-    dispatch({
-      type: "SET_COMBINEDDATA",
-      data : data
-    });
-  };
-}
-
-export const setRelatedUserAnswers = data =>{
-  return async dispatch  => {
-    dispatch({
-      type: "SET_RELATEDUSERANSWERS",
-      data : data
-    });
-  };
-}
-
-
-
 export const setCatSelection = data =>{
   return async dispatch  => {
+    console.log('dispatched cat selection');
+    var selection =[];
+    if(data){
+      data.forEach((arg)=>{
+        selection.push({quiz: arg.key , open:false});
+      });
+    }
+
     dispatch({
       type: "SET_CATSELECTION",
       catSelection :data

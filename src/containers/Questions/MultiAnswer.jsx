@@ -12,7 +12,8 @@ import {ScoreLib} from "../../scripts/ScoreLib.js"
 import { connect } from "react-redux";
 import CorrectAnswer from "./CorrectAnswer.jsx";
 import {QuestionHelpers} from "./QuestionHelpers.js";
-import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat,setQuestionVisibility, setRelatedUserAnswers} from "../../actions/appStateActions.jsx";
+import {setQuestionVisibility} from "../../store/actions/appStateActions.jsx";
+import {setRelatedUserAnswers} from "../../store/actions/dbActions.jsx";
 
 
 

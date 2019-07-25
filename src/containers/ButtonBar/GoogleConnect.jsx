@@ -11,9 +11,14 @@ import { withStyles } from '@material-ui/core/styles';
 import {GoogleLib} from "../../scripts/GoogleLib.js";
 import {PropTypes,func} from 'prop-types';
 
-import {setQuizMetaData,setCatSelection } from "../../actions/appStateActions.jsx";
-import {setLoginDetailsVisible } from "../../actions/uxActions.jsx";
-import {setProfileObj ,setGoogleApiActive,setGoogleToken} from "../../actions/googleActions.jsx";
+import {setQuizMetaData } from "../../store/actions/dbActions.jsx";
+
+import {setCatSelection } from "../../store/actions/appStateActions.jsx";
+
+import {setGoogleApi, setGoogleSignOutState} from "../../store/actions/googleActions.jsx";
+
+import {setLoginDetailsVisible } from "../../store/actions/uxActions.jsx";
+
 import ImageButton from "./ImageButton.jsx";
 import GooglePopup from "./GooglePopup.jsx";
 import GoogleButton from "./GoogleButton.jsx";
@@ -53,7 +58,7 @@ class GoogleConnect extends Component {
   constructor(props) {
 
      super(props);
-     this.handleSigninSuccess = this.handleSigninSuccess.bind(this);
+
      this.handleClose = this.handleClose.bind(this);
    }
 
@@ -66,34 +71,14 @@ class GoogleConnect extends Component {
       if (window.gapi) return;
 
       loadScript(document, 'script', 'google-login', this.props.jsSrc, () => {
+          GoogleLib.AutoConnect(window.gapi, this.props.GoogleConnectParam, (res)=>{
 
-          const params = {
-            client_id: this.props.ClientId,
-            cookie_policy: this.props.cookiePolicy,
-            login_hint: this.props.LoginHint,
-            hosted_domain: undefined,
-            fetch_basic_profile: this.props.FetchBasicProfile,
-            discoveryDocs : undefined,
-            ux_mode: this.props.UxMode,
-            redirect_uri: undefined,
-            scope: this.props.Scope,
-            access_type: this.props.AccessType,
-              responseType: this.props.responseType
-          };
-
-          GoogleLib.AutoConnect(window.gapi, params, (res)=>{
-            this.handleSigninSuccess(res);
+            this.props.setGoogleApi(res);
+            console.log('AutoConnect success');
 
             GoogleLib.SearchForQuizFiles(window.gapi, this.props.ScriptId, (arg)=>{
               this.props.setQuizMetaData(arg);
-
-              var selection =[];
-
-              arg.forEach((arg)=>{
-                selection.push({quiz: arg.key , open:false});
-              });
-
-              this.props.setCatSelection(selection);
+              this.props.setCatSelection(arg);
             });
           });
       });
@@ -101,30 +86,6 @@ class GoogleConnect extends Component {
 
     }
 
-    componentWillUnmount() {
-      // this.enableButton = () => {}
-      // const el = document.getElementById('google-login')
-      // el.parentNode.removeChild(el)
-    }
-
-    handleSigninSuccess(res) {
-       const basicProfile = res.getBasicProfile();
-       const authResponse = res.getAuthResponse();
-
-       this.props.setGoogleApiActive(true);
-       this.props.setGoogleToken(basicProfile.getId(),authResponse,authResponse.id_token,authResponse.access_token);
-
-       this.props.setProfileObj({
-         googleId: basicProfile.getId(),
-         imageUrl: basicProfile.getImageUrl(),
-         email: basicProfile.getEmail(),
-         name: basicProfile.getName(),
-         givenName: basicProfile.getGivenName(),
-         familyName: basicProfile.getFamilyName()
-       });
-
-    //   console.log('signed in ok');
-    }
 
     signIn(e) {
       if (e) {
@@ -132,34 +93,13 @@ class GoogleConnect extends Component {
       }
       if (!this.props.GoogleApiLoggedIn) {
 
-        const { responseType } = this.props;
+        GoogleLib.SignIn(window.gapi, this.props.responseType, (res)=>{
 
-        const params = {
-          prompt,
-          responseType : responseType
-        };
-
-        GoogleLib.SignIn(window.gapi, params, (res)=>{
-          this.handleSigninSuccess(res);
-        }, ()=>{
-
+          this.props.setGoogleApi(res);
         });
 
       }
     }
-
-    signOut() {
-
-      GoogleLib.SignOut(window.gapi, ()=>{
-        this.props.setProfileObj();
-        this.props.setGoogleToken(undefined,undefined,undefined,undefined);
-        this.props.setGoogleApiActive(false);
-        this.props.setQuizMetaData(undefined);
-        this.props.onLogoutSuccess();
-      });
-
-    }
-
 
     handleClickOpen = () => {
       console.log('handleClickOpen');
@@ -173,7 +113,11 @@ class GoogleConnect extends Component {
   renderLogoutOptions(){
     return(<div>
         <GoogleButton label ='Logout' mode = 'logout' onClick ={()=>{
-              this.signOut();
+
+              GoogleLib.SignOut(window.gapi, ()=>{
+                this.props.setGoogleSignOutState();
+              });
+
               this.props.handleClick();
             }}/>
 
@@ -184,7 +128,7 @@ class GoogleConnect extends Component {
   }
 
   renderLogin() {
-    //console.log('google api logged in: '+  this.props.GoogleApiLoggedIn);
+    console.log('google api logged in: '+  this.props.GoogleApiLoggedIn);
 
     const { classes, ClientId, Scope} = this.props;
 
@@ -248,9 +192,24 @@ class GoogleConnect extends Component {
 
 
 const mapStateToProps = state => {
-  //console.log('mapStateToProps');
+  console.log('mapStateToProps');
+
+  const params = {
+    client_id: state.google.GoogleApiParams.clientId,
+    cookie_policy: state.google.GoogleApiParams.cookie_policy,
+    login_hint: state.google.GoogleApiParams.login_hint,
+    hosted_domain: undefined,
+    fetch_basic_profile: state.google.GoogleApiParams.fetch_basic_profile,
+    discoveryDocs : undefined,
+    ux_mode: state.google.GoogleApiParams.uxMode,
+    redirect_uri: undefined,
+    scope: state.google.GoogleApiParams.scopes,
+    access_type: state.google.GoogleApiParams.accessType,
+    responseType: state.google.responseType
+  };
 
   return {
+    GoogleConnectParam : params,
     SideDrawerLoaderVisible : state.uxState.SideDrawerLoaderVisible,
     LogInDetailsVisible : state.uxState.LogInDetailsVisible,
     ClientId : state.google.GoogleApiParams.clientId,
@@ -280,25 +239,25 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
   return {
+    setGoogleApi : loginResponse =>{
+      dispatch(setGoogleApi(loginResponse))
+    },
 
-    setLoginDetailsVisible :visible =>{
-      dispatch(setLoginDetailsVisible(visible))
+    setGoogleSignOutState :() =>{
+      dispatch(setGoogleSignOutState())
     },
-    setProfileObj :profileObj =>{
-      dispatch(setProfileObj(profileObj))
-    },
-    setGoogleToken :(googleId,tokenObj,tokenId,accessToken) =>{
-      dispatch(setGoogleToken(googleId,tokenObj,tokenId,accessToken))
-    },
-    setGoogleApiActive :isActive =>{
-      dispatch(setGoogleApiActive(isActive))
-    },
+
     setQuizMetaData :data =>{
       dispatch(setQuizMetaData(data))
     },
+
     setCatSelection :data =>{
       dispatch(setCatSelection(data))
     },
+
+    setLoginDetailsVisible :isVisible =>{
+      dispatch(setLoginDetailsVisible(isVisible))
+    }
 
   };
 };

@@ -29,7 +29,8 @@ export default (state = {
     accessToken :undefined,
   },
   profileObj : '',
-  googleApiLoggedIn : false
+  googleApiLoggedIn : false,
+  responseType : ''
 }, action) => {
 
   switch (action.type) {
@@ -52,7 +53,14 @@ export default (state = {
           ...state,
           googleApiLoggedIn : action.googleApiLoggedIn,
         };
-
+     
+      case "SET_GOOGLEBATCH_PROFILE_ISACTIVE_TOKEN":
+          return {
+            ...state,
+            googleApiLoggedIn : action.googleApiLoggedIn,
+            GoogleToken  : action.GoogleToken,
+            profileObj  : action.profileObj,
+          };
       default:
           return state;
 

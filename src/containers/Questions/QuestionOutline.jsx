@@ -12,7 +12,7 @@ import InputBase from '@material-ui/core/InputBase';
 import DirectionsIcon from '@material-ui/icons/Directions';
 import { connect } from "react-redux";
 
-import {setQuestionVisibility} from "../../actions/appStateActions.jsx";
+import {setQuestionVisibility} from "../../store/actions/appStateActions.jsx";
 
 
 

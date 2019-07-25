@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {setQuizQuestionData} from "../../actions/appStateActions.jsx";
+import {setQuizQuestionData} from "../../store/actions/appStateActions.jsx";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';

@@ -16,8 +16,10 @@ import SelectionToolBar from "./SelectionToolBar.jsx";
 import './SideDrawer.css';
 
 import { connect } from "react-redux";
-import { setQuizMetaData,setCatSelection,setQuizName,setQuizCat} from "../../actions/appStateActions.jsx";
-import {setSideDrawerLoaderVisible} from "../../actions/uxActions.jsx";
+import {setCatSelection,setQuizName,setQuizCat} from "../../store/actions/appStateActions.jsx";
+import { setQuizMetaData} from "../../store/actions/appStateActions.jsx";
+
+import {setSideDrawerLoaderVisible} from "../../store/actions/uxActions.jsx";
 
 const styles = theme => ({
 
@@ -91,8 +93,6 @@ class SideDrawer extends Component {
    render() {
 
   //   console.log("quiz data length: "+this.props.quizData.length);
-let test ;
-
 
     const { classes ,SideDrawerLoaderVisible, catSelection} = this.props;
 
@@ -102,10 +102,10 @@ let test ;
 
 
     const quizClick = (key => {
-      //  console.log('selected quiz :' + key.quiz + ' ' + key.key);
+        console.log('selected quiz :' + key.quiz + ' ' + key.key);
         setQuizName(key);
         catSelection.forEach((selection)=>{
-         if(selection.quiz == key.key){
+         if(selection.key == key.key){
            selection.open = !selection.open;
            setCatSelection(catSelection);
          }
@@ -120,9 +120,9 @@ let test ;
 
       });
 
-    const isVisible = (quizName)=>{
-
-      let currentQuiz = catSelection.filter(a=>a.quiz == quizName);
+    const isVisible = (key)=>{
+      console.log('isVisible');
+      let currentQuiz = catSelection.filter(a=>a.key == key);
 
       if (currentQuiz.length == 0) return false;
 
@@ -149,8 +149,10 @@ let test ;
              </AppBar>
              <List>
                {this.props.quizMetaData.map(function(item, index){
-                    return <div key= {index}><QuizItem label ={item.quiz}  id = {item.key} onClick = {quizClick}></QuizItem>
-                       <QuizItemCats names = {item.cats}  id = {index} onClick = {catClick}  isVisible ={isVisible(item.key)}></QuizItemCats> </div>;
+                    return <div key= {index}>
+                      <QuizItem label ={item.quiz}  id = {item.key} onClick = {quizClick}></QuizItem>
+                       <QuizItemCats names = {item.cats}  id = {index} onClick = {catClick}  isVisible ={isVisible(item.key)}></QuizItemCats>
+                       </div>;
                })}
              </List>
 

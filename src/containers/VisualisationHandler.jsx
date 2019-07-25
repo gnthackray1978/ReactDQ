@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from "react-redux";
-import {setContext,toggleGraphRunning} from "../actions/graphActions.jsx";
+import {setContext,toggleGraphRunning} from "../store/actions/graphActions.jsx";
 import {GraphEventConnector} from "../ForceDirected/GraphEventConnector.js";
 import {ForceDirect} from "../ForceDirected/ForceDirect.js";
 import GraphContainer from "./Canvas/GraphContainer.jsx";

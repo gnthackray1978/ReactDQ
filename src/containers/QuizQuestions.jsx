@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import {ScoreLib} from "../scripts/ScoreLib.js";
 import { connect } from "react-redux";
-import {setEndTestBatch, setCombinedQuizData} from "../actions/appStateActions.jsx";
+import {setEndTestBatch, setCombinedQuizData} from "../store/actions/dbActions.jsx";
 import {SheetParser} from "../scripts/SheetParser.js";
 import {GoogleLib} from "../scripts/GoogleLib.js";
 import QuestionList from "./Questions/QuestionList.jsx";
@@ -84,11 +84,11 @@ class QuizQuestions extends Component {
 
 QuizQuestions.propTypes = {
   classes: PropTypes.object.isRequired,
-  quizQuestions : PropTypes.array,
+  quizQuestions : PropTypes.object,
   selectQuizCat : PropTypes.string,
   setCombinedQuizData : PropTypes.func,
-  ScriptId : PropTypes.number,
-  selectedQuiz : PropTypes.string,
+  ScriptId : PropTypes.string,
+  selectedQuiz : PropTypes.object,
   currentTest: PropTypes.string,
   testList: PropTypes.object,
   userAnswersMapQuizInstance: PropTypes.object,

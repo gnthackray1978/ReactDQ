@@ -8,8 +8,8 @@ import {GoogleLib} from "../../scripts/GoogleLib.js";
 import './SideDrawer.css';
 import { connect } from "react-redux";
 
-import {setCatSelection,setQuizName,setQuizCat} from "../../actions/appStateActions.jsx";
-import {setAddQuizMode,setDeleteQuizMode,setEditQuizMode,setEditNameQuizMode} from "../../actions/uxActions.jsx";
+import {setCatSelection,setQuizName,setQuizCat} from "../../store/actions/appStateActions.jsx";
+import {setAddQuizMode,setDeleteQuizMode,setEditQuizMode,setEditNameQuizMode} from "../../store/actions/uxActions.jsx";
 
 const styles = theme => ({
 
