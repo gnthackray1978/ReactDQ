@@ -1,13 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
 import QuestionOutline from "./QuestionOutline.jsx";
+import MultiChoiceCorrectAnswer from "./stateless/MultiChoiceCorrectAnswer.jsx";
+import MultiChoiceInput from "./stateless/MultiChoiceInput.jsx";
 import {ScoreLib} from "../../scripts/ScoreLib.js"
 import { connect } from "react-redux";
 import {getCurrentQuestionVisibility} from "./QuestionHelpers.js";
@@ -72,48 +68,6 @@ const styles = () => ({
 
 });
 
-
-const CorrectAnswer = props => {
-
-  const { classes} = props;
-
-  return   <div>
-      <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
-        <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
-          The correct options are :
-        </Typography>
-       {props.children.map((str)=>{
-         return <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
-           {str}
-         </Typography>
-       })}
-      </Paper>
-    </div>
-
-}
-
-const MultiChoiceInput = props => {
-
-  const { classes, possibleAnswers,onChange} = props;
-
-  return   <div>
-    <FormControl component="fieldset" className={classes.formControl}>
-       <FormGroup  onChange={onChange}>
-         {possibleAnswers.map((str, index)=>{
-             return <FormControlLabel key ={index}
-                      control={ <Checkbox value={str}/> }
-                      label={str}
-                    />
-           })}
-       </FormGroup>
-     </FormControl>
-
-
-    </div>
-
-}
-
-
 class MultiChoiceAnswer extends React.Component {
 
   constructor(props) {
@@ -156,7 +110,7 @@ class MultiChoiceAnswer extends React.Component {
     if(!getCurrentQuestionVisibility(questionVisibility,questionData.id,selectedQuiz.key,selectQuizCat)){
       let correctAnswer = ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers);
 
-      result = <CorrectAnswer classes ={classes}>{correctAnswer}</CorrectAnswer>
+      result = <MultiChoiceCorrectAnswer classes ={classes}>{correctAnswer}</MultiChoiceCorrectAnswer>
     }
     else {
 
