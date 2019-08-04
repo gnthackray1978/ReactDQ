@@ -1,17 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
-import TextField from '@material-ui/core/TextField';
 import InputBase from '@material-ui/core/InputBase';
 import DirectionsIcon from '@material-ui/icons/Directions';
-import { connect } from "react-redux";
 
 
-const styles = theme => ({
+const styles = () => ({
   root: {
      padding: '2px 4px',
      display: 'flex',
@@ -89,13 +85,20 @@ const styles = theme => ({
 });
 
 
-const QuestionInput = props =>   <Paper className={props.classes.root} elevation={1}>
-    <InputBase className={props.classes.input} placeholder="Answer here"  onChange={props.onChange} value ={props.answer}/>
+const QuestionInput = props =>
+  (<Paper className={props.classes.root} elevation={1}>
+      <InputBase className={props.classes.input} placeholder="Answer here"  onChange={props.onChange} value ={props.answer}/>
 
-    <IconButton color="primary" className={props.classes.iconButton} aria-label="Directions" onClick = { props.onClick }>
-      <DirectionsIcon />
-    </IconButton>
-  </Paper>;
+      <IconButton color="primary" className={props.classes.iconButton} aria-label="Directions" onClick = {props.onClick}>
+          <DirectionsIcon/>
+      </IconButton>
+  </Paper>);
 
+QuestionInput.propTypes = {
+  onChange: PropTypes.func,
+  onClick: PropTypes.func,
+  classes : PropTypes.object,
+  answer : PropTypes.string
+};
 
 export default withStyles(styles)(QuestionInput);

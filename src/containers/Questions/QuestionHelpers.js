@@ -1,20 +1,14 @@
 
+export const getCurrentQuestionVisibility = (questionVisibilityObj, questionId, quizKey, selectedCategory) =>{
 
-export class QuestionHelpers {
+  let questionKey = questionId + '-' + quizKey + '-'+ selectedCategory;
 
-  static IsAnswerVisible(questionId, quizId, questionCat, questionVisibility){
-    let questionKey = questionId + '-' + quizId + '-'+ questionCat;
+  let answerVisible = true;
 
-    let answerVisible = true;
-
-    if(questionVisibility.hasOwnProperty(questionKey)){
-       answerVisible = questionVisibility[questionKey].visible;
-    }
-
-    return answerVisible;
-
+  if(Object.prototype.hasOwnProperty.call(questionVisibilityObj, questionKey)){
+     answerVisible = questionVisibilityObj[questionKey].visible;
   }
 
+  return answerVisible;
 
-
-}
+};

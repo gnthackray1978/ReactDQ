@@ -8,9 +8,9 @@ import {ScoreLib} from "../../scripts/ScoreLib.js"
 
 import { connect } from "react-redux";
 
-import {setQuestionVisibility} from "../../actions/appStateActions.jsx";
-import {setRelatedUserAnswers} from "../../actions/dbActions.jsx";
+import {setUserAnswers, resetUserAnswers} from "../../store/actions/dbActions.jsx";
 
+import {getCurrentQuestionVisibility} from "./QuestionHelpers.js";
 
 const styles = () => ({
   root: {
@@ -78,55 +78,20 @@ class SingleAnswer extends React.Component {
         this.state = { answerInput : ''  };
       }
 
-
-    onClick = (arg)=>{
-
-      const  {serverAnswers, setRelatedUserAnswers,userAnswers,userAnswersMapQuizInstance,currentTest,questionData} = this.props;
-
-      let answerInput = this.state.answerInput.toLowerCase();
-    //  let serverAnswers = this.props.serverAnswers;
-  //    let selectedQuiz = this.props.selectedQuiz.key;
-
-      //let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
-
-    //  let userAnswers = this.props.userAnswers;
-    //  let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
-    //  let currentTestId = this.props.currentTest;
-    //  let questionData = this.props.questionData;
-
-      // so that if the user changes their mind and enters the wrong answer then their score goes down.
-      ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
-
-      let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,currentTest);
-
-      ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, serverAnswers,
-        (updatedUserAnswers,score, isCorrect)=>{
-
-            ScoreLib.UpdateEnteredAnswerObjs(questionData.id, currentTest, answerInput, userAnswers, userAnswersMapQuizInstance,isCorrect,score);
-
-            setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
-
-      });
-
-    }
-
-
     formatString(classes, string,index){
      if(index !=0) string = ',' + string;
 
      if(index % 2 ==0){
-       return   <Typography variant="h6" className ={classes.black}  >
+       return   (<Typography variant="h6" className ={classes.black}  >
            {string}
-         </Typography>
+       </Typography>)
      }
      else {
-         return   <Typography variant="h6"  className ={classes.red}  >
+         return   (<Typography variant="h6"  className ={classes.red}  >
              {string}
-           </Typography>
+         </Typography>)
        }
-   }
-
-
+    }
 
     makeCorrectAnswersBlock(classes){
       let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(this.props.questionData, this.props.serverAnswers);
@@ -135,62 +100,53 @@ class SingleAnswer extends React.Component {
            this.formatString(classes,string,index)
          ));
 
-      let answerBlock = <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-                          {tpAnswer}
-                        </Typography>
+      let answerBlock =
+         (<Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
+             {tpAnswer}
+         </Typography>)
 
       return  answerBlock;
     }
 
-    isQuestionVisible (){
-
-      let questionKey = this.props.questionData.id + '-' + this.props.selectedQuiz.key + '-'+ this.props.selectQuizCat;
-
-      let answerVisible = true;
-
-      if(this.props.questionVisibility.hasOwnProperty(questionKey)){
-         answerVisible = this.props.questionVisibility[questionKey].visible
-      }
-
-      return answerVisible;
-    }
-
     render() {
-    //  console.log('single answer rendered');
+      const { classes,questionData ,userAnswersMapQuizInstance, currentTest,questionVisibility,
+              selectedQuiz,selectQuizCat,resetUserAnswers,setUserAnswers} = this.props;
 
-      const { classes,questionData,quizMetaData ,userAnswersMapQuizInstance, currentTest,userAnswers} = this.props;
+      const onClick =(arg)=>{
+          setUserAnswers(arg.target.value.toLowerCase(),this.props.questionData);
+        };
+
+      const handleOnChange = event => {
+        this.setState({
+          answerInput : event.target.value,
+        });
+      };
 
       let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
-      const handleOnChange = event => {
-          this.setState({
-            answerInput : event.target.value,
-          });
-        };
-
       let result;
 
-      if(!this.isQuestionVisible()){
+      if(!getCurrentQuestionVisibility(questionVisibility, questionData.id, selectedQuiz.key, selectQuizCat)){
         result = this.makeCorrectAnswersBlock(classes);
       }
       else {
-         result = <div>
-                     <QuestionInput onChange={handleOnChange} onClick = {this.onClick} answer = {this.state.answerInput}/>
-                  </div>
+         result = (<div>
+             <QuestionInput onChange={handleOnChange} onClick = {onClick} answer = {this.state.answerInput}/>
+         </div>)
       }
 
       return (
-        <QuestionOutline label = 'Single Answer' score = {score} question = {questionData.question}  value = {questionData} undo = {()=>{
-            console.log('undo clicked');
-            // so that if the user changes their mind and enters the wrong answer then their score goes down.
-            ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
+          <QuestionOutline label = "Single Answer" score = {score} question = {questionData.question}  value = {questionData} undo = {()=>{
 
-            this.props.setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
+            resetUserAnswers(questionData.id);
 
             this.setState({
               answerInput : ''
             });
-          }}>{result}</QuestionOutline>
+
+        }}>
+              {result}
+          </QuestionOutline>
       );
     }
 }
@@ -198,22 +154,20 @@ class SingleAnswer extends React.Component {
 SingleAnswer.propTypes = {
   classes: PropTypes.object.isRequired,
   userAnswers : PropTypes.object,
-  setRelatedUserAnswers : PropTypes.func,
-
-  
-    selectQuizCat : PropTypes.string,
-  ScriptId : PropTypes.string,
+  questionData : PropTypes.object,
+  serverAnswers : PropTypes.object,
+  selectQuizCat : PropTypes.string,
   selectedQuiz : PropTypes.object,
   currentTest: PropTypes.string,
-  testList: PropTypes.object,
   userAnswersMapQuizInstance: PropTypes.object,
-  setEndTestBatch : PropTypes.func
+  questionVisibility: PropTypes.object,
+  currentQuestionVisible : PropTypes.bool,
+  resetUserAnswers : PropTypes.func,
+  setUserAnswers : PropTypes.func,
 };
 
 const mapStateToProps = state => {
   return {
-
-    quizMetaData : state.db.quizMetaData,
     catSelection : state.applicationState.catSelection,
     selectQuizCat : state.applicationState.selectQuizCat,
     selectedQuiz : state.applicationState.selectedQuiz,
@@ -228,11 +182,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
   return {
-    setQuestionVisibility :data =>{
-      dispatch(setQuestionVisibility(data))
+  
+    setUserAnswers :(answerInput,questionData) =>{
+      dispatch(setUserAnswers(answerInput,questionData))
     },
-    setRelatedUserAnswers :data =>{
-      dispatch(setRelatedUserAnswers(data))
+    resetUserAnswers :questionId =>{
+      dispatch(resetUserAnswers(questionId))
     }
   };
 };

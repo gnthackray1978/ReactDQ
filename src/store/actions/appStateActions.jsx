@@ -1,10 +1,32 @@
 
 
-export const setQuestionVisibility= data =>{
-  return async dispatch  => {
+export const setQuestionVisibility = (id) =>{
+
+
+
+  return async (dispatch, getState)  => {
+    const {questionVisibility, selectedQuiz, selectQuizCat} = getState().applicationState;
+
+    let questionKey = id + '-' + selectedQuiz.key + '-'+selectQuizCat;
+
+    console.log(questionKey);
+
+    if(!Object.prototype.hasOwnProperty.call(questionVisibility, questionKey)){
+
+       questionVisibility[questionKey] = {
+         visible : false
+       };
+
+    }
+    else{
+
+      questionVisibility[questionKey].visible = !questionVisibility[questionKey].visible;
+    }
+
+
     dispatch({
       type: "SET_QUESTIONVISIBILITY",
-      questionVisibility :{...data}
+      questionVisibility :{...questionVisibility}
     });
   };
 }

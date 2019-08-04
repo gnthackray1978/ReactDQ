@@ -2,27 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Grid';
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-
 import QuestionOutline from "./QuestionOutline.jsx";
-import QuestionInput from "./QuestionInput.jsx";
-import {MatchLib} from "../../scripts/MatchLib.js"
 import {ScoreLib} from "../../scripts/ScoreLib.js"
 import { connect } from "react-redux";
-import {QuestionHelpers} from "./QuestionHelpers.js";
-import {setQuestionVisibility} from "../../store/actions/appStateActions.jsx";
-import {setRelatedUserAnswers} from "../../store/actions/dbActions.jsx";
+import {getCurrentQuestionVisibility} from "./QuestionHelpers.js";
+
+import {setUserAnswersMultiChoice, resetUserAnswers} from "../../store/actions/dbActions.jsx";
 
 
-
-const styles = theme => ({
+const styles = () => ({
   root: {
      padding: '2px 4px',
      display: 'flex',
@@ -120,6 +113,7 @@ const MultiChoiceInput = props => {
 
 }
 
+
 class MultiChoiceAnswer extends React.Component {
 
   constructor(props) {
@@ -127,22 +121,25 @@ class MultiChoiceAnswer extends React.Component {
       this.state = { options : []  };
     }
 
+  render() {
+    console.log('rendered multi answer');
 
-    inputChanged =(arg)=>{
+    const { classes,questionData,userAnswersMapQuizInstance ,currentTest,selectQuizCat,
+          questionVisibility,serverAnswers,selectedQuiz,resetUserAnswers} = this.props;
 
+    let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
+    let result;
 
-      //
+    const undo = () =>{
+      resetUserAnswers(questionData.id);
+    };
+
+    const inputChanged =(arg)=>{
       let answerInput = arg.target.value.toLowerCase();
-      let serverAnswers = this.props.serverAnswers;
-      let selectedQuiz = this.props.selectedQuiz.key;
-      let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
-      let userAnswers = this.props.userAnswers;
-      let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
-      let currentTestId = this.props.currentTest;
-      let questionData = this.props.questionData;
 
       let newState = this.state.options;
+
       if(newState.includes(answerInput)){
         newState = newState.filter(f=>f != answerInput);
       }
@@ -152,35 +149,11 @@ class MultiChoiceAnswer extends React.Component {
 
       this.setState( { options : newState  });
 
-      // // so that if the user changes their mind and enters the wrong answer then their score goes down.
-      ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTestId, userAnswers, userAnswersMapQuizInstance);
-
-      let result = ScoreLib.GetScoreForMultiChoice(questionData,serverAnswers,newState);
-
-       ScoreLib.UpdateEnteredAnswerObjs(questionData.id, currentTestId, result.answer, userAnswers, userAnswersMapQuizInstance,result.isCorrect, result.score);
-
-       setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
-
+      setUserAnswersMultiChoice(newState,questionData);
     };
 
-
-  undo = (arg) =>{
-    console.log('undo clicked');
-    const { questionData,userAnswersMapQuizInstance ,currentTest,userAnswers} = this.props;
-    // so that if the user changes their mind and enters the wrong answer then their score goes down.
-    ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
-
-    this.props.setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
-  }
-
-  render() {
-    const { classes,questionData,userAnswersMapQuizInstance ,currentTest,selectQuizCat,questionVisibility,serverAnswers,selectedQuiz,userAnswers} = this.props;
-
-    let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
-
-    let result;
-
-    if(!QuestionHelpers.IsAnswerVisible(questionData.id,selectedQuiz.key,selectQuizCat,questionVisibility)){
+    console.log('checked visibility');
+    if(!getCurrentQuestionVisibility(questionVisibility,questionData.id,selectedQuiz.key,selectQuizCat)){
       let correctAnswer = ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers);
 
       result = <CorrectAnswer classes ={classes}>{correctAnswer}</CorrectAnswer>
@@ -189,19 +162,20 @@ class MultiChoiceAnswer extends React.Component {
 
        let possibleAnswers = ScoreLib.GetPossibleAnswersForQuestion(questionData, serverAnswers);
 
-       result = <div>
-                   <MultiChoiceInput  classes ={classes} onChange={this.inputChanged} possibleAnswers = {possibleAnswers}/>
-                </div>
+       result = (<div>
+           <MultiChoiceInput  classes ={classes} onChange={inputChanged} possibleAnswers = {possibleAnswers}/>
+       </div>)
     }
 
     return (
-      <QuestionOutline label = 'Multiple Choice' score = {score} question = {questionData.question}  value = {questionData} undo = {this.undo}>{result}</QuestionOutline>
+      <QuestionOutline label = 'Multiple Choice' score = {score} question = {questionData.question}  value = {questionData} undo = {undo}>{result}</QuestionOutline>
     );
   }
 }
 
 
 const mapStateToProps = state => {
+  console.log('mapStateToProps');
   return {
 
     quizMetaData : state.db.quizMetaData,
@@ -219,11 +193,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
   return {
-    setQuestionVisibility :data =>{
-      dispatch(setQuestionVisibility(data))
+    setUserAnswersMultiChoice :(optionState,questionData) =>{
+      dispatch(setUserAnswersMultiChoice(optionState,questionData))
     },
-    setRelatedUserAnswers :data =>{
-      dispatch(setRelatedUserAnswers(data))
+    resetUserAnswers :questionId =>{
+      dispatch(resetUserAnswers(questionId))
     }
   };
 };

@@ -6,12 +6,11 @@ import QuestionOutline from "./QuestionOutline.jsx";
 import QuestionBooleanInput from "./QuestionBooleanInput.jsx";
 import CorrectAnswer from "./CorrectAnswer.jsx";
 import {ScoreLib} from "../../scripts/ScoreLib.js"
-import {QuestionHelpers} from "./QuestionHelpers.js"
+import {getCurrentQuestionVisibility} from "./QuestionHelpers.js"
 
 import { connect } from "react-redux";
 
-import {setQuestionVisibility} from "../../store/actions/appStateActions.jsx";
-import {setRelatedUserAnswers} from "../../store/actions/dbActions.jsx";
+import {setUserAnswers, resetUserAnswers} from "../../store/actions/dbActions.jsx";
 
 
 const styles = () => ({
@@ -69,73 +68,56 @@ class BooleanAnswer extends React.Component {
 
   }
 
-  inputChanged =(arg)=>{
-    console.log('input changed');
-
-
-
-    let answerInput = arg.target.value.toLowerCase();
-    let serverAnswers = this.props.serverAnswers;
-    let selectedQuiz = this.props.selectedQuiz.key;
-    let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
-    let userAnswers = this.props.userAnswers;
-    let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
-    let currentTestId = this.props.currentTest;
-    let questionData = this.props.questionData;
-
-    // so that if the user changes their mind and enters the wrong answer then their score goes down.
-    ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTestId, userAnswers, userAnswersMapQuizInstance);
-
-    let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,currentTestId);
-
-    ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, serverAnswers,
-      (updatedUserAnswers,score, isCorrect)=>{
-
-          ScoreLib.UpdateEnteredAnswerObjs(questionData.id, currentTestId, answerInput, userAnswers, userAnswersMapQuizInstance,isCorrect,score);
-
-          setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
-
-    });
-
-
-  };
-
-  undo = () =>{
-
-    const { questionData,userAnswersMapQuizInstance, currentTest,userAnswers} = this.props;
-
-  //  console.log('undo clicked');
-    // so that if the user changes their mind and enters the wrong answer then their score goes down.
-    ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
-
-    this.props.setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
-
-  };
-
-
   render() {
-    console.log('boolean answer rendered');
+  //  console.log('boolean answer rendered');
 
-    const { classes,questionData,userAnswersMapQuizInstance, currentTest,selectQuizCat,questionVisibility,serverAnswers,selectedQuiz} = this.props;
+    const {questionData,userAnswersMapQuizInstance, currentTest,selectQuizCat,
+      questionVisibility,serverAnswers,selectedQuiz, resetUserAnswers,setUserAnswers} = this.props;
 
     let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
     let result;
 
-    if(!QuestionHelpers.IsAnswerVisible(questionData.id,selectedQuiz.key,selectQuizCat,questionVisibility)){
+    const undo = () =>{
+      resetUserAnswers(this.props.questionData.id);
+    };
+
+    const inputChanged =(arg)=>{
+      setUserAnswers(arg.target.value.toLowerCase(),this.props.questionData);
+    };
+//questionVisibility,questionData.id,selectedQuiz.key,selectQuizCat
+    if(!getCurrentQuestionVisibility(questionVisibility,questionData.id,selectedQuiz.key,selectQuizCat)){
       result = <CorrectAnswer>{ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers)}</CorrectAnswer>
     }
     else {
-       result = <QuestionBooleanInput onChange={this.inputChanged} onClick = {this.onClick} />
+       //formally there was a onclick event if things dont work unexpectedly
+       //removing this could be the cause
+       result = <QuestionBooleanInput onChange={inputChanged} />
     }
 
     return (
-      <QuestionOutline label = 'Boolean Answer' score = {score} question = {questionData.question}  value = {questionData}  undo = { this.undo}>
-        {result}
-      </QuestionOutline>
+        <QuestionOutline label = "Boolean Answer" score = {score} question = {questionData.question}  value = {questionData}  undo = {undo}>
+            {result}
+        </QuestionOutline>
     );
   }
 }
+
+BooleanAnswer.propTypes = {
+  classes: PropTypes.object.isRequired,
+  userAnswers : PropTypes.object,
+  setRelatedUserAnswers : PropTypes.func,
+  questionData : PropTypes.object,
+  serverAnswers : PropTypes.object,
+  selectQuizCat : PropTypes.string,
+  selectedQuiz : PropTypes.object,
+  currentTest: PropTypes.string,
+  userAnswersMapQuizInstance: PropTypes.object,
+  questionVisibility: PropTypes.object,
+  currentQuestionVisible : PropTypes.bool,
+  resetUserAnswers : PropTypes.func,
+  setUserAnswers : PropTypes.func
+};
 
 
 const mapStateToProps = state => {
@@ -156,11 +138,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
   return {
-    setQuestionVisibility :data =>{
-      dispatch(setQuestionVisibility(data))
+
+    setUserAnswers :(answerInput,questionData) =>{
+      dispatch(setUserAnswers(answerInput,questionData))
     },
-    setRelatedUserAnswers :data =>{
-      dispatch(setRelatedUserAnswers(data))
+    resetUserAnswers :questionId =>{
+      dispatch(resetUserAnswers(questionId))
     }
   };
 };

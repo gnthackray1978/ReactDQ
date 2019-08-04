@@ -74,7 +74,7 @@ class GoogleConnect extends Component {
           GoogleLib.AutoConnect(window.gapi, this.props.GoogleConnectParam, (res)=>{
 
             this.props.setGoogleApi(res);
-            console.log('AutoConnect success');
+          //  console.log('AutoConnect success');
 
             GoogleLib.SearchForQuizFiles(window.gapi, this.props.ScriptId, (arg)=>{
               this.props.setQuizMetaData(arg);
@@ -128,7 +128,7 @@ class GoogleConnect extends Component {
   }
 
   renderLogin() {
-    console.log('google api logged in: '+  this.props.GoogleApiLoggedIn);
+  //  console.log('google api logged in: '+  this.props.GoogleApiLoggedIn);
 
     const { classes, ClientId, Scope} = this.props;
 
@@ -192,7 +192,7 @@ class GoogleConnect extends Component {
 
 
 const mapStateToProps = state => {
-  console.log('mapStateToProps');
+//  console.log('mapStateToProps');
 
   const params = {
     client_id: state.google.GoogleApiParams.clientId,

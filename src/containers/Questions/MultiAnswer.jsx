@@ -2,22 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Grid';
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-
 import QuestionOutline from "./QuestionOutline.jsx";
 import QuestionInput from "./QuestionInput.jsx";
-import {MatchLib} from "../../scripts/MatchLib.js"
 import {ScoreLib} from "../../scripts/ScoreLib.js"
 import { connect } from "react-redux";
 import CorrectAnswer from "./CorrectAnswer.jsx";
-import {QuestionHelpers} from "./QuestionHelpers.js";
-import {setQuestionVisibility} from "../../store/actions/appStateActions.jsx";
-import {setRelatedUserAnswers} from "../../store/actions/dbActions.jsx";
+import {getCurrentQuestionVisibility} from "./QuestionHelpers.js";
+import {setUserAnswers, resetUserAnswers} from "../../store/actions/dbActions.jsx";
 
 
-
-const styles = theme => ({
+const styles = () => ({
   root: {
      padding: '2px 4px',
      display: 'flex',
@@ -74,9 +69,6 @@ const styles = theme => ({
 
 });
 
-
-
-
 const FormattedString = props => {
 
   const { classes,index,string} = props;
@@ -85,14 +77,14 @@ const FormattedString = props => {
   if(index !=0) formattedString = ',' + formattedString;
 
   if(index % 2 ==0){
-    return   <Typography variant="h6" className ={classes.black}  >
+    return   (<Typography variant="h6" className ={classes.black}  >
         {formattedString}
-      </Typography>
+    </Typography>)
   }
   else {
-      return   <Typography variant="h6"  className ={classes.red}  >
+      return(<Typography variant="h6"  className ={classes.red}  >
           {formattedString}
-        </Typography>
+      </Typography>)
     }
 }
 
@@ -100,17 +92,17 @@ const AnswerSoFar = props => {
 
   const { classes,AnswerSoFar} = props;
 
-  return   <div>
+  return(<div>
       <Typography variant="h6" color="inherit"  className ={classes.answersofarlabel}>
         Answer so far
       </Typography>
 
       <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
-        {AnswerSoFar.map((string,index) => (
-             <FormattedString classes = {classes} string = {string} index ={index}/>
-           ))}
+          {AnswerSoFar.map((string,index) => (
+               <FormattedString classes = {classes} string = {string} index ={index}/>
+             ))}
       </Paper>
-    </div>
+  </div>)
 
 }
 
@@ -120,83 +112,67 @@ class MultiAnswer extends React.Component {
   constructor(props) {
       super(props);
       this.state = { answerInput : ''  };
-    }
-
-
-  onClick = (arg)=>{
-
-    // id: compositeKey,
-    // quizInstanceId : instanceId,
-    // questionId : questionId,
-    // score : score,
-    // answer : isCorrect ? [userAnswerKey] : [],
-    // wrongAnswer :isCorrect ? [] : [userAnswerKey],
-
-    let userAnswersMapQuizInstance = this.props.userAnswersMapQuizInstance;
-    let questionData = this.props.questionData;
-    let answerInput = this.state.answerInput.toLowerCase();
-    let serverAnswers = this.props.serverAnswers;
-    let selectedQuiz = this.props.selectedQuiz.key;
-    let setRelatedUserAnswers = this.props.setRelatedUserAnswers;
-    let testInstance = this.props.currentTest;
-    //user answers does not save the associated question id or test instance
-    let userAnswers = this.props.userAnswers;
-
-
-    //array of answer strings
-    let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,testInstance);
-
-    ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, serverAnswers,
-      (updatedUserAnswers,score, isCorrect)=>{
-          ScoreLib.UpdateEnteredAnswerObjs( questionData.id, testInstance, answerInput,
-             userAnswers, userAnswersMapQuizInstance,isCorrect,score);
-          setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
-          this.setState({
-            answerInput : ''
-          });
-    });
-
-  }
-
-  handleOnChange = (arg)=>{
-    this.setState({
-      answerInput : event.target.value,
-    });
-  }
-
-  undo = (arg) =>{
-    console.log('undo clicked');
-    const { questionData,userAnswersMapQuizInstance ,currentTest,userAnswers} = this.props;
-    // so that if the user changes their mind and enters the wrong answer then their score goes down.
-    ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
-
-    this.props.setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
   }
 
   render() {
-    const { classes,questionData,userAnswersMapQuizInstance ,currentTest,selectQuizCat,questionVisibility,serverAnswers,selectedQuiz,userAnswers} = this.props;
+
+    const { classes,questionData,userAnswersMapQuizInstance ,currentTest,selectQuizCat,questionVisibility,serverAnswers,
+                selectedQuiz,userAnswers, resetUserAnswers,setUserAnswers} = this.props;
+
+    const undo = () =>{
+      resetUserAnswers(questionData.id);
+    };
+
+    const onClick =(arg)=>{
+      setUserAnswers(arg.target.value.toLowerCase(),questionData);
+      this.setState({
+        answerInput : ''
+      });
+    };
+
+    const handleOnChange = (event)=>{
+      this.setState({
+        answerInput : event.target.value,
+      });
+    }
+
 
     let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
     let result;
 
-    if(!QuestionHelpers.IsAnswerVisible(questionData.id,selectedQuiz.key,selectQuizCat,questionVisibility)){
+    if(!getCurrentQuestionVisibility(questionVisibility,questionData.id,selectedQuiz.key,selectQuizCat)){
       result = <CorrectAnswer>{ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers)}</CorrectAnswer>
     }
     else {
        let tpAnswerSoFar = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,currentTest);
-       result = <div>
-                   <QuestionInput onChange={this.handleOnChange} onClick = {this.onClick}  answer = {this.state.answerInput}/>
-                   <AnswerSoFar classes = {classes} AnswerSoFar ={tpAnswerSoFar}/>
-                </div>
+       result = (<div>
+           <QuestionInput onChange={handleOnChange} onClick = {onClick}  answer = {this.state.answerInput}/>
+           <AnswerSoFar classes = {classes} AnswerSoFar ={tpAnswerSoFar}/>
+       </div>)
     }
 
     return (
-      <QuestionOutline label = 'Multi Answer' score = {score} question = {questionData.question}  value = {questionData} undo = {this.undo}>{result}</QuestionOutline>
+        <QuestionOutline label = "Multi Answer" score = {score} question = {questionData.question}  value = {questionData} undo = {undo}>{result}</QuestionOutline>
     );
   }
 }
 
+MultiAnswer.propTypes = {
+  classes: PropTypes.object.isRequired,
+  userAnswers : PropTypes.object,
+  setRelatedUserAnswers : PropTypes.func,
+  questionData : PropTypes.object,
+  serverAnswers : PropTypes.object,
+  selectQuizCat : PropTypes.string,
+  selectedQuiz : PropTypes.object,
+  currentTest: PropTypes.string,
+  userAnswersMapQuizInstance: PropTypes.object,
+  questionVisibility: PropTypes.object,
+  currentQuestionVisible : PropTypes.bool,
+  resetUserAnswers : PropTypes.func,
+  setUserAnswers : PropTypes.func
+};
 
 const mapStateToProps = state => {
   return {
@@ -216,11 +192,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
   return {
-    setQuestionVisibility :data =>{
-      dispatch(setQuestionVisibility(data))
+
+    setUserAnswers :(answerInput,questionData) =>{
+      dispatch(setUserAnswers(answerInput,questionData))
     },
-    setRelatedUserAnswers :data =>{
-      dispatch(setRelatedUserAnswers(data))
+    resetUserAnswers :questionId =>{
+      dispatch(resetUserAnswers(questionId))
     }
   };
 };
