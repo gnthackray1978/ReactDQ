@@ -2,15 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import QuestionOutline from "./QuestionOutline.jsx";
-
 import QuestionBooleanInput from "./stateless/QuestionBooleanInput.jsx";
 import CorrectAnswer from "./stateless/CorrectAnswer.jsx";
-import {ScoreLib} from "../../scripts/ScoreLib.js"
-import {getCurrentQuestionVisibility} from "./QuestionHelpers.js"
-
 import { connect } from "react-redux";
-
 import {setUserAnswers, resetUserAnswers} from "../../store/actions/dbActions.jsx";
+import {getScore,isQuestionVisible, GetCorrectAnswersForQuestion,GetUserAnswersForQuestion} from "../../store/selectors/uxSelectors.jsx";
 
 
 const styles = () => ({
@@ -69,12 +65,7 @@ class BooleanAnswer extends React.Component {
   }
 
   render() {
-  //  console.log('boolean answer rendered');
-
-    const {questionData,userAnswersMapQuizInstance, currentTest,selectQuizCat,
-      questionVisibility,serverAnswers,selectedQuiz, resetUserAnswers,setUserAnswers} = this.props;
-
-    let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
+    const {questionData,resetUserAnswers,setUserAnswers,score, isVisible, correctAnswers} = this.props;
 
     let result;
 
@@ -85,9 +76,9 @@ class BooleanAnswer extends React.Component {
     const inputChanged =(arg)=>{
       setUserAnswers(arg.target.value.toLowerCase(),this.props.questionData);
     };
-//questionVisibility,questionData.id,selectedQuiz.key,selectQuizCat
-    if(!getCurrentQuestionVisibility(questionVisibility,questionData.id,selectedQuiz.key,selectQuizCat)){
-      result = <CorrectAnswer>{ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers)}</CorrectAnswer>
+
+    if(!isVisible){
+      result = <CorrectAnswer>{correctAnswers}</CorrectAnswer>
     }
     else {
        //formally there was a onclick event if things dont work unexpectedly
@@ -105,24 +96,32 @@ class BooleanAnswer extends React.Component {
 
 BooleanAnswer.propTypes = {
   classes: PropTypes.object.isRequired,
-  userAnswers : PropTypes.object,
-  setRelatedUserAnswers : PropTypes.func,
   questionData : PropTypes.object,
-  serverAnswers : PropTypes.object,
-  selectQuizCat : PropTypes.string,
-  selectedQuiz : PropTypes.object,
-  currentTest: PropTypes.string,
-  userAnswersMapQuizInstance: PropTypes.object,
-  questionVisibility: PropTypes.object,
-  currentQuestionVisible : PropTypes.bool,
   resetUserAnswers : PropTypes.func,
-  setUserAnswers : PropTypes.func
+  setUserAnswers : PropTypes.func,
+  score : PropTypes.string,
+  correctAnswers: PropTypes.object,
+  isVisible : PropTypes.bool
 };
 
 
-const mapStateToProps = state => {
-  return {
+const mapStateToProps =  (state, ownProps)  => {
 
+  const {questionData} = ownProps;
+
+  let tp = getScore(questionData.id, state);
+
+  let correctAnswers  = GetCorrectAnswersForQuestion(questionData,state);
+
+  let userAnswersForQuestion = GetUserAnswersForQuestion(questionData.id, state);
+
+  let isVisible = isQuestionVisible(questionData.id, state);
+
+  return {
+    userAnswersForQuestion,
+    correctAnswers ,
+    isVisible : isVisible,
+    score : tp,
     quizMetaData : state.db.quizMetaData,
     catSelection : state.applicationState.catSelection,
     selectQuizCat : state.applicationState.selectQuizCat,
@@ -136,7 +135,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-
   return {
 
     setUserAnswers :(answerInput,questionData) =>{
