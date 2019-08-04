@@ -122,7 +122,7 @@ class MultiChoiceAnswer extends React.Component {
     }
 
   render() {
-    console.log('rendered multi answer');
+//    console.log('rendered multi answer');
 
     const { classes,questionData,userAnswersMapQuizInstance ,currentTest,selectQuizCat,
           questionVisibility,serverAnswers,selectedQuiz,resetUserAnswers} = this.props;
@@ -152,7 +152,7 @@ class MultiChoiceAnswer extends React.Component {
       setUserAnswersMultiChoice(newState,questionData);
     };
 
-    console.log('checked visibility');
+    //console.log('checked visibility');
     if(!getCurrentQuestionVisibility(questionVisibility,questionData.id,selectedQuiz.key,selectQuizCat)){
       let correctAnswer = ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers);
 
@@ -175,7 +175,7 @@ class MultiChoiceAnswer extends React.Component {
 
 
 const mapStateToProps = state => {
-  console.log('mapStateToProps');
+//  console.log('mapStateToProps');
   return {
 
     quizMetaData : state.db.quizMetaData,

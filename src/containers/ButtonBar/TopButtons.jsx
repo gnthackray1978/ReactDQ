@@ -37,7 +37,7 @@ class TopButtons extends Component {
 
   constructor(props) {
      super(props);
-     console.log('TopButtons');
+     //console.log('TopButtons');
    }
 
 

@@ -73,7 +73,7 @@ class QuestionList extends React.Component {
 
 QuestionList.propTypes = {
   classes: PropTypes.object.isRequired,
-  quizQuestions : PropTypes.array
+  quizQuestions : PropTypes.object
 };
 
 const mapStateToProps = state => {

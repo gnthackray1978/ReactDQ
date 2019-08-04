@@ -20,7 +20,7 @@ export class GoogleLib {
           'userId': 'me'
         });
         request.execute(function(resp) {
-            console.log('loadPlus finished');
+        //    console.log('loadPlus finished');
 
         });
       });
@@ -44,7 +44,7 @@ export class GoogleLib {
 
         // Listen for sign-in state changes.
         auth2.isSignedIn.listen((res)=>{
-          console.log('Listen for sign-in state changes.');
+      //    console.log('Listen for sign-in state changes.');
           //  loadPlus();
         });
 

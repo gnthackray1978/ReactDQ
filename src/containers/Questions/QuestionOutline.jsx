@@ -84,6 +84,7 @@ function QuestionOutline(props) {
   const { classes, value, undo, setQuestionVisibility} = props;
 
   const handleInput = () => {
+  //  console.log('setting visibility: ' + value.id) ;
     setQuestionVisibility(value.id);
   }
 

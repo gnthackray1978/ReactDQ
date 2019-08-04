@@ -121,7 +121,7 @@ class SideDrawer extends Component {
       });
 
     const isVisible = (key)=>{
-      console.log('isVisible');
+    //  console.log('isVisible');
       let currentQuiz = catSelection.filter(a=>a.key == key);
 
       if (currentQuiz.length == 0) return false;
@@ -135,8 +135,8 @@ class SideDrawer extends Component {
             <div className = "inner">
               <AppBar position="static">
                <Toolbar>
-                   <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-                     <MenuIcon onClick={()=>{ this.toggleDrawer(false);}}/>
+                   <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={()=>{ this.toggleDrawer(false);}} >
+                     <MenuIcon/>
                    </IconButton>
 
                    <Button color="inherit" className ={classes.tolowerBtn}>

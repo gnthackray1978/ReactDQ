@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import QuestionOutline from "./QuestionOutline.jsx";
 
-import QuestionBooleanInput from "./QuestionBooleanInput.jsx";
-import CorrectAnswer from "./CorrectAnswer.jsx";
+import QuestionBooleanInput from "./stateless/QuestionBooleanInput.jsx";
+import CorrectAnswer from "./stateless/CorrectAnswer.jsx";
 import {ScoreLib} from "../../scripts/ScoreLib.js"
 import {getCurrentQuestionVisibility} from "./QuestionHelpers.js"
 

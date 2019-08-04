@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Grid';
 import QuestionOutline from "./QuestionOutline.jsx";
-import QuestionInput from "./QuestionInput.jsx";
+import QuestionInput from "./stateless/QuestionInput.jsx";
 import {ScoreLib} from "../../scripts/ScoreLib.js"
 
 import { connect } from "react-redux";
@@ -182,7 +182,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
   return {
-  
+
     setUserAnswers :(answerInput,questionData) =>{
       dispatch(setUserAnswers(answerInput,questionData))
     },

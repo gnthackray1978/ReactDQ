@@ -4,13 +4,11 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import QuestionOutline from "./QuestionOutline.jsx";
-import QuestionInput from "./QuestionInput.jsx";
-import {ScoreLib} from "../../scripts/ScoreLib.js"
+import QuestionInput from "./stateless/QuestionInput.jsx";
 import { connect } from "react-redux";
-import CorrectAnswer from "./CorrectAnswer.jsx";
-import {getCurrentQuestionVisibility} from "./QuestionHelpers.js";
-import {setUserAnswers, resetUserAnswers} from "../../store/actions/dbActions.jsx";
-
+import CorrectAnswer from "./stateless/CorrectAnswer.jsx";
+import {setUserAnswersForMultiAnswer, resetUserAnswers} from "../../store/actions/dbActions.jsx";
+import {getScore,isQuestionVisible, GetCorrectAnswersForQuestion,GetUserAnswersForQuestion} from "../../store/selectors/uxSelectors.jsx";
 
 const styles = () => ({
   root: {
@@ -99,7 +97,7 @@ const AnswerSoFar = props => {
 
       <Paper className={classes.root} elevation={1} className ={classes.answersofar}>
           {AnswerSoFar.map((string,index) => (
-               <FormattedString classes = {classes} string = {string} index ={index}/>
+               <FormattedString key = {index} classes = {classes} string = {string} index ={index}/>
              ))}
       </Paper>
   </div>)
@@ -116,15 +114,14 @@ class MultiAnswer extends React.Component {
 
   render() {
 
-    const { classes,questionData,userAnswersMapQuizInstance ,currentTest,selectQuizCat,questionVisibility,serverAnswers,
-                selectedQuiz,userAnswers, resetUserAnswers,setUserAnswers} = this.props;
+    const { classes,questionData,resetUserAnswers,setUserAnswersForMultiAnswer, score, isVisible, correctAnswers, userAnswersForQuestion} = this.props;
 
     const undo = () =>{
       resetUserAnswers(questionData.id);
     };
 
-    const onClick =(arg)=>{
-      setUserAnswers(arg.target.value.toLowerCase(),questionData);
+    const onClick =()=>{
+      setUserAnswersForMultiAnswer(this.state.answerInput.toLowerCase(),questionData);
       this.setState({
         answerInput : ''
       });
@@ -136,19 +133,15 @@ class MultiAnswer extends React.Component {
       });
     }
 
-
-    let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
-
     let result;
 
-    if(!getCurrentQuestionVisibility(questionVisibility,questionData.id,selectedQuiz.key,selectQuizCat)){
-      result = <CorrectAnswer>{ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers)}</CorrectAnswer>
+    if(!isVisible){
+      result = <CorrectAnswer>{correctAnswers}</CorrectAnswer>
     }
     else {
-       let tpAnswerSoFar = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionData.id,currentTest);
        result = (<div>
            <QuestionInput onChange={handleOnChange} onClick = {onClick}  answer = {this.state.answerInput}/>
-           <AnswerSoFar classes = {classes} AnswerSoFar ={tpAnswerSoFar}/>
+           <AnswerSoFar classes = {classes} AnswerSoFar ={userAnswersForQuestion}/>
        </div>)
     }
 
@@ -163,20 +156,31 @@ MultiAnswer.propTypes = {
   userAnswers : PropTypes.object,
   setRelatedUserAnswers : PropTypes.func,
   questionData : PropTypes.object,
-  serverAnswers : PropTypes.object,
-  selectQuizCat : PropTypes.string,
-  selectedQuiz : PropTypes.object,
-  currentTest: PropTypes.string,
-  userAnswersMapQuizInstance: PropTypes.object,
-  questionVisibility: PropTypes.object,
-  currentQuestionVisible : PropTypes.bool,
+  userAnswersForQuestion : PropTypes.object,
+  score : PropTypes.string,
+  correctAnswers: PropTypes.object,
+  isVisible : PropTypes.bool,
   resetUserAnswers : PropTypes.func,
-  setUserAnswers : PropTypes.func
+  setUserAnswersForMultiAnswer : PropTypes.func
 };
 
-const mapStateToProps = state => {
-  return {
+const mapStateToProps = (state, ownProps) => {
 
+  const {questionData} = ownProps;
+
+  let tp = getScore(questionData.id, state);
+
+  let correctAnswers  = GetCorrectAnswersForQuestion(questionData,state);
+
+  let userAnswersForQuestion = GetUserAnswersForQuestion(questionData.id, state);
+
+  let isVisible = isQuestionVisible(questionData.id, state);
+
+  return {
+    userAnswersForQuestion,
+    correctAnswers ,
+    isVisible : isVisible,
+    score : tp,
     quizMetaData : state.db.quizMetaData,
     catSelection : state.applicationState.catSelection,
     selectQuizCat : state.applicationState.selectQuizCat,
@@ -193,8 +197,8 @@ const mapDispatchToProps = dispatch => {
 
   return {
 
-    setUserAnswers :(answerInput,questionData) =>{
-      dispatch(setUserAnswers(answerInput,questionData))
+    setUserAnswersForMultiAnswer :(answerInput,questionData) =>{
+      dispatch(setUserAnswersForMultiAnswer(answerInput,questionData))
     },
     resetUserAnswers :questionId =>{
       dispatch(resetUserAnswers(questionId))

@@ -109,9 +109,8 @@ export const setUserAnswers= (answerInput,questionData) =>{
 
     // questiondata and answerinput are generated when the user clicks on
     // stuff in the calling component.
-    let answerInput = answerInput.toLowerCase();
+    answerInput = answerInput.toLowerCase();
     let questionDataId = questionData.id;
-
 
     // so that if the user changes their mind and enters the wrong answer then their score goes down.
     ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionDataId, currentTest, userAnswers, userAnswersMapQuizInstance);
@@ -132,7 +131,7 @@ export const setUserAnswers= (answerInput,questionData) =>{
   };
 }
 
-export const setUserAnswersMultiChoice= (optionState,questionData) =>{
+export const setUserAnswersForMultiAnswer= (answerInput,questionData) =>{
   return async (dispatch, getState)  => {
 
 
@@ -142,8 +141,40 @@ export const setUserAnswersMultiChoice= (optionState,questionData) =>{
 
     // questiondata and answerinput are generated when the user clicks on
     // stuff in the calling component.
-    // // so that if the user changes their mind and enters the wrong answer then their score goes down.
+    answerInput = answerInput.toLowerCase();
+    let questionDataId = questionData.id;
+
+
+    let userAnswersArray = ScoreLib.GetUserAnswersForQuestion(userAnswers, userAnswersMapQuizInstance,questionDataId,currentTest);
+
+    ScoreLib.GetScoreMultiAnswerByQueestionData(userAnswersArray, questionData, answerInput, serverAnswers,
+      (updatedUserAnswers,score, isCorrect)=>{
+          ScoreLib.UpdateEnteredAnswerObjs(questionData.id, currentTest, answerInput, userAnswers, userAnswersMapQuizInstance,isCorrect,score);
+        //  setRelatedUserAnswers({userAnswers,userAnswersMapQuizInstance});
+          dispatch({
+            type: "SET_RELATEDUSERANSWERS",
+            data : {userAnswers,userAnswersMapQuizInstance}
+          });
+    });
+
+
+  };
+}
+
+
+export const setUserAnswersMultiChoice= (optionState,questionData) =>{
+  return async (dispatch, getState)  => {
+
+
+    // the contents of the state object come from the calling react Component
+    // and are objects within the redux store.
+    const {serverAnswers, userAnswersMapQuizInstance, userAnswers, currentTest} = getState().db;
+
+
+
+    // so that if the user changes their mind and enters the wrong answer then their score goes down.
     ScoreLib.ResetCorrectAnswersInEnteredAnswerObjs(questionData.id, currentTest, userAnswers, userAnswersMapQuizInstance);
+
 
     let result = ScoreLib.GetScoreForMultiChoice(questionData,serverAnswers,optionState);
 
