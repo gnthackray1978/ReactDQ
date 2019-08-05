@@ -12,6 +12,13 @@ export const getScore = (questionId, state) => {
   return score;
 };
 
+export const GetPossibleAnswersForQuestion = (questionData, state) =>{
+
+  let serverAnswers = state.db.serverAnswers;
+
+  return ScoreLib.GetPossibleAnswersForQuestion(questionData, serverAnswers);
+};
+
 
 export const isQuestionVisible = (questionId, state) =>{
 

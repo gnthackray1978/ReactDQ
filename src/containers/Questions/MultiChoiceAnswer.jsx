@@ -4,12 +4,9 @@ import { withStyles } from '@material-ui/core/styles';
 import QuestionOutline from "./QuestionOutline.jsx";
 import MultiChoiceCorrectAnswer from "./stateless/MultiChoiceCorrectAnswer.jsx";
 import MultiChoiceInput from "./stateless/MultiChoiceInput.jsx";
-import {ScoreLib} from "../../scripts/ScoreLib.js"
 import { connect } from "react-redux";
-import {getCurrentQuestionVisibility} from "./QuestionHelpers.js";
-
 import {setUserAnswersMultiChoice, resetUserAnswers} from "../../store/actions/dbActions.jsx";
-
+import {getScore,isQuestionVisible, GetCorrectAnswersForQuestion,GetUserAnswersForQuestion, GetPossibleAnswersForQuestion} from "../../store/selectors/uxSelectors.jsx";
 
 const styles = () => ({
   root: {
@@ -76,12 +73,9 @@ class MultiChoiceAnswer extends React.Component {
     }
 
   render() {
-//    console.log('rendered multi answer');
 
-    const { classes,questionData,userAnswersMapQuizInstance ,currentTest,selectQuizCat,
-          questionVisibility,serverAnswers,selectedQuiz,resetUserAnswers} = this.props;
+    const { classes,questionData ,resetUserAnswers,isVisible,score,correctAnswers,possibleAnswers} = this.props;
 
-    let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
     let result;
 
@@ -107,31 +101,52 @@ class MultiChoiceAnswer extends React.Component {
     };
 
     //console.log('checked visibility');
-    if(!getCurrentQuestionVisibility(questionVisibility,questionData.id,selectedQuiz.key,selectQuizCat)){
-      let correctAnswer = ScoreLib.GetCorrectAnswersForQuestion(questionData, serverAnswers);
-
-      result = <MultiChoiceCorrectAnswer classes ={classes}>{correctAnswer}</MultiChoiceCorrectAnswer>
+    if(!isVisible){
+      result = <MultiChoiceCorrectAnswer classes ={classes}>{correctAnswers}</MultiChoiceCorrectAnswer>
     }
     else {
-
-       let possibleAnswers = ScoreLib.GetPossibleAnswersForQuestion(questionData, serverAnswers);
-
        result = (<div>
            <MultiChoiceInput  classes ={classes} onChange={inputChanged} possibleAnswers = {possibleAnswers}/>
        </div>)
     }
 
     return (
-      <QuestionOutline label = 'Multiple Choice' score = {score} question = {questionData.question}  value = {questionData} undo = {undo}>{result}</QuestionOutline>
+        <QuestionOutline label = "Multiple Choice" score = {score} question = {questionData.question}  value = {questionData} undo = {undo}>{result}</QuestionOutline>
     );
   }
 }
 
+MultiChoiceAnswer.propTypes = {
+  classes: PropTypes.object.isRequired,
+  questionData : PropTypes.object,
+  resetUserAnswers : PropTypes.func,
+  setUserAnswers : PropTypes.func,
+  score : PropTypes.string,
+  correctAnswers: PropTypes.object,
+  isVisible : PropTypes.bool,
+  possibleAnswers : PropTypes.object
+};
 
-const mapStateToProps = state => {
-//  console.log('mapStateToProps');
+const mapStateToProps = (state, ownProps) => {
+
+  const {questionData} = ownProps;
+
+  let tp = getScore(questionData.id, state);
+
+  let correctAnswers  = GetCorrectAnswersForQuestion(questionData,state);
+
+  let userAnswersForQuestion = GetUserAnswersForQuestion(questionData.id, state);
+
+  let isVisible = isQuestionVisible(questionData.id, state);
+
+  let possibleAnswers = GetPossibleAnswersForQuestion(questionData,state);
+
   return {
-
+    userAnswersForQuestion,
+    correctAnswers ,
+    isVisible : isVisible,
+    score : tp,
+    possibleAnswers,
     quizMetaData : state.db.quizMetaData,
     catSelection : state.applicationState.catSelection,
     selectQuizCat : state.applicationState.selectQuizCat,

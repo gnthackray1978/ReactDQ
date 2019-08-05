@@ -1,16 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Grid';
 import QuestionOutline from "./QuestionOutline.jsx";
 import QuestionInput from "./stateless/QuestionInput.jsx";
-import {ScoreLib} from "../../scripts/ScoreLib.js"
-
+import CorrectAnswer from "./stateless/CorrectAnswer.jsx";
 import { connect } from "react-redux";
 
 import {setUserAnswers, resetUserAnswers} from "../../store/actions/dbActions.jsx";
 
-import {getCurrentQuestionVisibility} from "./QuestionHelpers.js";
+import {getScore,isQuestionVisible, GetCorrectAnswersForQuestion,GetUserAnswersForQuestion} from "../../store/selectors/uxSelectors.jsx";
+
 
 const styles = () => ({
   root: {
@@ -78,39 +77,8 @@ class SingleAnswer extends React.Component {
         this.state = { answerInput : ''  };
       }
 
-    formatString(classes, string,index){
-     if(index !=0) string = ',' + string;
-
-     if(index % 2 ==0){
-       return   (<Typography variant="h6" className ={classes.black}  >
-           {string}
-       </Typography>)
-     }
-     else {
-         return   (<Typography variant="h6"  className ={classes.red}  >
-             {string}
-         </Typography>)
-       }
-    }
-
-    makeCorrectAnswersBlock(classes){
-      let correctAnswersArray = ScoreLib.GetCorrectAnswersForQuestion(this.props.questionData, this.props.serverAnswers);
-
-      let tpAnswer = correctAnswersArray.map((string,index) => (
-           this.formatString(classes,string,index)
-         ));
-
-      let answerBlock =
-         (<Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
-             {tpAnswer}
-         </Typography>)
-
-      return  answerBlock;
-    }
-
     render() {
-      const { classes,questionData ,userAnswersMapQuizInstance, currentTest,questionVisibility,
-              selectedQuiz,selectQuizCat,resetUserAnswers,setUserAnswers} = this.props;
+      const { classes,questionData ,resetUserAnswers,setUserAnswers,isVisible,score,correctAnswers} = this.props;
 
       const onClick =(arg)=>{
           setUserAnswers(arg.target.value.toLowerCase(),this.props.questionData);
@@ -122,12 +90,11 @@ class SingleAnswer extends React.Component {
         });
       };
 
-      let score = ScoreLib.GetScoreForQuestion(userAnswersMapQuizInstance,questionData.id,currentTest) + '%';
 
       let result;
 
-      if(!getCurrentQuestionVisibility(questionVisibility, questionData.id, selectedQuiz.key, selectQuizCat)){
-        result = this.makeCorrectAnswersBlock(classes);
+      if(!isVisible){
+        result = <CorrectAnswer>{correctAnswers}</CorrectAnswer>
       }
       else {
          result = (<div>
@@ -166,8 +133,25 @@ SingleAnswer.propTypes = {
   setUserAnswers : PropTypes.func,
 };
 
-const mapStateToProps = state => {
+
+
+const mapStateToProps = (state, ownProps) => {
+
+  const {questionData} = ownProps;
+
+  let tp = getScore(questionData.id, state);
+
+  let correctAnswers  = GetCorrectAnswersForQuestion(questionData,state);
+
+  let userAnswersForQuestion = GetUserAnswersForQuestion(questionData.id, state);
+
+  let isVisible = isQuestionVisible(questionData.id, state);
+
   return {
+    userAnswersForQuestion,
+    correctAnswers ,
+    isVisible : isVisible,
+    score : tp,
     catSelection : state.applicationState.catSelection,
     selectQuizCat : state.applicationState.selectQuizCat,
     selectedQuiz : state.applicationState.selectedQuiz,
@@ -180,6 +164,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
+
+
 
   return {
 
