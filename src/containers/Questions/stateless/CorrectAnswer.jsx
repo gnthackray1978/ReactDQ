@@ -27,12 +27,12 @@ function CorrectAnswer(props) {
    if(index !=0) string = ',' + string;
 
    if(index % 2 ==0){
-     return   <Typography variant="h6" className ={classes.black}  >
+     return   <Typography variant="h6" className ={classes.black}  key = {index}>
          {string}
        </Typography>
    }
    else {
-       return   <Typography variant="h6"  className ={classes.red}  >
+       return   <Typography variant="h6"  className ={classes.red}  key = {index} >
            {string}
          </Typography>
      }
@@ -40,13 +40,13 @@ function CorrectAnswer(props) {
 
 
   return(
-    <di>
+    <div>
       <Typography variant="h6" color="inherit"  className ={classes.tolowerBtn}>
                          {props.children.map((string,index) => (
                               formatString(classes,String(string),index)
                             ))}
                        </Typography>
-    </di>
+    </div>
   );
 
 }

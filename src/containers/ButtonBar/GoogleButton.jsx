@@ -33,6 +33,33 @@ const styles = theme => ({
     backgroundColor: blue[100],
     color: blue[600],
   },
+  initialStyle : {
+    backgroundColor: theme === 'dark' ? 'rgb(66, 133, 244)' : '#fff',
+    display: 'inline-flex',
+    alignItems: 'center',
+    color: theme === 'dark' ? '#fff' : 'rgba(0, 0, 0, .54)',
+    boxShadow: '0 2px 2px 0 rgba(0, 0, 0, .24), 0 0 1px 0 rgba(0, 0, 0, .24)',
+    padding: 0,
+    borderRadius: 2,
+    border: '1px solid transparent',
+    fontSize: 14,
+    fontWeight: '500',
+    fontFamily: 'Roboto, sans-serif',
+    marginLeft:25
+  },
+
+  hoveredStyle : {
+    cursor: 'pointer',
+    opacity: 0.9
+  },
+
+  activeStyle : {
+    cursor: 'pointer',
+    backgroundColor: theme === 'dark' ? '#3367D6' : '#eee',
+    color: theme === 'dark' ? '#fff' : 'rgba(0, 0, 0, .54)',
+    opacity: 1
+  },
+
 
 });
 
@@ -49,121 +76,55 @@ class GoogleButton extends React.Component{
   }
 
 
-  handleClick() {
-    this.props.onClick(false);
-  }
-
 
   render() {
 
-    const { tag, type, className, disabledStyle, buttonText, children, render, theme, icon, ProfileObj, GoogleApiLoggedIn } = this.props;
-
-    let disabled = false;
-
-    if(this.props.mode != 'cancel'){
-
-      if(this.props.mode == 'logout' && this.props.GoogleApiLoggedIn){
-        disabled = false;
-      }
-      if(this.props.mode == 'logout' && !this.props.GoogleApiLoggedIn){
-        disabled = true;
-      }
-
-      if(this.props.mode == 'login' && this.props.GoogleApiLoggedIn){
-        disabled = true;
-      }
-
-
-    }
-
-
-
+    const { tag, type, render, theme, icon,classes, disabled , mode, onClick, label} = this.props;
 
 
     if (render) {
-      return render({ onClick: this.handleClick, disabled });
+      return render({ onClick: onClick(false), disabled });
     }
 
-    const initialStyle = {
-      backgroundColor: theme === 'dark' ? 'rgb(66, 133, 244)' : '#fff',
-      display: 'inline-flex',
-      alignItems: 'center',
-      color: theme === 'dark' ? '#fff' : 'rgba(0, 0, 0, .54)',
-      boxShadow: '0 2px 2px 0 rgba(0, 0, 0, .24), 0 0 1px 0 rgba(0, 0, 0, .24)',
-      padding: 0,
-      borderRadius: 2,
-      border: '1px solid transparent',
-      fontSize: 14,
-      fontWeight: '500',
-      fontFamily: 'Roboto, sans-serif',
-      marginLeft:25
-    };
-
-    const hoveredStyle = {
-      cursor: 'pointer',
-      opacity: 0.9
-    };
-
-    const activeStyle = {
-      cursor: 'pointer',
-      backgroundColor: theme === 'dark' ? '#3367D6' : '#eee',
-      color: theme === 'dark' ? '#fff' : 'rgba(0, 0, 0, .54)',
-      opacity: 1
-    };
-
-    const defaultStyle = (() => {
-
-
+    const defaultStyle = () => {
       if (this.state.active) {
-        if (theme === 'dark') {
-          console.log('active dark');
-          return Object.assign({}, initialStyle, activeStyle);
-        }
-        console.log('active');
-        return Object.assign({}, initialStyle, activeStyle);
+        if (theme === 'dark')  return classes.initialStyle + ' ' + classes.activeStyle;
+
+        return classes.initialStyle + ' '+classes.activeStyle;
       }
 
-      if (this.state.hovered) {
-        console.log('hovered');
-        return Object.assign({}, initialStyle, hoveredStyle);
-      }
+      if (this.state.hovered)  return classes.initialStyle + ' ' + classes.hoveredStyle;
 
-      return initialStyle;
-    })();
+      return classes.initialStyle;
+    };
 
-    const { classes, onClose, selectedValue, open } = this.props;
-
-//    let disabled =false;
-    //
     const genericProps = {
       onMouseEnter: () => this.setState({ hovered: true }),
       onMouseLeave: () => this.setState({ hovered: false, active: false }),
       onMouseDown: () => this.setState({ active: true }),
       onMouseUp: () => this.setState({ active: false }),
-      onClick: ()=>{
-        this.handleClick();
-      } ,
-      style: defaultStyle,
+      onClick: ()=> onClick(false),
+      style :{},
       type,
       disabled,
-      className
+      className:defaultStyle()
     };
 
     let content;
 
-    if(this.props.mode == 'cancel'){
+    if(mode == 'cancel'){
       content = [
           <ButtonContent key ="1">
-              {this.props.label}
+              {label}
           </ButtonContent>
       ];
     }
 
-    if(this.props.mode == 'login' || this.props.mode == 'logout'){
+    if(mode == 'login' || mode == 'logout'){
       content = [
         icon && <IconGoogle key={1} active={this.state.active} />,
           <ButtonContent icon={icon} key={2}>
-            {this.props.label}
+            {label}
           </ButtonContent>
       ];
     }
@@ -175,9 +136,27 @@ class GoogleButton extends React.Component{
 
 
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
+
+  let disabled = false;
+
+  if(ownProps.mode != 'cancel'){
+
+    if(ownProps.mode == 'logout' && state.google.GoogleApiLoggedIn){
+      disabled = false;
+    }
+    if(ownProps.mode == 'logout' && !state.google.GoogleApiLoggedIn){
+      disabled = true;
+    }
+    if(ownProps.mode == 'login' && state.google.GoogleApiLoggedIn){
+      disabled = true;
+    }
+  }
+
+
 
   return {
+    disabled,
     ClientId : state.google.GoogleApiParams.clientId,
     Scope : state.google.GoogleApiParams.scopes,
     cookiePolicy: state.google.GoogleApiParams.cookie_policy,

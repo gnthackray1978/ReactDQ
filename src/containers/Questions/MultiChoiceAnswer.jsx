@@ -76,7 +76,6 @@ class MultiChoiceAnswer extends React.Component {
 
     const { classes,questionData ,resetUserAnswers,isVisible,score,correctAnswers,possibleAnswers} = this.props;
 
-
     let result;
 
     const undo = () =>{

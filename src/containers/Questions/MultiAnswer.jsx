@@ -156,9 +156,9 @@ MultiAnswer.propTypes = {
   userAnswers : PropTypes.object,
   setRelatedUserAnswers : PropTypes.func,
   questionData : PropTypes.object,
-  userAnswersForQuestion : PropTypes.object,
+  userAnswersForQuestion : PropTypes.array,
   score : PropTypes.string,
-  correctAnswers: PropTypes.object,
+  correctAnswers: PropTypes.array,
   isVisible : PropTypes.bool,
   resetUserAnswers : PropTypes.func,
   setUserAnswersForMultiAnswer : PropTypes.func

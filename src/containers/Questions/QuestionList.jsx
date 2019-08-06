@@ -42,29 +42,29 @@ class QuestionList extends React.Component {
   render() {
       const { classes,quizQuestions } = this.props;
 
-      const getQuestionType =(value)=>{
+      const getQuestionType =(value,index)=>{
         const questionType = quizQuestions[value].type;
 
         if(questionType == 'SN')
-          return <SingleAnswer questionData = {quizQuestions[value]}/>
+          return <SingleAnswer key = {index} questionData = {quizQuestions[value]}/>
 
         if(questionType == 'MA')
-          return <MultiAnswer questionData = {quizQuestions[value]}/>
+          return <MultiAnswer key = {index} questionData = {quizQuestions[value]}/>
 
         if(questionType == 'SN')
-          return <SingleAnswer questionData = {quizQuestions[value]}/>
+          return <SingleAnswer key = {index} questionData = {quizQuestions[value]}/>
 
         if(questionType == 'BO')
-          return <BooleanAnswer questionData = {quizQuestions[value]}/>
+          return <BooleanAnswer key = {index} questionData = {quizQuestions[value]}/>
 
         if(questionType == 'MC')
-          return <MultiChoiceAnswer questionData = {quizQuestions[value]}/>
+          return <MultiChoiceAnswer key = {index} questionData = {quizQuestions[value]}/>
       };
 
     return (
         <Grid container className={classes.root} spacing={16}>
-            {quizQuestions.index.map(value => (
-               getQuestionType(value)
+            {quizQuestions.index.map((value,index) => (
+               getQuestionType(value, index)
             ))}
         </Grid>
     );

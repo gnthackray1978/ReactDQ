@@ -100,7 +100,7 @@ BooleanAnswer.propTypes = {
   resetUserAnswers : PropTypes.func,
   setUserAnswers : PropTypes.func,
   score : PropTypes.string,
-  correctAnswers: PropTypes.object,
+  correctAnswers: PropTypes.array,
   isVisible : PropTypes.bool
 };
 

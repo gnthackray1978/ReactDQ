@@ -70,9 +70,7 @@ class SelectionToolBar extends Component {
     console.log('selected quiz cat: ' + selectQuizCat);
 
     const addClick = (param => {
-        console.log('addClick: ' + param);
         GoogleLib.CreateFile(window.gapi, this.props.ScriptId, param, ()=>{
-          console.log('finished');
         });
     });
 
