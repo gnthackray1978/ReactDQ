@@ -1,24 +1,14 @@
-
 import Fab from '@material-ui/core/Fab';
-
 import React, { Component } from 'react';
-
 import blue from '@material-ui/core/colors/blue';
 import loadScript from './load-script.js';
 import { connect } from "react-redux";
 import { withStyles } from '@material-ui/core/styles';
-
-import {GoogleLib} from "../../scripts/GoogleLib.js";
-import {PropTypes,func} from 'prop-types';
-
+import {PropTypes} from 'prop-types';
 import {setQuizMetaData } from "../../store/actions/dbActions.jsx";
-
 import {setCatSelection } from "../../store/actions/appStateActions.jsx";
-
 import {setGoogleApi, setGoogleSignOutState} from "../../store/actions/googleActions.jsx";
-
 import {setLoginDetailsVisible } from "../../store/actions/uxActions.jsx";
-
 import ImageButton from "./ImageButton.jsx";
 import GooglePopup from "./GooglePopup.jsx";
 import GoogleButton from "./GoogleButton.jsx";
@@ -51,119 +41,58 @@ const styles = theme => ({
 
 });
 
-
-
 class GoogleConnect extends Component {
 
   constructor(props) {
+    super(props);
 
-     super(props);
+  }
 
-     this.handleClose = this.handleClose.bind(this);
-   }
+  componentDidMount() {
+    if (window.gapi) return;
 
-   static defaultProps = {
-     isData: true
-   };
-
-
-    componentDidMount() {
-      if (window.gapi) return;
-
-      loadScript(document, 'script', 'google-login', this.props.jsSrc, () => {
-          GoogleLib.AutoConnect(window.gapi, this.props.GoogleConnectParam, (res)=>{
-
-            this.props.setGoogleApi(res);
-          //  console.log('AutoConnect success');
-
-            GoogleLib.SearchForQuizFiles(window.gapi, this.props.ScriptId, (arg)=>{
-              this.props.setQuizMetaData(arg);
-              this.props.setCatSelection(arg);
-            });
-          });
-      });
+    loadScript(document, 'script', 'google-login', this.props.jsSrc, () => this.props.setGoogleApi(window.gapi));
+  }
 
 
-    }
-
-
-    signIn(e) {
-      if (e) {
-        e.preventDefault();
-      }
-      if (!this.props.GoogleApiLoggedIn) {
-
-        GoogleLib.SignIn(window.gapi, this.props.responseType, (res)=>{
-
-          this.props.setGoogleApi(res);
-        });
-
-      }
-    }
-
-    handleClickOpen = () => {
-      console.log('handleClickOpen');
-      this.props.setLoginDetailsVisible(true);
-    }
-
-    handleClose = value => {
-      this.props.setLoginDetailsVisible(false);
-    }
 
   renderLogoutOptions(){
-    return(<div>
-        <GoogleButton label ='Logout' mode = 'logout' onClick ={()=>{
 
-              GoogleLib.SignOut(window.gapi, ()=>{
-                this.props.setGoogleSignOutState();
-              });
+    const {setGoogleSignOutState, handleClick} = this.props;
 
-              this.props.handleClick();
-            }}/>
-
-        <GoogleButton label ='Cancel' mode = 'cancel' onClick ={()=>{
-              this.props.handleClick();
-             }}/>
-      </div>);
+    return(
+        <div>
+            <GoogleButton label ="Logout" mode = "logout" onClick ={()=>{
+                  setGoogleSignOutState();
+                  handleClick();
+          }}/>
+            <GoogleButton label ="Cancel" mode = "cancel" onClick ={()=>handleClick()}/>
+        </div>);
   }
 
   renderLogin() {
-  //  console.log('google api logged in: '+  this.props.GoogleApiLoggedIn);
-
-    const { classes, ClientId, Scope} = this.props;
-
-    const responseGoogle = (response) => {
-//      console.log(response);
-    }
-
-    let buttons = <GoogleButton label ='Login' mode = 'login' onClick ={()=>{
-          this.signIn();
-        }}/>;
 
 
+    const { classes, isImageButton, isFabButton, imageUrl,profileObjName, ProfileObj, LogInDetailsVisible, setLoginDetailsVisible, setGoogleApiSignIn} = this.props;
 
-    let moreInfoButton;
 
-    if(this.props.GoogleApiLoggedIn && this.props.ProfileObj){
-      if(this.props.ProfileObj.imageUrl!= '')
-        moreInfoButton = <ImageButton url = {this.props.ProfileObj.imageUrl}  onClick={this.handleClickOpen}/>
-      else{
-        if(this.props.ProfileObj.name!= '')
-          moreInfoButton = <Fab color="primary" aria-label="Add" className={classes.fab}  onClick={this.handleClickOpen}>{this.props.ProfileObj.name.charAt()}</Fab>
-      }
-    }
+    let buttons = (
+        <GoogleButton label ="Login" mode = "login" onClick ={e=>{
+            if (e) e.preventDefault();
+            setGoogleApiSignIn();
+      }}/>);
 
-    if(this.props.GoogleApiLoggedIn){
-      buttons = moreInfoButton;
-    }
+    if(isImageButton)
+      buttons = <ImageButton url = {imageUrl}  onClick={()=>setLoginDetailsVisible(true)}/>
+
+    if(isFabButton)
+      buttons = <Fab color="primary" aria-label="Add" className={classes.fab}  onClick={()=>setLoginDetailsVisible(true)}>{profileObjName}</Fab>
 
      return (
-       <div>
-         {buttons}
-         <GooglePopup open={this.props.LogInDetailsVisible} ProfileObj ={this.props.ProfileObj}  onClose={(arg)=>{
-             this.handleClose(arg);
-           }} />
-      </div>
+         <div>
+             {buttons}
+             <GooglePopup open={LogInDetailsVisible} ProfileObj ={ProfileObj}  onClose={()=>setLoginDetailsVisible(false)}/>
+         </div>
      )
 
   }
@@ -177,19 +106,37 @@ class GoogleConnect extends Component {
     }
 
     return(
-      <div>
-
-        {buttons}
-
-      </div>
+        <div>
+            {buttons}
+        </div>
     );
-
-
 
    }
 
 }
 
+GoogleConnect.propTypes = {
+  classes: PropTypes.object.isRequired,
+  setGoogleApi : PropTypes.func,
+  setGoogleSignOutState : PropTypes.func,
+  handleClick : PropTypes.func,
+  jsSrc: PropTypes.string,
+  isImageButton: PropTypes.bool,
+  isFabButton: PropTypes.bool,
+  imageUrl: PropTypes.string,
+  profileObjName: PropTypes.string,
+  ProfileObj : PropTypes.object,
+  LogInDetailsVisible: PropTypes.bool,
+  setLoginDetailsVisible : PropTypes.func,
+  setGoogleApiSignIn : PropTypes.func,
+  onClick : PropTypes.func,
+  mode: PropTypes.string,
+  disabled : PropTypes.bool,
+  render : PropTypes.func,
+  type: PropTypes.string,
+  tag: PropTypes.string,
+  icon: PropTypes.bool,
+};
 
 const mapStateToProps = state => {
 //  console.log('mapStateToProps');
@@ -208,7 +155,35 @@ const mapStateToProps = state => {
     responseType: state.google.responseType
   };
 
+  let isImageButton = false;
+  let isFabButton =false;
+
+
+  if(state.google.googleApiLoggedIn && state.google.profileObj){
+    if(state.google.profileObj.imageUrl!= '')
+      isImageButton = true;
+    else{
+      if(state.google.profileObj.name!= '')
+        isFabButton = true;
+    }
+  }
+
+  let profileObjName ='';
+  let imageUrl ='';
+
+
+
+  if(state.google.profileObj)
+    profileObjName = state.google.profileObj.name.charAt();
+
+  if(state.google.profileObj)
+    imageUrl = state.google.profileObj.imageUrl;
+
   return {
+    profileObjName,
+    imageUrl,
+    isImageButton : isImageButton,
+    isFabButton : isFabButton,
     GoogleConnectParam : params,
     SideDrawerLoaderVisible : state.uxState.SideDrawerLoaderVisible,
     LogInDetailsVisible : state.uxState.LogInDetailsVisible,
