@@ -1,11 +1,10 @@
 import ButtonContent from './button-content'
 import IconGoogle from './icon';
-import React, { Component } from 'react';
+import React from 'react';
 import blue from '@material-ui/core/colors/blue';
 import { connect } from "react-redux";
 import { withStyles } from '@material-ui/core/styles';
-import {GoogleLib} from "../../scripts/GoogleLib.js";
-import {PropTypes,func} from 'prop-types';
+import {PropTypes} from 'prop-types';
 
 
 const styles = theme => ({
@@ -133,7 +132,18 @@ class GoogleButton extends React.Component{
   }
 }
 
-
+GoogleButton.propTypes = {
+  classes: PropTypes.object.isRequired,
+  label : PropTypes.string,
+  onClick : PropTypes.func,
+  mode: PropTypes.string,
+  disabled : PropTypes.bool,
+  render : PropTypes.func,
+  type: PropTypes.string,
+  tag: PropTypes.string,
+  theme: PropTypes.string,
+  icon: PropTypes.bool,
+};
 
 
 const mapStateToProps = (state, ownProps) => {
