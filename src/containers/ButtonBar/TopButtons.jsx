@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import { connect } from "react-redux";
 import {setTestBatch} from "../../store/actions/appStateActions.jsx";
 import GoogleConnect  from "./GoogleConnect.jsx";
+import IDSConnect   from "./IDSConnect.jsx";
 
 const styles = theme => ({
   fab: {
@@ -39,7 +40,7 @@ class TopButtons extends Component {
      super(props);
      //console.log('TopButtons');
    }
-
+//     <GoogleConnect mode = "login"/>
 
 
   render() {
@@ -86,7 +87,8 @@ class TopButtons extends Component {
                      {selectedQuiz.quiz + ' ' + selectQuizCat}
                  </Typography>
              </Button>
-             <GoogleConnect mode = "login"/>
+             <IDSConnect mode = "login"/>
+
          </Toolbar>
      )
    }

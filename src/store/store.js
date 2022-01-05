@@ -3,8 +3,16 @@ import thunk from "redux-thunk";
 import applicationStateReducers from "./reducers/applicationStateReducers.js";
 import dbReducers from "./reducers/dbReducers.js";
 import googleReducers from "./reducers/googleReducers.js";
+import idsReducers from "./reducers/idsReducers.js";
 import graphReducers from "./reducers/graphReducers.js";
 import uxReducers from "./reducers/uxReducers.js";
+import oidcMiddleware from "./middleware/oidcMiddleware.jsx";
+import googleMiddleware from "./middleware/googleMiddleware.jsx";
+
+import { createBrowserHistory } from 'history';
+
+import { syncHistoryWithStore, routerReducer,routerMiddleware, push  } from 'react-router-redux';
+
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -13,16 +21,26 @@ const rootReducer = combineReducers({
   db : dbReducers,
   google : googleReducers,
   graph : graphReducers,
-  uxState: uxReducers
+  uxState: uxReducers,
+  ids : idsReducers,
+  routing: routerReducer
 });
+
+const oidcMW = oidcMiddleware('argh');
+
+const googleMW = googleMiddleware('');
+
+const routerMW = routerMiddleware(createBrowserHistory());
 
 const store = createStore(
   rootReducer,
   undefined,
   composeEnhancers(
-     applyMiddleware(thunk)
+     applyMiddleware(thunk,oidcMW,routerMW,googleMW)
    )
 );
+
+
 
 
 const unsubscribe = store.subscribe((arg) => {
